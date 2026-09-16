@@ -1,0 +1,12 @@
+# nvim 运行时产物（不属于配置）
+config/nvim/spell/
+config/nvim/shada/
+config/nvim/sessions/
+
+# macOS
+.DS_Store
+
+# 任何可能混入的密钥
+*.token
+*_rsa
+*.pem
