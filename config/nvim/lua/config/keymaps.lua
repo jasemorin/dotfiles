@@ -25,4 +25,3 @@ map("n", "<leader>e", vim.diagnostic.open_float, { desc = "Show diagnostic" })
 -- escape to normal mode
 map("i", "jj", "<Esc>", { desc = "Exit insert mode" })
 map("i", "kk", "<Esc>", { desc = "Exit insert mode" })
-map("i", "ll", "<Esc>", { desc = "Exit insert mode" })
