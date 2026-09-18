@@ -1,56 +1,14 @@
--- single source of truth for which language servers we want
-local servers = { "lua_ls", "pyright", "ts_ls", "bashls", "jsonls" }
-
+-- LazyVim 负责 mason / lspconfig / capabilities / LSP 键位。
+-- lua_ls、basedpyright+ruff、jdtls、marksman、jsonls、ts_ls 均由 LazyVim 及 extras 提供。
+-- 这里只补 LazyVim 没有开的 server 和个人化设置。
 return {
-  {
-    "williamboman/mason.nvim",
-    config = true,
-  },
-  {
-    "williamboman/mason-lspconfig.nvim",
-    dependencies = { "mason.nvim" },
-    opts = {
-      ensure_installed = servers,
+  "neovim/nvim-lspconfig",
+  opts = {
+    servers = {
+      -- bashls 只有在 PATH 上找得到 shellcheck 时才会给出 lint 诊断
+      bashls = {
+        settings = { bashIde = { shellcheckPath = "shellcheck" } },
+      },
     },
-  },
-  {
-    "neovim/nvim-lspconfig",
-    dependencies = {
-      "mason.nvim",
-      "mason-lspconfig.nvim",
-      "hrsh7th/cmp-nvim-lsp",
-    },
-    config = function()
-      local capabilities = require("cmp_nvim_lsp").default_capabilities()
-
-      vim.api.nvim_create_autocmd("LspAttach", {
-        group = vim.api.nvim_create_augroup("UserLspConfig", {}),
-        callback = function(ev)
-          local opts = { buffer = ev.buf }
-          local map = vim.keymap.set
-          map("n", "gd", vim.lsp.buf.definition, opts)
-          map("n", "gD", vim.lsp.buf.declaration, opts)
-          map("n", "gr", vim.lsp.buf.references, opts)
-          map("n", "gi", vim.lsp.buf.implementation, opts)
-          map("n", "K", vim.lsp.buf.hover, opts)
-          map("n", "<leader>rn", vim.lsp.buf.rename, opts)
-          map("n", "<leader>ca", vim.lsp.buf.code_action, opts)
-          map("n", "<leader>f", function()
-            vim.lsp.buf.format({ async = true })
-          end, opts)
-        end,
-      })
-
-      vim.lsp.config("*", { capabilities = capabilities })
-
-      -- bashls surfaces shellcheck diagnostics only if shellcheck is on PATH
-      vim.lsp.config("bashls", {
-        settings = {
-          bashIde = { shellcheckPath = "shellcheck" },
-        },
-      })
-
-      vim.lsp.enable(servers)
-    end,
   },
 }

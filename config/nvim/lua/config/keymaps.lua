@@ -1,27 +1,17 @@
+-- 只保留 LazyVim 没有提供的映射。
+-- 已由 LazyVim 提供、因此删除的：<Esc> 清高亮、<C-hjkl> 窗口跳转、[d/]d 诊断跳转。
+-- 注意：<leader>e 被 LazyVim 用作文件树，行内诊断改用 <leader>cd。
+
 local map = vim.keymap.set
 
--- clear search highlight
-map("n", "<Esc>", "<cmd>nohlsearch<CR>")
+-- 可视模式上下移动选中行（LazyVim 用的是 <A-j>/<A-k>，两者不冲突）
+map("v", "J", ":m '>+1<CR>gv=gv", { desc = "Move selection down" })
+map("v", "K", ":m '<-2<CR>gv=gv", { desc = "Move selection up" })
 
--- easier window navigation
-map("n", "<C-h>", "<C-w><C-h>", { desc = "Move focus to left window" })
-map("n", "<C-l>", "<C-w><C-l>", { desc = "Move focus to right window" })
-map("n", "<C-j>", "<C-w><C-j>", { desc = "Move focus to lower window" })
-map("n", "<C-k>", "<C-w><C-k>", { desc = "Move focus to upper window" })
-
--- move selected lines up/down
-map("v", "J", ":m '>+1<CR>gv=gv")
-map("v", "K", ":m '<-2<CR>gv=gv")
-
--- keep cursor centered
+-- 翻页后把光标保持在屏幕中间
 map("n", "<C-d>", "<C-d>zz")
 map("n", "<C-u>", "<C-u>zz")
 
--- diagnostics
-map("n", "[d", vim.diagnostic.goto_prev, { desc = "Previous diagnostic" })
-map("n", "]d", vim.diagnostic.goto_next, { desc = "Next diagnostic" })
-map("n", "<leader>e", vim.diagnostic.open_float, { desc = "Show diagnostic" })
-
--- escape to normal mode
+-- 快速退出插入模式
 map("i", "jj", "<Esc>", { desc = "Exit insert mode" })
 map("i", "kk", "<Esc>", { desc = "Exit insert mode" })

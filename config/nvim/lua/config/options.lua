@@ -1,30 +1,18 @@
-local o = vim.opt
+-- 只写与 LazyVim 默认值不同、或 LazyVim 没有设置的项。
+-- LazyVim 的完整默认值见 :h lazyvim-options，或 `:e $LAZYVIM_ROOT/lua/lazyvim/config/options.lua`
 
 vim.g.mapleader = " "
-vim.g.maplocalleader = " "
+vim.g.maplocalleader = " " -- LazyVim 默认是 "\\"；若觉得 localleader 映射有延迟可改回
 
-o.number = true
-o.relativenumber = true
-o.mouse = "a"
-o.clipboard = "unnamedplus"
+-- 补全引擎：LazyVim 默认 blink.cmp；想换回旧的 nvim-cmp 取消下面这行注释
+-- vim.g.lazyvim_cmp = "nvim-cmp"
+
+-- 选择器：LazyVim 默认 fzf-lua；想用 telescope 取消注释并启用 editor.telescope extra
+-- vim.g.lazyvim_picker = "telescope"
+
+local o = vim.opt
+
+o.scrolloff = 8 -- LazyVim 默认 4
 o.breakindent = true
-o.undofile = true
-o.ignorecase = true
-o.smartcase = true
-o.signcolumn = "yes"
-o.updatetime = 250
-o.timeoutlen = 300
-o.splitright = true
-o.splitbelow = true
-o.list = true
 o.listchars = { tab = "» ", trail = "·", nbsp = "␣" }
-o.inccommand = "split"
-o.cursorline = true
-o.scrolloff = 8
-
-o.expandtab = true
-o.shiftwidth = 2
-o.tabstop = 2
-o.smartindent = true
-
-o.termguicolors = true
+o.conceallevel = 2 -- markdown 里隐藏 ** 、[[ ]] 等标记

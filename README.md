@@ -27,12 +27,18 @@ cd ~/dotfiles
 
 ## 依赖
 
-- kitty ≥ 0.48，字体 JetBrains Mono
-- Neovim ≥ 0.11（配置用到 `vim.lsp.config` / `vim.hl.on_yank`）
+- kitty ≥ 0.48，字体 JetBrains Mono（需 Nerd Font 图标变体）
+- Neovim ≥ 0.11
+- `git`、`ripgrep`、`fd`、`lazygit`（LazyVim 的搜索与 git 界面依赖）
 - `shellcheck`、`shfmt`（可选，bashls 靠它出 lint 诊断）
+- JDK ≥ 21（jdtls 自身需要，与项目使用的 Java 版本无关）
 
-插件由 lazy.nvim 管理，首次启动 nvim 会自动安装；`lazy-lock.json` 锁定了
-精确 commit，纳入版本控制以保证各机器插件版本一致。
+Neovim 配置基于 **LazyVim**：`lua/config/` 与 `lua/plugins/` 里只写与 LazyVim
+默认值不同的部分，其余交给 LazyVim。启用的 extras 列在 `lua/config/lazy.lua`，
+也可用 `:LazyExtras` 增删。插件由 lazy.nvim 管理，首次启动 nvim 会自动安装；
+`lazy-lock.json` 锁定了精确 commit，纳入版本控制以保证各机器插件版本一致。
+
+首次启动后跑一次 `:LazyHealth` 检查依赖是否齐全。
 
 ## 注意
 
