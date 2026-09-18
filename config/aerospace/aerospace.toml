@@ -32,17 +32,17 @@ cmd-ctrl-alt-shift-u = 'move down'
 cmd-ctrl-alt-shift-i = 'move up'
 cmd-ctrl-alt-shift-o = 'move right'
 
-# ---- 切工作区：1234（按任务分，不按窗口分）----
-cmd-ctrl-alt-shift-1 = 'workspace 1'   # 浏览器 / 查资料
-cmd-ctrl-alt-shift-2 = 'workspace 2'   # kitty + Neovim
-cmd-ctrl-alt-shift-3 = 'workspace 3'   # Obsidian 笔记
-cmd-ctrl-alt-shift-4 = 'workspace 4'   # 通讯 / 其他
+# ---- 切工作区：用首字母，不用数字 ----
+# 工作区名字就是这个字母本身，按任务分而不是按窗口分
+cmd-ctrl-alt-shift-b = 'workspace B'   # Browser  浏览器 / 查资料
+cmd-ctrl-alt-shift-c = 'workspace C'   # Code     kitty + Neovim
+cmd-ctrl-alt-shift-n = 'workspace N'   # Notes    Obsidian
+cmd-ctrl-alt-shift-m = 'workspace M'   # Message  微信 / 邮件
+cmd-ctrl-alt-shift-x = 'workspace X'   # eXtra    临时 / 杂项
 
-# ---- 把当前窗口丢到第 N 个工作区：qwer，就在 1234 正上方 ----
-cmd-ctrl-alt-shift-q = 'move-node-to-workspace 1 --focus-follows-window'
-cmd-ctrl-alt-shift-w = 'move-node-to-workspace 2 --focus-follows-window'
-cmd-ctrl-alt-shift-e = 'move-node-to-workspace 3 --focus-follows-window'
-cmd-ctrl-alt-shift-r = 'move-node-to-workspace 4 --focus-follows-window'
+# ---- 把当前窗口丢到某个工作区：Hyper-P 进 move 模式，再按目标字母 ----
+# （Hyper 里已经含 Shift，所以做不出 "Hyper+Shift+B"，只能走模式）
+cmd-ctrl-alt-shift-p = 'mode move'
 
 # 在最近两个工作区之间来回跳 —— 实际用得比编号还多
 cmd-ctrl-alt-shift-tab = 'workspace-back-and-forth'
@@ -55,6 +55,14 @@ cmd-ctrl-alt-shift-0     = 'reload-config'
 
 # ---- 调大小：进 resize 模式后直接按 hjkl 连按，Esc 退出 ----
 cmd-ctrl-alt-shift-semicolon = 'mode resize'
+
+[mode.move.binding]
+b = ['move-node-to-workspace B --focus-follows-window', 'mode main']
+c = ['move-node-to-workspace C --focus-follows-window', 'mode main']
+n = ['move-node-to-workspace N --focus-follows-window', 'mode main']
+m = ['move-node-to-workspace M --focus-follows-window', 'mode main']
+x = ['move-node-to-workspace X --focus-follows-window', 'mode main']
+esc = 'mode main'
 
 [mode.resize.binding]
 h = 'resize width -50'
