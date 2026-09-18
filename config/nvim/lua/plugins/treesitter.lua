@@ -2,5 +2,5 @@
 -- 这里只追加 extra 没覆盖到的语言。
 return {
   "nvim-treesitter/nvim-treesitter",
-  opts = { ensure_installed = { "go", "rust", "html", "css" } },
+  opts = { ensure_installed = { "go", "rust", "html", "css", "latex" } },
 }

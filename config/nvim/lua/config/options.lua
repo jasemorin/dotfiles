@@ -16,3 +16,9 @@ o.scrolloff = 8 -- LazyVim 默认 4
 o.breakindent = true
 o.listchars = { tab = "» ", trail = "·", nbsp = "␣" }
 o.conceallevel = 2 -- markdown 里隐藏 ** 、[[ ]] 等标记
+
+-- 用不到的语言 provider，关掉以消除 :checkhealth 噪音
+vim.g.loaded_perl_provider = 0
+vim.g.loaded_ruby_provider = 0
+vim.g.loaded_node_provider = 0
+vim.g.loaded_python3_provider = 0

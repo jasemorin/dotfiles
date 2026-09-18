@@ -21,6 +21,8 @@ require("lazy").setup({
     { import = "plugins" },
   },
   install = { colorscheme = { "tokyonight" } },
+  -- 没有插件需要 luarocks，关掉以免 checkhealth 报 hererocks 未安装
+  rocks = { enabled = false },
   checker = { enabled = true, notify = false },
   performance = {
     rtp = {
