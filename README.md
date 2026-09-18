@@ -10,8 +10,22 @@ config/
   nvim/       -> ~/.config/nvim
   karabiner/  -> ~/.config/karabiner    键盘改造（Caps Lock 双重身份 / Hyper 键）
   aerospace/  -> ~/.config/aerospace    平铺窗口管理，键位基于 Hyper
+  git/        -> ~/.config/git          全局 gitignore
+  rstudio/    -> ~/.config/rstudio      RStudio 偏好与自定义 CSS
 install.sh  在新机器上建立上述链接
 ```
+
+### 刻意不收进来的
+
+| 目录 | 原因 |
+| --- | --- |
+| `~/.config/github-copilot/` | `apps.json` 里是 **OAuth token**，绝不进仓库 |
+| `~/.config/gh/` | `hosts.yml` 里是 GitHub token |
+| `~/.config/raycast/` | 405 MB，绝大部分是扩展和缓存；设置本身走 Raycast 自己的云同步 |
+| `~/.config/iterm2/` | 只有 socket 和运行时目录，没有配置 |
+| `~/.config/cagent/` | 只有本机 uuid 和首次运行标记，换机器没有意义 |
+
+判断标准：**是"我做的选择"就收，是"机器的状态"或"凭据"就不收。**
 
 仓库里的目录名直接对应 `~/.config` 下的名字，`install.sh` 会遍历 `config/*/`
 自动链接，所以**新增一个工具的配置只需把目录放进 `config/`**，脚本无需修改。

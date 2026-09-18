@@ -1,0 +1,53 @@
+{
+    "initial_working_directory": "~",
+    "editor_theme": "Tomorrow Night",
+    "posix_terminal_shell": "bash",
+    "panes": {
+        "quadrants": [
+            "Source",
+            "Console",
+            "TabSet1",
+            "TabSet2"
+        ],
+        "tabSet1": [
+            "Environment",
+            "History",
+            "Connections",
+            "Build",
+            "VCS",
+            "Tutorial",
+            "Presentation"
+        ],
+        "tabSet2": [
+            "Files",
+            "Plots",
+            "Packages",
+            "Viewer",
+            "Presentations"
+        ],
+        "hiddenTabSet": [],
+        "console_left_on_top": false,
+        "console_right_on_top": true,
+        "additional_source_columns": 0,
+        "sidebar": [
+            "Help",
+            "Chat"
+        ],
+        "sidebar_visible": true,
+        "sidebar_location": "right"
+    },
+    "jobs_tab_visibility": "shown",
+    "rmd_viewer_type": "pane",
+    "copilot_enabled": true,
+    "copilot_indexing_enabled": true,
+    "spelling_dictionary_language": "en_AU",
+    "auto_detect_indentation": true,
+    "insert_native_pipe_operator": true,
+    "highlight_selected_line": true,
+    "highlight_r_function_calls": true,
+    "rainbow_parentheses": true,
+    "reformat_on_save": true,
+    "indent_guides": "rainbowfills",
+    "code_formatter": "styler",
+    "font_size_points": 11
+}
