@@ -1,0 +1,70 @@
+# AeroSpace 配置
+# 修饰键统一用 Hyper = cmd-ctrl-alt-shift（Karabiner 把「按住右 Cmd」映射成它）
+# 改完这个文件后跑:  aerospace reload-config   （或按 Hyper-0）
+
+after-login-command = []
+after-startup-command = []
+start-at-login = true
+
+default-root-container-layout = 'tiles'
+default-root-container-orientation = 'auto'
+
+# 窗口之间和屏幕边缘的留白
+[gaps]
+inner.horizontal = 8
+inner.vertical   = 8
+outer.left       = 8
+outer.right      = 8
+outer.top        = 8
+outer.bottom     = 8
+
+[mode.main.binding]
+
+# ---- 移动焦点：hjkl，和 Vim 同方向 ----
+cmd-ctrl-alt-shift-h = 'focus left'
+cmd-ctrl-alt-shift-j = 'focus down'
+cmd-ctrl-alt-shift-k = 'focus up'
+cmd-ctrl-alt-shift-l = 'focus right'
+
+# ---- 搬动窗口：yuio，就在 hjkl 正上方一排 ----
+cmd-ctrl-alt-shift-y = 'move left'
+cmd-ctrl-alt-shift-u = 'move down'
+cmd-ctrl-alt-shift-i = 'move up'
+cmd-ctrl-alt-shift-o = 'move right'
+
+# ---- 切工作区：1234（按任务分，不按窗口分）----
+cmd-ctrl-alt-shift-1 = 'workspace 1'   # 浏览器 / 查资料
+cmd-ctrl-alt-shift-2 = 'workspace 2'   # kitty + Neovim
+cmd-ctrl-alt-shift-3 = 'workspace 3'   # Obsidian 笔记
+cmd-ctrl-alt-shift-4 = 'workspace 4'   # 通讯 / 其他
+
+# ---- 把当前窗口丢到第 N 个工作区：qwer，就在 1234 正上方 ----
+cmd-ctrl-alt-shift-q = 'move-node-to-workspace 1 --focus-follows-window'
+cmd-ctrl-alt-shift-w = 'move-node-to-workspace 2 --focus-follows-window'
+cmd-ctrl-alt-shift-e = 'move-node-to-workspace 3 --focus-follows-window'
+cmd-ctrl-alt-shift-r = 'move-node-to-workspace 4 --focus-follows-window'
+
+# 在最近两个工作区之间来回跳 —— 实际用得比编号还多
+cmd-ctrl-alt-shift-tab = 'workspace-back-and-forth'
+
+# ---- 布局 ----
+cmd-ctrl-alt-shift-f     = 'fullscreen'
+cmd-ctrl-alt-shift-slash = 'layout tiles horizontal vertical'      # 横排 <-> 竖排
+cmd-ctrl-alt-shift-comma = 'layout accordion horizontal vertical'  # 手风琴（窗口多时）
+cmd-ctrl-alt-shift-0     = 'reload-config'
+
+# ---- 调大小：进 resize 模式后直接按 hjkl 连按，Esc 退出 ----
+cmd-ctrl-alt-shift-semicolon = 'mode resize'
+
+[mode.resize.binding]
+h = 'resize width -50'
+j = 'resize height +50'
+k = 'resize height -50'
+l = 'resize width +50'
+esc = 'mode main'
+enter = 'mode main'
+
+# ---- 不参与平铺的窗口（强行平铺系统设置这类弹窗会很难受）----
+[[on-window-detected]]
+if.app-id = 'com.apple.systempreferences'
+run = 'layout floating'

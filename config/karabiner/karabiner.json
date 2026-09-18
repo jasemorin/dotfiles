@@ -1,0 +1,82 @@
+{
+    "profiles": [
+        {
+            "devices": [
+                {
+                    "identifiers": {
+                        "is_keyboard": true
+                    },
+                    "simple_modifications": []
+                }
+            ],
+            "name": "Default profile",
+            "selected": true,
+            "virtual_hid_keyboard": {
+                "keyboard_type_v2": "ansi"
+            },
+            "complex_modifications": {
+                "rules": [
+                    {
+                        "description": "Caps Lock: 轻按 = Esc，按住 = Control",
+                        "manipulators": [
+                            {
+                                "type": "basic",
+                                "from": {
+                                    "key_code": "caps_lock",
+                                    "modifiers": {
+                                        "optional": [
+                                            "any"
+                                        ]
+                                    }
+                                },
+                                "to": [
+                                    {
+                                        "key_code": "left_control",
+                                        "lazy": true
+                                    }
+                                ],
+                                "to_if_alone": [
+                                    {
+                                        "key_code": "escape"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "description": "右 Cmd: 按住 = Hyper (⌘⌃⌥⇧)，轻按 = 右 Cmd",
+                        "manipulators": [
+                            {
+                                "type": "basic",
+                                "from": {
+                                    "key_code": "right_command",
+                                    "modifiers": {
+                                        "optional": [
+                                            "any"
+                                        ]
+                                    }
+                                },
+                                "to": [
+                                    {
+                                        "key_code": "left_shift",
+                                        "modifiers": [
+                                            "left_command",
+                                            "left_control",
+                                            "left_option"
+                                        ],
+                                        "lazy": true
+                                    }
+                                ],
+                                "to_if_alone": [
+                                    {
+                                        "key_code": "right_command"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+    ]
+}

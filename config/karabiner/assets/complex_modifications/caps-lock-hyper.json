@@ -1,0 +1,22 @@
+{
+  "title": "Caps Lock 改造（备选方案）",
+  "rules": [
+    {
+      "description": "Caps Lock: 轻按 = Esc，按住 = Hyper (⌘⌃⌥⇧)",
+      "manipulators": [
+        {
+          "type": "basic",
+          "from": { "key_code": "caps_lock", "modifiers": { "optional": ["any"] } },
+          "to": [
+            {
+              "key_code": "left_shift",
+              "modifiers": ["left_command", "left_control", "left_option"],
+              "lazy": true
+            }
+          ],
+          "to_if_alone": [{ "key_code": "escape" }]
+        }
+      ]
+    }
+  ]
+}

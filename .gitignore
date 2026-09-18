@@ -10,3 +10,7 @@ config/nvim/sessions/
 *.token
 *_rsa
 *.pem
+
+# Karabiner 自动备份（每次改配置都会生成，不是配置本身）
+config/karabiner/automatic_backups/
+config/karabiner/*.bak-*
