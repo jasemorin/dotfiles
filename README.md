@@ -6,8 +6,10 @@ kitty 与 Neovim 的个人配置，通过符号链接部署到 `~/.config`。
 
 ```
 config/
-  kitty/    -> ~/.config/kitty
-  nvim/     -> ~/.config/nvim
+  kitty/      -> ~/.config/kitty
+  nvim/       -> ~/.config/nvim
+  karabiner/  -> ~/.config/karabiner    键盘改造（Caps Lock 双重身份 / Hyper 键）
+  aerospace/  -> ~/.config/aerospace    平铺窗口管理，键位基于 Hyper
 install.sh  在新机器上建立上述链接
 ```
 
@@ -40,7 +42,23 @@ Neovim 配置基于 **LazyVim**：`lua/config/` 与 `lua/plugins/` 里只写与 
 
 首次启动后跑一次 `:LazyHealth` 检查依赖是否齐全。
 
+## 键盘化分层
+
+| 层 | 工具 | 配置位置 |
+| --- | --- | --- |
+| 按键改造 | Karabiner-Elements | `config/karabiner/` |
+| 窗口管理 | AeroSpace | `config/aerospace/` |
+| 终端 | kitty | `config/kitty/` |
+| 编辑器 | Neovim + LazyVim | `config/nvim/` |
+
+修饰键分工：**Hyper（按住右 Cmd）= 系统级**（AeroSpace），**Ctrl（按住 Caps Lock）= 编辑器内**（Neovim）。
+方向键位都是 `hjkl`，靠修饰键区分「在 nvim 里面还是外面」。
+
 ## 注意
 
 - kitty 改配置后需**完全退出重开**，`cmd+shift+,` 的 reload 不会重建已有窗口布局。
 - 不要把 `~/.config/gh/hosts.yml` 放进来，里面有 GitHub token。
+- Karabiner 改完配置**立即生效**，它会监听 `karabiner.json` 的变化，不用重启。
+- AeroSpace 改完跑 `aerospace reload-config`（或按 Hyper-0）。
+- AeroSpace 优先读 `~/.aerospace.toml`，**其次**才是 `~/.config/aerospace/aerospace.toml`。
+  如果前者存在，本仓库的配置不会生效 —— 删掉或改名它。
