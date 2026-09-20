@@ -94,6 +94,8 @@ n = ['move-node-to-workspace N --focus-follows-window', 'mode main']
 m = ['move-node-to-workspace M --focus-follows-window', 'mode main']
 x = ['move-node-to-workspace X --focus-follows-window', 'mode main']
 esc = 'mode main'
+enter = 'mode main'
+cmd-ctrl-alt-shift-p = 'mode main'   # 再按一次进入键也能退出
 
 [mode.resize.binding]
 h = 'resize width -50'
@@ -102,6 +104,7 @@ k = 'resize height -50'
 l = 'resize width +50'
 esc = 'mode main'
 enter = 'mode main'
+cmd-ctrl-alt-shift-semicolon = 'mode main'   # 再按一次进入键也能退出
 
 # ---- 不参与平铺的窗口（强行平铺系统设置这类弹窗会很难受）----
 [[on-window-detected]]
