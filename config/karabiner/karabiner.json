@@ -17,6 +17,31 @@
             "complex_modifications": {
                 "rules": [
                     {
+                        "description": "Cmd + Caps Lock = 切换大写锁定",
+                        "manipulators": [
+                            {
+                                "type": "basic",
+                                "from": {
+                                    "key_code": "caps_lock",
+                                    "modifiers": {
+                                        "mandatory": [
+                                            "command"
+                                        ],
+                                        "optional": [
+                                            "any"
+                                        ]
+                                    }
+                                },
+                                "to": [
+                                    {
+                                        "key_code": "caps_lock",
+                                        "hold_down_milliseconds": 300
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
                         "description": "Caps Lock: 轻按 = Esc，按住 = Control",
                         "manipulators": [
                             {
