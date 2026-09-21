@@ -69,7 +69,7 @@
                         ]
                     },
                     {
-                        "description": "右 Cmd: 按住 = Hyper (⌘⌃⌥⇧)，轻按 = 右 Cmd",
+                        "description": "右 Cmd = 切换大写锁定",
                         "manipulators": [
                             {
                                 "type": "basic",
@@ -83,18 +83,8 @@
                                 },
                                 "to": [
                                     {
-                                        "key_code": "left_shift",
-                                        "modifiers": [
-                                            "left_command",
-                                            "left_control",
-                                            "left_option"
-                                        ],
-                                        "lazy": true
-                                    }
-                                ],
-                                "to_if_alone": [
-                                    {
-                                        "key_code": "right_command"
+                                        "key_code": "caps_lock",
+                                        "hold_down_milliseconds": 300
                                     }
                                 ]
                             }
