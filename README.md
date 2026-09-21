@@ -9,7 +9,7 @@ config/
   kitty/      -> ~/.config/kitty
   nvim/       -> ~/.config/nvim
   karabiner/  -> ~/.config/karabiner    键盘改造（Caps Lock 双重身份 / Hyper 键）
-  aerospace/  -> ~/.config/aerospace    平铺窗口管理，键位基于 Hyper
+  aerospace/  -> ~/.config/aerospace    平铺窗口管理，官方默认配置（alt 键位）
   git/        -> ~/.config/git          全局 gitignore
   rstudio/    -> ~/.config/rstudio      RStudio 偏好与自定义 CSS
 install.sh  在新机器上建立上述链接
@@ -65,8 +65,8 @@ Neovim 配置基于 **LazyVim**：`lua/config/` 与 `lua/plugins/` 里只写与 
 | 终端 | kitty | `config/kitty/` |
 | 编辑器 | Neovim + LazyVim | `config/nvim/` |
 
-修饰键分工：**Hyper（按住右 Cmd）= 系统级**（AeroSpace），**Ctrl（按住 Caps Lock）= 编辑器内**（Neovim）。
-方向键位都是 `hjkl`，靠修饰键区分「在 nvim 里面还是外面」。
+AeroSpace 用官方默认配置（`alt-hjkl` 移焦点、`alt-数字/字母` 切工作区、`alt-shift-;` 进 service 模式）。
+Karabiner 里的 Hyper 键（按住右 Cmd）目前没有被 AeroSpace 使用，留着给以后用。
 
 ## 注意
 
