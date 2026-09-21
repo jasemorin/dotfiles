@@ -17,32 +17,7 @@
             "complex_modifications": {
                 "rules": [
                     {
-                        "description": "Hyper + Caps Lock = 切换大写锁定",
-                        "manipulators": [
-                            {
-                                "type": "basic",
-                                "from": {
-                                    "key_code": "caps_lock",
-                                    "modifiers": {
-                                        "mandatory": [
-                                            "left_command",
-                                            "left_control",
-                                            "left_option",
-                                            "left_shift"
-                                        ]
-                                    }
-                                },
-                                "to": [
-                                    {
-                                        "key_code": "caps_lock",
-                                        "hold_down_milliseconds": 300
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "description": "Caps Lock: 轻按 = Esc，按住 = Control",
+                        "description": "Caps Lock: 轻按 = 原生 Caps Lock（系统拿去切输入法），按住 = Control",
                         "manipulators": [
                             {
                                 "type": "basic",
@@ -62,7 +37,7 @@
                                 ],
                                 "to_if_alone": [
                                     {
-                                        "key_code": "escape"
+                                        "key_code": "caps_lock"
                                     }
                                 ]
                             }
