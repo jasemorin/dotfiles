@@ -17,6 +17,31 @@
             "complex_modifications": {
                 "rules": [
                     {
+                        "description": "Hyper + Caps Lock = 切换大写锁定",
+                        "manipulators": [
+                            {
+                                "type": "basic",
+                                "from": {
+                                    "key_code": "caps_lock",
+                                    "modifiers": {
+                                        "mandatory": [
+                                            "left_command",
+                                            "left_control",
+                                            "left_option",
+                                            "left_shift"
+                                        ]
+                                    }
+                                },
+                                "to": [
+                                    {
+                                        "key_code": "caps_lock",
+                                        "hold_down_milliseconds": 100
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
                         "description": "Caps Lock: 轻按 = Esc，按住 = Control",
                         "manipulators": [
                             {
@@ -70,45 +95,6 @@
                                 "to_if_alone": [
                                     {
                                         "key_code": "right_command"
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "description": "左右 Shift 同时按 = Caps Lock（原来的 Caps Lock 已被改造）",
-                        "manipulators": [
-                            {
-                                "type": "basic",
-                                "from": {
-                                    "key_code": "left_shift",
-                                    "modifiers": {
-                                        "mandatory": [
-                                            "right_shift"
-                                        ]
-                                    }
-                                },
-                                "to": [
-                                    {
-                                        "key_code": "caps_lock",
-                                        "hold_down_milliseconds": 100
-                                    }
-                                ]
-                            },
-                            {
-                                "type": "basic",
-                                "from": {
-                                    "key_code": "right_shift",
-                                    "modifiers": {
-                                        "mandatory": [
-                                            "left_shift"
-                                        ]
-                                    }
-                                },
-                                "to": [
-                                    {
-                                        "key_code": "caps_lock",
-                                        "hold_down_milliseconds": 100
                                     }
                                 ]
                             }
