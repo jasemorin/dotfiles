@@ -9,3 +9,17 @@ vim.api.nvim_create_autocmd("FileType", {
     vim.bo.tabstop = 4
   end,
 })
+
+-- Markdown 写作模式：软换行按单词断行，j/k 按视觉行移动，关闭行号干扰
+vim.api.nvim_create_autocmd("FileType", {
+  group = vim.api.nvim_create_augroup("MarkdownWriting", { clear = true }),
+  pattern = { "markdown" },
+  callback = function()
+    vim.opt_local.wrap = true
+    vim.opt_local.linebreak = true -- 在单词边界断行，不会把词切断
+    vim.opt_local.spell = true
+    vim.opt_local.spelllang = "en_au"
+    vim.keymap.set({ "n", "v" }, "j", "gj", { buffer = true })
+    vim.keymap.set({ "n", "v" }, "k", "gk", { buffer = true })
+  end,
+})
