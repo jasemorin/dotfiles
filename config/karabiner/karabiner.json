@@ -1,26 +1,16 @@
 {
+    "global": {
+        "notification_window_position": "top_right",
+        "show_in_menu_bar": false
+    },
     "profiles": [
         {
-            "devices": [
-                {
-                    "identifiers": {
-                        "is_keyboard": true
-                    },
-                    "simple_modifications": []
-                }
-            ],
-            "name": "Default profile",
-            "selected": true,
-            "virtual_hid_keyboard": {
-                "keyboard_type_v2": "ansi"
-            },
             "complex_modifications": {
                 "rules": [
                     {
                         "description": "Cmd + Caps Lock = 切换大写锁定",
                         "manipulators": [
                             {
-                                "type": "basic",
                                 "from": {
                                     "key_code": "caps_lock",
                                     "modifiers": {
@@ -34,13 +24,14 @@
                                 },
                                 "to": [
                                     {
-                                        "key_code": "caps_lock",
-                                        "hold_down_milliseconds": 800
+                                        "hold_down_milliseconds": 100,
+                                        "key_code": "caps_lock"
                                     },
                                     {
                                         "key_code": "vk_none"
                                     }
-                                ]
+                                ],
+                                "type": "basic"
                             }
                         ]
                     },
@@ -48,7 +39,6 @@
                         "description": "Caps Lock: 轻按 = Esc，按住 = Control",
                         "manipulators": [
                             {
-                                "type": "basic",
                                 "from": {
                                     "key_code": "caps_lock",
                                     "modifiers": {
@@ -67,7 +57,8 @@
                                     {
                                         "key_code": "escape"
                                     }
-                                ]
+                                ],
+                                "type": "basic"
                             }
                         ]
                     },
@@ -75,7 +66,6 @@
                         "description": "右 Cmd = 切换大写锁定",
                         "manipulators": [
                             {
-                                "type": "basic",
                                 "from": {
                                     "key_code": "right_command",
                                     "modifiers": {
@@ -86,17 +76,30 @@
                                 },
                                 "to": [
                                     {
-                                        "key_code": "caps_lock",
-                                        "hold_down_milliseconds": 800
+                                        "hold_down_milliseconds": 100,
+                                        "key_code": "caps_lock"
                                     },
                                     {
                                         "key_code": "vk_none"
                                     }
-                                ]
+                                ],
+                                "type": "basic"
                             }
                         ]
                     }
                 ]
+            },
+            "name": "Default profile",
+            "virtual_hid_keyboard": {
+                "keyboard_type_v2": "ansi"
+            },
+            "selected": true
+        },
+        {
+            "name": "New profile",
+            "selected": true,
+            "virtual_hid_keyboard": {
+                "keyboard_type_v2": "ansi"
             }
         }
     ]
