@@ -22,11 +22,7 @@
                                 },
                                 "to": [
                                     {
-                                        "key_code": "caps_lock",
-                                        "hold_down_milliseconds": 100
-                                    },
-                                    {
-                                        "key_code": "vk_none"
+                                        "key_code": "caps_lock"
                                     }
                                 ]
                             },
@@ -42,11 +38,7 @@
                                 },
                                 "to": [
                                     {
-                                        "key_code": "caps_lock",
-                                        "hold_down_milliseconds": 100
-                                    },
-                                    {
-                                        "key_code": "vk_none"
+                                        "key_code": "caps_lock"
                                     }
                                 ]
                             }
