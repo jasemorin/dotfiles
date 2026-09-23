@@ -8,30 +8,47 @@
             "complex_modifications": {
                 "rules": [
                     {
-                        "description": "Cmd + Caps Lock = 切换大写锁定",
+                        "description": "左右 Shift 同时按 = 切换大写锁定",
                         "manipulators": [
                             {
+                                "type": "basic",
                                 "from": {
-                                    "key_code": "caps_lock",
+                                    "key_code": "left_shift",
                                     "modifiers": {
                                         "mandatory": [
-                                            "command"
-                                        ],
-                                        "optional": [
-                                            "any"
+                                            "right_shift"
                                         ]
                                     }
                                 },
                                 "to": [
                                     {
-                                        "hold_down_milliseconds": 100,
-                                        "key_code": "caps_lock"
+                                        "key_code": "caps_lock",
+                                        "hold_down_milliseconds": 100
                                     },
                                     {
                                         "key_code": "vk_none"
                                     }
-                                ],
-                                "type": "basic"
+                                ]
+                            },
+                            {
+                                "type": "basic",
+                                "from": {
+                                    "key_code": "right_shift",
+                                    "modifiers": {
+                                        "mandatory": [
+                                            "left_shift"
+                                        ]
+                                    }
+                                },
+                                "to": [
+                                    {
+                                        "key_code": "caps_lock",
+                                        "hold_down_milliseconds": 100
+                                    },
+                                    {
+                                        "key_code": "vk_none"
+                                    }
+                                ]
                             }
                         ]
                     },
@@ -63,9 +80,10 @@
                         ]
                     },
                     {
-                        "description": "右 Cmd = 切换大写锁定",
+                        "description": "右 Cmd: 按住 = Hyper (⌘⌃⌥⇧)，轻按 = 右 Cmd",
                         "manipulators": [
                             {
+                                "type": "basic",
                                 "from": {
                                     "key_code": "right_command",
                                     "modifiers": {
@@ -76,14 +94,20 @@
                                 },
                                 "to": [
                                     {
-                                        "hold_down_milliseconds": 100,
-                                        "key_code": "caps_lock"
-                                    },
-                                    {
-                                        "key_code": "vk_none"
+                                        "key_code": "left_shift",
+                                        "modifiers": [
+                                            "left_command",
+                                            "left_control",
+                                            "left_option"
+                                        ],
+                                        "lazy": true
                                     }
                                 ],
-                                "type": "basic"
+                                "to_if_alone": [
+                                    {
+                                        "key_code": "right_command"
+                                    }
+                                ]
                             }
                         ]
                     }
