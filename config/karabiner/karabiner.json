@@ -11,12 +11,14 @@
                         "description": "左右 Shift 同时按 = 切换大写锁定",
                         "manipulators": [
                             {
-                                "type": "basic",
                                 "from": {
                                     "key_code": "left_shift",
                                     "modifiers": {
                                         "mandatory": [
                                             "right_shift"
+                                        ],
+                                        "optional": [
+                                            "any"
                                         ]
                                     }
                                 },
@@ -24,15 +26,18 @@
                                     {
                                         "key_code": "caps_lock"
                                     }
-                                ]
+                                ],
+                                "type": "basic"
                             },
                             {
-                                "type": "basic",
                                 "from": {
                                     "key_code": "right_shift",
                                     "modifiers": {
                                         "mandatory": [
                                             "left_shift"
+                                        ],
+                                        "optional": [
+                                            "any"
                                         ]
                                     }
                                 },
@@ -40,7 +45,8 @@
                                     {
                                         "key_code": "caps_lock"
                                     }
-                                ]
+                                ],
+                                "type": "basic"
                             }
                         ]
                     },
@@ -75,7 +81,6 @@
                         "description": "右 Cmd: 按住 = Hyper (⌘⌃⌥⇧)，轻按 = 右 Cmd",
                         "manipulators": [
                             {
-                                "type": "basic",
                                 "from": {
                                     "key_code": "right_command",
                                     "modifiers": {
@@ -87,29 +92,30 @@
                                 "to": [
                                     {
                                         "key_code": "left_shift",
+                                        "lazy": true,
                                         "modifiers": [
                                             "left_command",
                                             "left_control",
                                             "left_option"
-                                        ],
-                                        "lazy": true
+                                        ]
                                     }
                                 ],
                                 "to_if_alone": [
                                     {
                                         "key_code": "right_command"
                                     }
-                                ]
+                                ],
+                                "type": "basic"
                             }
                         ]
                     }
                 ]
             },
             "name": "Default profile",
+            "selected": true,
             "virtual_hid_keyboard": {
                 "keyboard_type_v2": "ansi"
-            },
-            "selected": true
+            }
         },
         {
             "name": "New profile",
