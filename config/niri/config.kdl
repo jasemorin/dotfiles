@@ -96,6 +96,10 @@ cursor {
 environment {
     // Electron 应用（VS Code、Discord 等）走原生 Wayland
     ELECTRON_OZONE_PLATFORM_HINT "auto"
+    // 输入法 fcitx5：Wayland 原生应用（GTK、kitty、Firefox）走 text-input 协议，不设 GTK_IM_MODULE；
+    // Qt 先试 Wayland 再退回 fcitx 模块；X11 应用（xwayland-satellite）用 XMODIFIERS
+    QT_IM_MODULES "wayland;fcitx"
+    XMODIFIERS "@im=fcitx"
 }
 
 screenshot-path "~/Pictures/Screenshots/Screenshot from %Y-%m-%d %H-%M-%S.png"
@@ -112,6 +116,8 @@ spawn-sh-at-startup "swayidle -w timeout 300 'swaylock -f' timeout 330 'niri msg
 spawn-at-startup "/usr/libexec/polkit-mate-authentication-agent-1"
 // 剪贴板历史：记录每次复制（文本和图片），cmd+shift+v 打开
 spawn-sh-at-startup "wl-paste --watch cliphist store"
+// 中文输入法（小鹤双拼，Alt+Space 切换，配置在 config/fcitx5）；--replace 防止和系统自启动的重复
+spawn-at-startup "fcitx5" "-d" "--replace"
 
 // ── 窗口规则 ──────────────────────────────────
 // 所有窗口圆角；blur 需要正确的几何裁剪

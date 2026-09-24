@@ -10,3 +10,6 @@ config/nvim/sessions/
 *.token
 *_rsa
 *.pem
+
+# fcitx5 运行时缓存
+config/fcitx5/conf/cached_layouts

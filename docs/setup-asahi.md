@@ -8,6 +8,8 @@
 # niri 桌面
 sudo dnf install niri xwayland-satellite waybar fuzzel SwayNotificationCenter swaybg swayidle swaylock \
   brightnessctl playerctl mate-polkit cliphist wl-clipboard jetbrains-mono-fonts-all
+# 中文输入法（小鹤双拼）；不装 fcitx5-autostart，由 niri 启动
+sudo dnf install fcitx5 fcitx5-chinese-addons fcitx5-gtk fcitx5-qt fcitx5-configtool
 # 终端工具
 sudo dnf install fzf zoxide ShellCheck shfmt
 # keyd（不在官方源，用 COPR）

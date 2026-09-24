@@ -14,6 +14,7 @@
 | 物理 Control | 普通 Ctrl，不受 keyd 影响（Control+L 清屏、nvim 的 Control+hjkl 等） |
 | Cmd | macOS 式的应用 / 系统命令 |
 | Alt | 不占用，留给终端和应用（Alt+b/f 按词跳、Alt+C 模糊 cd） |
+| Alt+Space | 中英文输入切换（fcitx5 小鹤双拼，Linux） |
 
 ## niri：Caps 层（按住 Caps）
 
