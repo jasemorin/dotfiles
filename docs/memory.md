@@ -1,0 +1,40 @@
+# 内存管理（8 GB 的 MacBook Pro M2）
+
+## 现在的机制
+
+- **zswap + 交换文件**：内存紧张时，页面先在内存里压缩（zswap），放不下才写到 SSD 上的
+  `/var/swap/swapfile`（8 GB）。Asahi 故意用这套而不是 zram（`/etc/systemd/zram-generator.conf` 关掉了 zram），
+  两套压缩叠在一起会互相干扰，**不要再加 zram**。
+- **压缩算法**：已从默认的 lzo 改成 zstd，同样的内存能多装约三成（`system/zswap/zswap-zstd.conf`）。
+- **电源模式**：`balanced`（swappiness 60）。不要用 `throughput-performance`：它把 swappiness 设成 10，
+  内存紧时系统先丢文件缓存而不是把闲置页面压进 zswap，更容易卡，而且 CPU 一直高频更费电。
+  如果在 GNOME 电源菜单里选过「性能」，会被切成这个模式。
+- **systemd-oomd**：内存和交换都快满时，会结束占用最多的那组进程。
+
+## 最大的内存大户：Firefox
+
+曾经一个 Firefox 占到约 7 GB（2 GB 内存 + 5 GB 交换）。已做的设置：
+
+- `about:config` 里 `browser.tabs.unloadOnLowMemory = true`（写在 Firefox 配置目录的 `user.js`，
+  **不在 dotfiles 里**，换机器要重新设）：内存紧张时自动卸载很久没看的标签页
+- 装了 uBlock Origin：屏蔽广告和追踪脚本
+
+日常习惯：
+- `about:unloads`：手动卸载最占内存的标签页（标签还在，点开重新加载）
+- 看完的视频页（B 站等）及时关
+- 感觉卡时重启 Firefox：恢复的标签页只有点开才加载，内存一下降很多
+
+## 常用查看命令
+
+```bash
+free -h                                          # 内存和交换总览（看 available 列）
+grep -i zswap /proc/meminfo                      # Zswapped 是压缩前大小，Zswap 是压缩后占的内存
+cat /sys/module/zswap/parameters/compressor      # 当前压缩算法
+tuned-adm active                                 # 当前电源模式
+cat /proc/pressure/memory                        # 内存压力（avg10 持续大于 10 说明经常卡在等内存）
+
+# 按程序汇总占用的内存（RSS）
+ps -eo rss,comm --sort=-rss | awk 'NR>1 {a[$2]+=$1} END {for (k in a) printf "%6.0f MB  %s\n", a[k]/1024, k}' | sort -rn | head
+```
+
+程序名里的 `Isolated Web Co` 是 Firefox 的网页进程；`claude` 和版本号样子的进程是 Claude Code。
