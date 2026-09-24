@@ -32,6 +32,10 @@ input {
     mod-key-nested "Alt"
 
     workspace-auto-back-and-forth
+
+    // 鼠标悬停即聚焦；max-scroll-amount="0%"：只聚焦完全在屏幕内的窗口，
+    // 鼠标扫过屏幕边缘露出一截的窗口时不会把整个视图滚过去
+    focus-follows-mouse max-scroll-amount="0%"
 }
 
 // GNOME 在这块屏上默认 166%，等效 macOS 的「看起来像 1536x960」
