@@ -36,6 +36,11 @@ steam-arm64 uninstall   # 整个删掉
 - 启动器里叫「Steam (arm64)」；和 x86 Steam **不能同时开**，先从菜单退出另一个
 - 游戏大多仍是 x86，照样靠 muvm + FEX；省的主要是客户端界面（内嵌浏览器不用再经 x86 翻译）
 - beta 通道，随时可能坏；坏了就 `steam-arm64 uninstall`，回到 `steam`
+- 实测内存：ARM 版约 **1.4 GB**，x86 版约 3.9 GB
+- 已知坑（2026-09 这版）：包里的 `libSDL3.so` 误打成 x86，且需要 SDL 开发分支才有的 `SDL_TryLockJoysticks`。
+  解决：`sudo dnf builddep SDL3 && sudo dnf install cmake ninja-build gcc-c++`，
+  在 `~/.local/share/steam-arm64/src` 里用 cmake 编译 SDL main，把 `libSDL3.so.0.*` 拷进 `steamrtarm64/` 并让 `libSDL3.so`、`libSDL3.so.0` 指向它
+  （原 x86 文件留作 `libSDL3.so.x86`）。Valve 更新客户端后可能被覆盖，需要重做
 
 官方报告能玩的例子：Hollow Knight（满速）、Portal 2、Control、The Witcher 3、Fallout 4、Ghostrunner、Cyberpunk 2077（后几个在 8 GB 上很吃力）。
 
