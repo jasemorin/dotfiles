@@ -64,8 +64,9 @@ Steam 的界面是内嵌浏览器（CEF），跑在 x86 翻译层上特别重；
 
 - 关掉 Firefox 和不用的 Claude Code 会话，这两个加起来能占 4 GB 以上（见 [memory.md](memory.md)）
 - 查看可用内存：`free -h` 的 available 列
-- 插上电源；游戏时电源模式可以临时切到性能：`sudo tuned-adm profile throughput-performance`，
-  玩完**切回** `sudo tuned-adm profile balanced`
+- 插上电源；游戏时切到 gaming 模式（性能模式 + 保留 swappiness 60，见 `system/tuned/gaming`）：
+  `sudo tuned-adm profile gaming`，玩完**切回** `sudo tuned-adm profile balanced`。
+  不要用 `throughput-performance`：它把 swappiness 设成 10，8 GB 上更容易卡、Steam 更容易闪退
 
 ## niri 下的键位注意
 

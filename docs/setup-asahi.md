@@ -56,7 +56,8 @@ sudo systemd-tmpfiles --create /etc/tmpfiles.d/zswap-zstd.conf
 sudo cp ~/dotfiles/system/mglru/mglru.conf /etc/tmpfiles.d/
 sudo systemd-tmpfiles --create /etc/tmpfiles.d/mglru.conf
 
-# 电源模式：平衡（不要用 throughput-performance，见 memory.md）
+# 电源模式：平衡（不要用 throughput-performance，见 memory.md；游戏用 gaming，见 gaming.md）
+sudo cp -r ~/dotfiles/system/tuned/gaming /etc/tuned/profiles/
 sudo tuned-adm profile balanced
 ```
 
