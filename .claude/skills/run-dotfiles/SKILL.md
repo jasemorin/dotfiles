@@ -29,7 +29,7 @@ agent 的入口是 `.claude/skills/run-dotfiles/driver.sh`：它自己找 niri s
 | 命令 | 做什么 |
 |---|---|
 | `check` | `niri validate`；`bash -n` + shellcheck 所有脚本；`install.sh --dry-run` 全部「已就位」；`dconf.ini` 没有被锁定的键；真的启动一次 quickshell，日志里有 `Configuration Loaded` 且没有 `ERROR` |
-| `bar` | 杀掉 waybar/quickshell 后重新启动，等到加载完成，日志在 `/tmp/dotfiles-driver/bar.log` |
+| `bar` | 杀掉 waybar/quickshell，通过 `niri msg action spawn` 重新启动（成为 niri 的子进程，agent 的 shell 退出后还在），等 niri 里出现 `quickshell-bar` 图层才算成功，日志在 `/tmp/dotfiles-driver/bar.log` |
 | `ss [名字] [top]` | 整屏截图，会等文件写完；`top` 另存只含顶栏的一条 |
 | `state` / `msg …` | 查看 niri 状态 / 直接转发 `niri msg` |
 
@@ -47,7 +47,7 @@ for r in *.aarch64.rpm; do rpm2cpio "$r" | (cd root && cpio -idm 2>/dev/null); d
 cd ~/dotfiles && QS_ROOT=/tmp/qs-rpm/root .claude/skills/run-dotfiles/driver.sh check
 ```
 
-正式安装（用户自己跑；需要 sudo，agent 没法验证）：`sudo dnf copr enable -y errornointernet/quickshell && sudo dnf install -y quickshell`
+正式安装（需要 sudo，让用户跑）：`sudo dnf copr enable -y errornointernet/quickshell && sudo dnf install -y quickshell`
 
 ## 改配置的流程
 
@@ -59,12 +59,13 @@ cd ~/dotfiles && QS_ROOT=/tmp/qs-rpm/root .claude/skills/run-dotfiles/driver.sh 
 
 ## 用户自己怎么跑
 
-装好 quickshell 后，注销再登录 niri，或在 niri 里的终端运行 `pkill quickshell; niri msg action spawn -- qs`（写这份文档时 quickshell 还没正式安装，这条没验证过；niri 的启动项是 `command -v qs && exec qs || exec waybar`）。
+注销再登录 niri，或运行 `pkill -x qs; niri msg action spawn -- qs`。注意用 `qs` 启动时进程名是 `qs`，`pkill quickshell` 杀不到它。niri 的启动项是 `command -v qs && exec qs || exec waybar`。
 
 ## 坑
 
 - **niri 只能模糊整个图层矩形。** waybar 的「分开的胶囊」配 `layer-rule { background-effect { blur true } }`，胶囊之间会出现一条磨砂横带。只模糊胶囊需要客户端通过 `ext-background-effect` 申请模糊区域，waybar 0.15 不支持，所以换成了 Quickshell（`BackgroundEffect.blurRegion` + `Region { item; radius }`）。
 - **waybar 设 `"width": 1` 不会缩到内容宽度**，图层照样占满整个屏幕宽度，所以「每个胶囊一个 waybar 实例」行不通。
+- **agent 的 shell 里 `WAYLAND_DISPLAY` 可能是过期的值**（遇到过 `wayland-0`，而 niri 用的是 `wayland-1`）。Qt 连不上就退回 xcb，顶栏画不出来，**日志却照样写 `Configuration Loaded`**。driver 发现 socket 不存在时会从 `NIRI_SOCKET` 重新推断，并且以 `niri msg layers` 里出现 `quickshell-bar` 为准判断是否成功。
 - **niri 的截图是异步的**：`niri msg action screenshot-screen --path` 立刻返回，文件稍后才写完。driver 会轮询直到 PNG 能打开。
 - **缩放 1.67**：截图是物理像素 2560×1600，niri 的窗口尺寸是逻辑像素 1536×960。裁剪用物理坐标。
 - **窗口方角**：新 Firefox 配置文件启动时请求最大化，niri 会贴边最大化，这种窗口不画圆角。靠全局 `open-maximized-to-edges false` 解决。

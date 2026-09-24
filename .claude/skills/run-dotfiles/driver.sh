@@ -13,11 +13,13 @@ if [[ -z "${NIRI_SOCKET:-}" ]]; then
   NIRI_SOCKET=$(ls -t "$XDG_RUNTIME_DIR"/niri.*.sock 2>/dev/null | head -1 || true)
   export NIRI_SOCKET
 fi
-if [[ -z "${WAYLAND_DISPLAY:-}" && -n "$NIRI_SOCKET" ]]; then
+# WAYLAND_DISPLAY 为空或是过期的值（socket 不存在）都要重新推断，否则 Qt 退回 xcb，栏画不出来但日志照样 Loaded
+if [[ -n "$NIRI_SOCKET" && ! -S "$XDG_RUNTIME_DIR/${WAYLAND_DISPLAY:-none}" ]]; then
   # niri.wayland-1.12345.sock -> wayland-1
   WAYLAND_DISPLAY=$(basename "$NIRI_SOCKET" | cut -d. -f2)
   export WAYLAND_DISPLAY
 fi
+export QT_QPA_PLATFORM=wayland
 
 need_niri() {
   [[ -n "$NIRI_SOCKET" && -S "$NIRI_SOCKET" ]] || { echo "没有运行中的 niri 会话（找不到 $XDG_RUNTIME_DIR/niri.*.sock）" >&2; exit 1; }
@@ -60,7 +62,7 @@ cmd_check() {
     # 真的启动一个实例（会短暂多出一条栏），看日志是否到 Configuration Loaded 且没有 ERROR
     local log="$OUT/qs-check.log"
     timeout 6 "$qs" -p "$DOTFILES/config/quickshell" >"$log" 2>&1 || true
-    if grep -q "Configuration Loaded" "$log" && ! grep -q "ERROR" "$log"; then echo "加载成功"; else cat "$log"; fail=1; fi
+    if grep -q "Configuration Loaded" "$log" && ! grep -q -E "ERROR|Failed to create wl_display|Could not create attached" "$log"; then echo "加载成功"; else cat "$log"; fail=1; fi
   fi
   return $fail
 }
@@ -73,11 +75,18 @@ cmd_bar() {
   sleep 0.5
   local qs; qs=$(qs_cmd)
   if [[ -n "$qs" ]]; then
-    nohup "$qs" -p "$DOTFILES/config/quickshell" >"$OUT/bar.log" 2>&1 &
-    disown
-    timeout 10 bash -c "until grep -q -E 'Configuration Loaded|ERROR' '$OUT/bar.log'; do sleep 0.2; done" || true
-    echo "quickshell 已启动，日志 $OUT/bar.log："
-    tail -3 "$OUT/bar.log"
+    # 让 niri 来启动：成为 niri 的子进程（agent 的 shell 退出后还在），Wayland 环境也是 niri 的
+    local envs=()
+    [[ -n "${QS_ROOT:-}" ]] && envs=(env "LD_LIBRARY_PATH=$LD_LIBRARY_PATH" "QML_IMPORT_PATH=$QML_IMPORT_PATH" "QML2_IMPORT_PATH=$QML2_IMPORT_PATH")
+    niri msg action spawn -- sh -c 'exec "$@" >"'"$OUT/bar.log"'" 2>&1' sh "${envs[@]}" "$qs" -p "$DOTFILES/config/quickshell"
+    # 以 niri 里出现 quickshell-bar 图层为准：连不上 Wayland 时日志也会写 Configuration Loaded
+    if timeout 10 bash -c "until niri msg layers | grep -q '\"quickshell-bar\"'; do sleep 0.2; done"; then
+      echo "quickshell 顶栏已显示，日志 $OUT/bar.log"
+    else
+      echo "quickshell 顶栏没出现，日志 $OUT/bar.log：" >&2
+      grep -E "ERROR|WARN" "$OUT/bar.log" | grep -v "host portal" >&2
+      return 1
+    fi
   else
     niri msg action spawn -- waybar
     echo "没有 quickshell：已启动 waybar"
