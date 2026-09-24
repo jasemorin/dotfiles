@@ -66,10 +66,11 @@ layout {
     }
 }
 
-// 默认值即可，这里列出来方便调；觉得卡就把 passes 调到 2
+// 模糊强度主要看 passes × offset；默认 3 / 3.0 在花哨壁纸上不够明显
+// 觉得卡就把 passes 调回 3
 blur {
-    passes 3
-    offset 3.0
+    passes 4
+    offset 6.0
     noise 0.02
     saturation 1.5
 }
@@ -107,8 +108,10 @@ window-rule {
 }
 
 // kitty 背景模糊（kitty.conf 里 background_opacity 0.70）
+// draw-border-with-background false：否则聚焦时 focus ring 会画成实心底色透出来，看着像不透明
 window-rule {
     match app-id="^kitty$"
+    draw-border-with-background false
     background-effect {
         blur true
     }
