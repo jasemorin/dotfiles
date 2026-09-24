@@ -1,6 +1,7 @@
 # Asahi Linux（Fedora Asahi Remix）从零部署
 
 适用：MacBook Pro 13" M2，Fedora Asahi Remix 44，niri 桌面。Mac 上只需要第 2 步。
+重装（已有 `system/packages/` 快照）的话直接看 [reinstall.md](reinstall.md)。
 
 ## 1. 安装软件包
 

@@ -7,6 +7,7 @@ Mac 和 Asahi 两台机器共用；只属于一边的设置分开放（见下方
 
 - [docs/keybindings.md](docs/keybindings.md)：键位速查（Caps 层 / Cmd / kitty / shell）
 - [docs/setup-asahi.md](docs/setup-asahi.md)：Asahi 上从零部署
+- [docs/reinstall.md](docs/reinstall.md)：重装系统并保留所有设置（备份到 GitHub + iCloud）
 - [docs/troubleshooting.md](docs/troubleshooting.md)：踩过的坑和解决办法
 - [docs/memory.md](docs/memory.md)：内存管理（zswap、Firefox、电源模式）
 - [docs/gaming.md](docs/gaming.md)：在 Asahi 上玩游戏（Steam、原生游戏、云游戏）
@@ -33,7 +34,9 @@ system/     Linux 上手动部署的文件（不走 install.sh，见 docs/setup-
   mglru/    内存耗尽时防卡死（/etc/tmpfiles.d/）
   tuned/    gaming 电源模式：性能 + 保留 swappiness 60（/etc/tuned/profiles/）
   bash/     fzf、zoxide（链接到 ~/.bashrc.d/）
-scripts/    个人脚本（steam-arm64：链接到 ~/.local/bin/）
+  packages/ dnf / flatpak / COPR 软件包列表（scripts/snapshot.sh 生成）
+  dconf.ini 桌面设置（dconf load 恢复）
+scripts/    个人脚本（steam-arm64、reboot-macos：链接到 ~/.local/bin/；snapshot.sh：重装前备份）
 docs/       速查表和指南
 backup/original/  改成 GNOME 风格顶栏 + swaync 之前的原始配置（恢复方法见里面的 README）
 install.sh  在新机器上建立 config/ 下的链接
