@@ -119,15 +119,31 @@ PanelWindow {
         }
     }
 
-    // ── 中：时钟，点击打开通知中心 ──
+    // ── 中：时钟，点击打开通知中心；有未读通知时右边一个小圆点，勿扰时显示铃铛 ──
     Pill {
         id: clockPill
         anchors.centerIn: parent
-        tooltip: Qt.locale("zh_CN").toString(clock.date, "yyyy年M月d日 dddd")
-        onClicked: bar.sh("swaync-client -t -sw")
+        spacing: 8
+        tooltip: Notifs.centerOpen ? "" : Notifs.unread > 0 ? Notifs.unread + " 条新通知" : ""
+        onClicked: {
+            quick.open = false;
+            Notifs.centerOpen = !Notifs.centerOpen;
+        }
 
         Label {
             text: Qt.formatDateTime(clock.date, "M月d日  HH:mm")
+        }
+        Label {
+            visible: Notifs.dnd
+            text: "󰂛"
+        }
+        Rectangle {
+            visible: Notifs.unread > 0 && !Notifs.dnd
+            anchors.verticalCenter: parent.verticalCenter
+            width: 7
+            height: 7
+            radius: 3.5
+            color: "#b4befe"
         }
     }
 
@@ -227,7 +243,7 @@ PanelWindow {
         // 系统图标组：蓝牙、网络、音量、电池；点击打开快捷设置面板
         Pill {
             id: sysPill
-            onClicked: m => { if (m.button === Qt.LeftButton) quick.open = !quick.open; }
+            onClicked: m => { if (m.button === Qt.LeftButton) bar.toggleQuick(); }
             onWheel: w => { if (bar.audio) bar.audio.volume = Math.max(0, Math.min(1, bar.audio.volume + (w.angleDelta.y > 0 ? 0.05 : -0.05))); }
 
             // 蓝牙：关 󰂲 / 开 󰂯 / 已连接 󰂱；没有适配器时不显示
@@ -238,14 +254,14 @@ PanelWindow {
                 rightPadding: 14
                 text: !adapter || !adapter.enabled ? "󰂲" : connected.length > 0 ? "󰂱" : "󰂯"
                 tooltip: !adapter || !adapter.enabled ? "蓝牙已关闭" : connected.length === 0 ? "蓝牙已开启，未连接设备" : connected.map(d => d.name + (d.batteryAvailable ? "  " + Math.round(d.battery * 100) + "%" : "")).join("\n")
-                onClicked: quick.open = !quick.open
+                onClicked: bar.toggleQuick()
             }
 
             SysIcon {
                 rightPadding: 14
                 text: SysInfo.netState === "ethernet" ? "󰈀" : SysInfo.netState === "none" ? "󰤮" : ["󰤟", "󰤢", "󰤥", "󰤨"][Math.min(3, Math.floor(SysInfo.wifiSignal / 25))]
                 tooltip: SysInfo.netState === "wifi" ? SysInfo.wifiSsid + "（" + SysInfo.wifiSignal + "%）" : SysInfo.netState === "ethernet" ? "有线网络" : SysInfo.wifiEnabled ? "未连接" : "Wi-Fi 已关闭"
-                onClicked: quick.open = !quick.open
+                onClicked: bar.toggleQuick()
             }
 
             // 音量；右键静音，滚轮调节
@@ -258,7 +274,7 @@ PanelWindow {
                         if (bar.audio)
                             bar.audio.muted = !bar.audio.muted;
                     } else
-                        quick.open = !quick.open;
+                        bar.toggleQuick();
                 }
             }
 
@@ -271,7 +287,7 @@ PanelWindow {
                 color: charging ? "white" : pct <= 10 ? "#ff7b63" : pct <= 20 ? "#f8e45c" : "white"
                 text: (charging ? "󰂄" : ["󰁺", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂁", "󰂂", "󰁹"][Math.min(9, Math.floor(pct / 10))]) + " " + pct + "%"
                 tooltip: dev.state === UPowerDeviceState.FullyCharged ? "已充满" : charging ? (dev.timeToFull > 0 ? "充满还需 " + bar.duration(dev.timeToFull) : "正在充电") : (dev.timeToEmpty > 0 ? "剩余 " + bar.duration(dev.timeToEmpty) : "")
-                onClicked: quick.open = !quick.open
+                onClicked: bar.toggleQuick()
             }
         }
     }
@@ -281,9 +297,23 @@ PanelWindow {
         screen: bar.screen
     }
 
-    // 外部调用：qs ipc call bar quickSettings（可绑快捷键）
+    NotificationCenter {
+        screen: bar.screen
+    }
+
+    // 快捷设置和通知中心同时只开一个
+    function toggleQuick() {
+        Notifs.centerOpen = false;
+        quick.open = !quick.open;
+    }
+
+    // 外部调用：qs ipc call bar quickSettings / notifications（可绑快捷键）
     IpcHandler {
         target: "bar"
-        function quickSettings(): void { quick.open = !quick.open; }
+        function quickSettings(): void { bar.toggleQuick(); }
+        function notifications(): void {
+            quick.open = false;
+            Notifs.centerOpen = !Notifs.centerOpen;
+        }
     }
 }

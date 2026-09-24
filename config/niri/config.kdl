@@ -113,8 +113,8 @@ screenshot-path "~/Pictures/Screenshots/Screenshot from %Y-%m-%d %H-%M-%S.png"
 // ── 开机启动 ──────────────────────────────────
 // 顶栏：Quickshell（config/quickshell，胶囊各自模糊）；没装时退回 waybar
 spawn-sh-at-startup "command -v qs >/dev/null && exec qs || exec waybar"
-// 通知 + 右上角面板（点击顶栏时钟/系统图标打开）
-spawn-at-startup "swaync"
+// 通知：Quickshell 自己当通知服务（config/quickshell/Notifs.qml）；没装 quickshell 时退回 swaync
+spawn-sh-at-startup "command -v qs >/dev/null || exec swaync"
 // 壁纸：~/Pictures/wallpaper/uluru1.JPEG；没有的话用纯色
 spawn-sh-at-startup "if [ -f ~/Pictures/wallpaper/uluru1.JPEG ]; then exec swaybg -m fill -i ~/Pictures/wallpaper/uluru1.JPEG; else exec swaybg -c '#1e1e2e'; fi"
 // 5 分钟锁屏，再过 30 秒关屏，合盖前锁屏
@@ -161,10 +161,10 @@ layer-rule {
     }
 }
 
-// Quickshell 的音量/亮度提示、快捷设置面板盖在窗口上：模糊背后的窗口，而不是默认的 xray（只透出壁纸）
+// Quickshell 的音量/亮度提示、快捷设置面板、通知弹窗和通知中心盖在窗口上：模糊背后的窗口，而不是默认的 xray（只透出壁纸）
 // 模糊区域由 quickshell 自己通过 ext-background-effect 申请，这里只改 xray
 layer-rule {
-    match namespace="^quickshell-(osd|quicksettings)$"
+    match namespace="^quickshell-(osd|quicksettings|notifications|notificationcenter)$"
     background-effect {
         xray false
     }

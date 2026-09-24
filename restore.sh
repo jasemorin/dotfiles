@@ -74,13 +74,18 @@ step "个人脚本、bash、通知服务"
 link "$DOTFILES/scripts/steam-arm64.sh" ~/.local/bin/steam-arm64
 link "$DOTFILES/scripts/reboot-macos.sh" ~/.local/bin/reboot-macos
 link "$DOTFILES/system/bash/tools.sh" ~/.bashrc.d/tools.sh
+# 有程序发通知但没有通知服务时自动启动的程序：通知由 Quickshell 负责（它和顶栏一起由 niri 启动），
+# 这里只在没装 quickshell 时启动 swaync；否则 quickshell 重启的间隙会被 swaync 抢走通知服务
 dbus=~/.local/share/dbus-1/services/org.freedesktop.Notifications.service
-if [[ -f "$dbus" ]]; then
+dbus_text='# 通知服务的 D-Bus 自动启动：装了 quickshell 就不启动（通知由它负责），否则启动 swaync（而不是 mako）
+[D-BUS Service]
+Name=org.freedesktop.Notifications
+Exec=/usr/bin/sh -c "command -v qs >/dev/null || exec /usr/bin/swaync"'
+if [[ "$(cat "$dbus" 2>/dev/null)" == "$dbus_text" ]]; then
   echo "已就位 $dbus"
 else
   run mkdir -p "$(dirname "$dbus")"
-  $DRY_RUN || printf '%s\n' '# 有程序发通知但没有通知守护进程时，自动启动 swaync 而不是 mako' \
-    '[D-BUS Service]' 'Name=org.freedesktop.Notifications' 'Exec=/usr/bin/swaync' >"$dbus"
+  $DRY_RUN || printf '%s\n' "$dbus_text" >"$dbus"
 fi
 git config --global user.name >/dev/null || run git config --global user.name jasemorin
 git config --global user.email >/dev/null || run git config --global user.email 90958862+jasemorin@users.noreply.github.com

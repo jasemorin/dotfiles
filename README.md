@@ -20,10 +20,11 @@ config/
   kitty/    -> ~/.config/kitty
   nvim/     -> ~/.config/nvim
   niri/     -> ~/.config/niri     （Linux：平铺窗口管理器）
-  waybar/   -> ~/.config/waybar   （niri 下的状态栏）
+  quickshell/ -> ~/.config/quickshell（niri 下的顶栏、快捷设置、通知、音量/亮度提示，背景模糊）
+  waybar/   -> ~/.config/waybar   （备用顶栏：没装 quickshell 时启动）
   fuzzel/   -> ~/.config/fuzzel   （niri 下的启动器）
   mako/     -> ~/.config/mako     （旧的通知守护进程，已换成 swaync，配置保留）
-  swaync/   -> ~/.config/swaync   （niri 下的通知 + 右上角快捷设置面板）
+  swaync/   -> ~/.config/swaync   （备用通知中心：没装 quickshell 时启动）
   swaylock/ -> ~/.config/swaylock （niri 下的锁屏样式）
   autostart/ -> ~/.config/autostart（覆盖系统自启动项：niri 下不启动 imsettings）
   fcitx5/   -> ~/.config/fcitx5   （中文输入法：小鹤双拼，Alt+Space 切换）
@@ -63,7 +64,7 @@ Asahi 上还有软件包和系统级配置，步骤见 [docs/setup-asahi.md](doc
 - kitty：共用的放 `kitty.conf`；只给 Linux 的放 `linux.conf`，只给 Mac 的放 `macos.conf`
   （`kitty.conf` 末尾 `include ${KITTY_OS}.conf` 按系统加载）
 - `quick-access-terminal.conf` 两边共用且不能按系统加载，只放两边都适用的设置
-- niri、waybar、fuzzel、swaync、swaylock、`system/` 只在 Linux 上用
+- niri、quickshell、waybar、fuzzel、swaync、swaylock、`system/` 只在 Linux 上用
 - 改共用文件前先想：这会不会也改变 Mac？
 
 ## 依赖

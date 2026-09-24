@@ -4,7 +4,7 @@ description: Apply, check, and drive this dotfiles repo on the live Asahi/niri d
 ---
 
 这个仓库没有要构建的应用：「运行」= 把 `config/` 链接到 `~/.config`，niri 自动重载，然后通过 niri IPC 看结果。
-agent 的入口是 `.claude/skills/run-dotfiles/driver.sh`：它自己找 niri socket（agent 的 shell 不是 niri 启动的，没有 `NIRI_SOCKET`），
+agent 的入口是 `.Codex/skills/run-dotfiles/driver.sh`：它自己找 niri socket（agent 的 shell 不是 niri 启动的，没有 `NIRI_SOCKET`），
 能校验配置、重启顶栏、截图。截图和日志在 `/tmp/dotfiles-driver/`（可用 `OUT=` 改）。
 
 所有路径相对仓库根目录 `~/dotfiles`。这是用户正在用的真实桌面：`bar` 会让顶栏闪一下，截图会连带用户屏幕上的内容。
@@ -19,12 +19,12 @@ agent 的入口是 `.claude/skills/run-dotfiles/driver.sh`：它自己找 niri s
 ## 驱动（agent 走这条）
 
 ```bash
-.claude/skills/run-dotfiles/driver.sh check          # 改完配置先跑这个，退出码 0 = 全部通过
-.claude/skills/run-dotfiles/driver.sh bar            # 重启顶栏（quickshell，没有则 waybar）
-.claude/skills/run-dotfiles/driver.sh ss after top   # -> /tmp/dotfiles-driver/after.png 和 after-top.png（只含顶栏）
-.claude/skills/run-dotfiles/driver.sh state          # 输出缩放、图层（顶栏/壁纸/通知）、窗口
-.claude/skills/run-dotfiles/driver.sh msg layers     # 任意 niri msg 子命令
-.claude/skills/run-dotfiles/driver.sh ipc bar quickSettings   # 打开/关闭快捷设置面板（再调一次关闭）
+.Codex/skills/run-dotfiles/driver.sh check          # 改完配置先跑这个，退出码 0 = 全部通过
+.Codex/skills/run-dotfiles/driver.sh bar            # 重启顶栏（quickshell，没有则 waybar）
+.Codex/skills/run-dotfiles/driver.sh ss after top   # -> /tmp/dotfiles-driver/after.png 和 after-top.png（只含顶栏）
+.Codex/skills/run-dotfiles/driver.sh state          # 输出缩放、图层（顶栏/壁纸/通知）、窗口
+.Codex/skills/run-dotfiles/driver.sh msg layers     # 任意 niri msg 子命令
+.Codex/skills/run-dotfiles/driver.sh ipc bar quickSettings   # 打开/关闭快捷设置面板（再调一次关闭）
 ```
 
 | 命令 | 做什么 |
@@ -46,7 +46,7 @@ D=/tmp/qs-rpm; mkdir -p $D/root && cd $D
 dnf download --repofrompath=qs,https://download.copr.fedorainfracloud.org/results/errornointernet/quickshell/fedora-44-aarch64/ \
   --setopt=qs.gpgcheck=0 --repo=qs --repo=fedora --repo=updates quickshell cpptrace libdwarf jemalloc
 for r in *.aarch64.rpm; do rpm2cpio "$r" | (cd root && cpio -idm 2>/dev/null); done
-cd ~/dotfiles && QS_ROOT=/tmp/qs-rpm/root .claude/skills/run-dotfiles/driver.sh check
+cd ~/dotfiles && QS_ROOT=/tmp/qs-rpm/root .Codex/skills/run-dotfiles/driver.sh check
 ```
 
 正式安装（需要 sudo，让用户跑）：`sudo dnf copr enable -y errornointernet/quickshell && sudo dnf install -y quickshell`

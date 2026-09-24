@@ -1,5 +1,5 @@
 // 快捷设置面板：点顶栏右上角系统图标打开（或 qs ipc call bar quickSettings），点外面或按 Esc 关闭
-// Wi-Fi / 蓝牙 / 勿扰开关、音量和亮度滑块、电源模式；通知列表仍由 swaync 负责（点时钟打开）
+// Wi-Fi / 蓝牙 / 勿扰开关、音量和亮度滑块、电源模式；通知在 NotificationCenter.qml（点时钟打开）
 // 用 layer-shell 窗口而不是 PopupWindow：带 grabFocus 的弹出窗口必须由真实点击触发，
 // 从 IPC / 快捷键打开会被 niri 立刻撤掉。点外面关闭靠下面一层全屏透明窗口。
 import QtQuick
@@ -15,10 +15,8 @@ Scope {
 
     required property var screen
     property bool open: false
-    onOpenChanged: if (open) {
-        dndQuery.running = true;
-        tunedQuery.running = true;
-    }
+    onOpenChanged: if (open)
+        tunedQuery.running = true
 
     readonly property var audio: Pipewire.defaultAudioSink ? Pipewire.defaultAudioSink.audio : null
     readonly property var adapter: Bluetooth.defaultAdapter
@@ -47,15 +45,6 @@ Scope {
         onTriggered: tunedQuery.running = true
     }
 
-    // swaync 的勿扰状态
-    property bool dnd: false
-    Process {
-        id: dndQuery
-        command: ["swaync-client", "-D"]
-        stdout: StdioCollector {
-            onStreamFinished: panel.dnd = text.trim() === "true"
-        }
-    }
 
 
     // 面板外的点击：关闭
@@ -282,21 +271,18 @@ Scope {
                         width: (parent.width - 10) / 2
                         icon: "󰂛"
                         title: "勿扰"
-                        subtitle: panel.dnd ? "通知已静音" : "关闭"
-                        active: panel.dnd
-                        onToggled: {
-                            panel.dnd = !panel.dnd;
-                            Quickshell.execDetached(["swaync-client", "-d"]);
-                        }
+                        subtitle: Notifs.dnd ? "通知已静音" : "关闭"
+                        active: Notifs.dnd
+                        onToggled: Notifs.dnd = !Notifs.dnd
                     }
                     Tile {
                         width: (parent.width - 10) / 2
                         icon: "󰂚"
                         title: "通知"
-                        subtitle: "打开通知中心"
+                        subtitle: Notifs.list.length > 0 ? Notifs.list.length + " 条" : "没有通知"
                         onToggled: {
                             panel.open = false;
-                            Quickshell.execDetached(["swaync-client", "-t", "-sw"]);
+                            Notifs.centerOpen = true;
                         }
                     }
                 }
