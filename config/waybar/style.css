@@ -1,40 +1,101 @@
-/* Catppuccin Mocha；半透明背景配合 niri 的 layer-rule 模糊 */
+/* 仿 GNOME 顶栏：Adwaita Sans 粗体、白色图标；半透明背景配合 niri 的 layer-rule 模糊 */
 * {
-  font-family: "JetBrains Mono", sans-serif;
-  font-size: 13px;
+  font-family: "Adwaita Sans", "Noto Sans CJK SC", "Symbols Nerd Font", sans-serif;
+  font-size: 14px;
+  font-weight: bold;
   min-height: 0;
+  border: none;
+  border-radius: 0;
 }
 
 window#waybar {
-  background: rgba(30, 30, 46, 0.6);
-  color: #cdd6f4;
+  background: rgba(0, 0, 0, 0.35);
+  color: #ffffff;
+}
+
+tooltip {
+  background: rgba(30, 30, 30, 0.95);
+  border-radius: 10px;
+}
+
+tooltip label {
+  font-weight: normal;
+}
+
+/* 每个模块悬停时出现圆角高亮，和 GNOME 一样 */
+#window,
+#custom-clock,
+#memory,
+#network.speed,
+#tray,
+#system {
+  padding: 0 12px;
+  margin: 3px 2px;
+  border-radius: 99px;
+  transition: background 150ms;
+}
+
+#custom-clock:hover,
+#memory:hover,
+#tray:hover,
+#system:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+/* 没有窗口时不留空白 */
+window#waybar.empty #window {
+  padding: 0;
+  margin: 0;
+}
+
+/* 工作区：圆点，当前的是长条 */
+#workspaces {
+  margin-left: 10px;
+  padding: 0 4px;
 }
 
 #workspaces button {
-  padding: 0 6px;
-  color: #6c7086;
-  border-radius: 6px;
+  min-width: 8px;
+  min-height: 8px;
+  margin: 11px 3px;
+  padding: 0;
+  border-radius: 99px;
+  background: rgba(255, 255, 255, 0.45);
+  box-shadow: none;
+  transition: min-width 200ms, background 200ms;
+}
+
+/* 按钮里的空文字也会撑高，缩到最小 */
+#workspaces button label {
+  font-size: 1px;
+  padding: 0;
+  margin: 0;
 }
 
 #workspaces button.active {
-  color: #11111b;
-  background: #b4befe;
+  min-width: 30px;
+  background: #ffffff;
 }
 
-#window,
-#clock,
-#pulseaudio,
+#workspaces button:hover {
+  background: rgba(255, 255, 255, 0.75);
+}
+
+/* 系统图标组里各图标的间距 */
 #bluetooth,
 #network,
-#battery,
-#tray {
-  padding: 0 6px;
+#pulseaudio {
+  padding: 0 7px;
 }
 
-#battery.warning {
-  color: #f9e2af;
+#battery {
+  padding-left: 7px;
 }
 
-#battery.critical {
-  color: #f38ba8;
+#battery.warning:not(.charging) {
+  color: #f8e45c;
+}
+
+#battery.critical:not(.charging) {
+  color: #ff7b63;
 }

@@ -1,53 +1,88 @@
-// 顶部状态栏，类似 macOS 菜单栏；只在 niri 下启动（见 niri/config.kdl）
+// 顶部状态栏，仿 GNOME 顶栏；只在 niri 下启动（见 niri/config.kdl）
 {
   "layer": "top",
   "position": "top",
-  "height": 28,
-  "spacing": 12,
+  "height": 30,
+  "spacing": 0,
 
   "modules-left": ["niri/workspaces", "niri/window"],
-  "modules-center": ["clock"],
-  "modules-right": ["tray", "bluetooth", "pulseaudio", "network", "battery"],
+  "modules-center": ["custom/clock"],
+  "modules-right": ["memory", "network#speed", "tray", "group/system"],
+
+  // 工作区显示成圆点，当前工作区是长条（样式见 style.css）
+  "niri/workspaces": {
+    "format": ""
+  },
 
   "niri/window": {
     "max-length": 60
   },
 
-  "clock": {
-    "format": "{:%a %d %b  %H:%M}",
-    "tooltip-format": "<tt>{calendar}</tt>"
+  // 用 date 而不是 clock 模块：clock 不支持 %-m（去掉前导零）
+  "custom/clock": {
+    "exec": "date '+%-m月%-d日  %H:%M'",
+    "interval": 5,
+    "tooltip": false,
+    "on-click": "swaync-client -t -sw"
   },
 
-  "pulseaudio": {
-    "format": "vol {volume}%",
-    "format-muted": "muted",
-    "on-click": "env XDG_CURRENT_DESKTOP=GNOME gnome-control-center sound"
+  "memory": {
+    "interval": 5,
+    "format": "󰍛  {percentage}%"
+  },
+
+  "network#speed": {
+    "interval": 2,
+    "format": "↑{bandwidthUpBytes}  ↓{bandwidthDownBytes}",
+    "format-disconnected": "",
+    "tooltip": false
+  },
+
+  "tray": {
+    "icon-size": 16,
+    "spacing": 14
+  },
+
+  // 右上角系统图标组：蓝牙、网络、音量、电池；点击打开 swaync 面板
+  "group/system": {
+    "orientation": "horizontal",
+    "modules": ["bluetooth", "network", "pulseaudio", "battery"]
   },
 
   "bluetooth": {
-    "format": "bt",
-    "format-off": "bt off",
-    "format-connected": "bt {device_alias}",
+    "format": "󰂯",
+    "format-off": "󰂲",
+    "format-disabled": "",
+    "format-connected": "󰂱",
     "tooltip-format-connected": "{device_enumerate}",
     "tooltip-format-enumerate-connected": "{device_alias} {device_battery_percentage}%",
-    "on-click": "env XDG_CURRENT_DESKTOP=GNOME gnome-control-center bluetooth"
+    "on-click": "swaync-client -t -sw"
   },
 
   "network": {
-    "format-wifi": "{essid}",
-    "format-ethernet": "wired",
-    "format-disconnected": "offline",
-    "tooltip-format": "{ipaddr} ({signalStrength}%)",
-    "on-click": "env XDG_CURRENT_DESKTOP=GNOME gnome-control-center wifi"
+    "format-wifi": "{icon}",
+    "format-ethernet": "󰈀",
+    "format-disconnected": "󰤮",
+    "format-icons": ["󰤟", "󰤢", "󰤥", "󰤨"],
+    "tooltip-format-wifi": "{essid} ({signalStrength}%)",
+    "tooltip-format-ethernet": "{ipaddr}",
+    "on-click": "swaync-client -t -sw"
+  },
+
+  "pulseaudio": {
+    "format": "{icon}",
+    "format-muted": "󰝟",
+    "format-icons": { "default": ["󰕿", "󰖀", "󰕾"] },
+    "tooltip-format": "音量 {volume}%",
+    "on-click": "swaync-client -t -sw",
+    "on-click-right": "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
   },
 
   "battery": {
     "states": { "warning": 20, "critical": 10 },
-    "format": "bat {capacity}%",
-    "format-charging": "chg {capacity}%"
-  },
-
-  "tray": {
-    "spacing": 8
+    "format": "{icon} {capacity}%",
+    "format-charging": "󰂄 {capacity}%",
+    "format-icons": ["󰁺", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂁", "󰂂", "󰁹"],
+    "on-click": "swaync-client -t -sw"
   }
 }

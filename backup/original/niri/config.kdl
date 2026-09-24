@@ -1,0 +1,233 @@
+// ──────────────────────────────────────────────
+//  niri 配置（Asahi / MacBook Pro 13" M2）
+//  键位对齐 macOS 上的 AeroSpace：alt 为主修饰键
+//  cmd(super) 留给 kitty 的分屏/标签键位，只额外占用
+//  cmd+q / cmd+space / cmd+shift+3/4/5 这几个 macOS 习惯
+//  改完先跑 `niri validate`；保存后 niri 会自动重载
+// ──────────────────────────────────────────────
+
+input {
+    keyboard {
+        xkb {
+            layout "us"
+            // caps lock 由 keyd 处理（按住 ctrl / 单击 esc），这里不要再加 caps: 选项
+        }
+        repeat-delay 250
+        repeat-rate 40
+    }
+
+    touchpad {
+        tap
+        dwt
+        natural-scroll
+        // 两指点按 = 右键，与 macOS 一致
+        click-method "clickfinger"
+        scroll-factor 0.6
+    }
+
+    // AeroSpace 默认用 alt；嵌套运行时（在 GNOME 里开 niri 窗口测试）用 super
+    mod-key "Alt"
+    mod-key-nested "Super"
+
+    workspace-auto-back-and-forth
+}
+
+// GNOME 在这块屏上默认 166%，等效 macOS 的「看起来像 1536x960」
+output "eDP-1" {
+    scale 1.666667
+}
+
+layout {
+    gaps 10
+    center-focused-column "never"
+    always-center-single-column
+
+    preset-column-widths {
+        proportion 0.33333
+        proportion 0.5
+        proportion 0.66667
+        proportion 1.0
+    }
+    default-column-width { proportion 0.5; }
+
+    // Catppuccin Mocha，与 kitty 主题一致
+    focus-ring {
+        width 2
+        active-color "#b4befe"
+        inactive-color "#6c7086"
+    }
+
+    border {
+        off
+    }
+
+    shadow {
+        on
+    }
+}
+
+// 模糊强度主要看 passes × offset；默认 3 / 3.0 在花哨壁纸上不够明显
+// 觉得卡就把 passes 调回 3
+blur {
+    passes 4
+    offset 6.0
+    noise 0.02
+    saturation 1.5
+}
+
+prefer-no-csd
+
+hotkey-overlay {
+    skip-at-startup
+}
+
+cursor {
+    hide-when-typing
+}
+
+environment {
+    // Electron 应用（VS Code、Discord 等）走原生 Wayland
+    ELECTRON_OZONE_PLATFORM_HINT "auto"
+}
+
+screenshot-path "~/Pictures/Screenshots/Screenshot from %Y-%m-%d %H-%M-%S.png"
+
+// ── 开机启动 ──────────────────────────────────
+spawn-at-startup "waybar"
+spawn-at-startup "mako"
+// 把壁纸放到 ~/Pictures/wallpaper.jpg；没有的话用纯色
+spawn-sh-at-startup "if [ -f ~/Pictures/wallpaper.jpg ]; then exec swaybg -m fill -i ~/Pictures/wallpaper.jpg; else exec swaybg -c '#1e1e2e'; fi"
+// 5 分钟锁屏，再过 30 秒关屏，合盖前锁屏
+spawn-sh-at-startup "swayidle -w timeout 300 'swaylock -f' timeout 330 'niri msg action power-off-monitors' before-sleep 'swaylock -f'"
+
+// ── 窗口规则 ──────────────────────────────────
+// 所有窗口圆角；blur 需要正确的几何裁剪
+window-rule {
+    geometry-corner-radius 10
+    clip-to-geometry true
+}
+
+// kitty 背景模糊（kitty.conf 里 background_opacity 0.70）
+// draw-border-with-background false：否则聚焦时 focus ring 会画成实心底色透出来，看着像不透明
+window-rule {
+    match app-id="^kitty$"
+    draw-border-with-background false
+    background-effect {
+        blur true
+    }
+}
+
+window-rule {
+    match app-id=r#"firefox$"# title="^Picture-in-Picture$"
+    match app-id=r#"^org\.gnome\.(Calculator|Settings)$"#
+    match app-id="^pavucontrol$"
+    open-floating true
+}
+
+// 启动器和状态栏也模糊
+layer-rule {
+    match namespace="^launcher$"
+    match namespace="^waybar$"
+    background-effect {
+        blur true
+    }
+}
+
+// ── 键位 ──────────────────────────────────────
+// Mod = Alt（见 input.mod-key）
+binds {
+    Mod+Shift+Slash { show-hotkey-overlay; }
+
+    // 应用（macOS 习惯）
+    Mod+Return     hotkey-overlay-title="打开 kitty" { spawn "kitty"; }
+    Mod+Grave      hotkey-overlay-title="下拉终端" { spawn "kitten" "quick-access-terminal"; }
+    Super+Space    hotkey-overlay-title="启动器 (Spotlight)" { spawn "fuzzel"; }
+    Super+Q        repeat=false { close-window; }
+    Super+Ctrl+Q   hotkey-overlay-title="锁屏" { spawn "swaylock" "-f"; }
+
+    // 焦点：alt+hjkl（同 AeroSpace）
+    Mod+H { focus-column-left; }
+    Mod+J { focus-window-or-workspace-down; }
+    Mod+K { focus-window-or-workspace-up; }
+    Mod+L { focus-column-right; }
+
+    // 移动：alt+shift+hjkl（同 AeroSpace）
+    Mod+Shift+H { move-column-left; }
+    Mod+Shift+J { move-window-down-or-to-workspace-down; }
+    Mod+Shift+K { move-window-up-or-to-workspace-up; }
+    Mod+Shift+L { move-column-right; }
+
+    // 把窗口并入/拆出相邻列（相当于 AeroSpace 的 join-with）
+    Mod+BracketLeft  { consume-or-expel-window-left; }
+    Mod+BracketRight { consume-or-expel-window-right; }
+
+    // 调整大小：alt+-/=（同 AeroSpace），加 shift 调高度
+    Mod+Minus       { set-column-width "-10%"; }
+    Mod+Equal       { set-column-width "+10%"; }
+    Mod+Shift+Minus { set-window-height "-10%"; }
+    Mod+Shift+Equal { set-window-height "+10%"; }
+
+    // 布局：alt+/ 轮换列宽预设，alt+, 手风琴式（标签化列）
+    Mod+Slash { switch-preset-column-width; }
+    Mod+Comma { toggle-column-tabbed-display; }
+    Mod+C     { center-column; }
+    Mod+F     { maximize-column; }
+    Mod+Shift+F { fullscreen-window; }
+    Mod+Shift+Space { toggle-window-floating; }
+    Mod+Space       { switch-focus-between-floating-and-tiling; }
+
+    // 概览（类似 Mission Control）
+    Mod+O repeat=false { toggle-overview; }
+
+    // 工作区：alt+数字 / alt+shift+数字（同 AeroSpace）
+    Mod+1 { focus-workspace 1; }
+    Mod+2 { focus-workspace 2; }
+    Mod+3 { focus-workspace 3; }
+    Mod+4 { focus-workspace 4; }
+    Mod+5 { focus-workspace 5; }
+    Mod+6 { focus-workspace 6; }
+    Mod+7 { focus-workspace 7; }
+    Mod+8 { focus-workspace 8; }
+    Mod+9 { focus-workspace 9; }
+    Mod+Shift+1 { move-column-to-workspace 1; }
+    Mod+Shift+2 { move-column-to-workspace 2; }
+    Mod+Shift+3 { move-column-to-workspace 3; }
+    Mod+Shift+4 { move-column-to-workspace 4; }
+    Mod+Shift+5 { move-column-to-workspace 5; }
+    Mod+Shift+6 { move-column-to-workspace 6; }
+    Mod+Shift+7 { move-column-to-workspace 7; }
+    Mod+Shift+8 { move-column-to-workspace 8; }
+    Mod+Shift+9 { move-column-to-workspace 9; }
+
+    // alt+tab 回到上一个工作区，alt+shift+tab 把工作区送到下一个显示器（同 AeroSpace）
+    Mod+Tab       { focus-workspace-previous; }
+    Mod+Shift+Tab { move-workspace-to-monitor-next; }
+
+    Mod+WheelScrollDown cooldown-ms=150 { focus-workspace-down; }
+    Mod+WheelScrollUp   cooldown-ms=150 { focus-workspace-up; }
+    Mod+WheelScrollRight { focus-column-right; }
+    Mod+WheelScrollLeft  { focus-column-left; }
+
+    // 截图：cmd+shift+3 全屏 / 4 选区 / 5 窗口（macOS 习惯）
+    Super+Shift+3 { screenshot-screen; }
+    Super+Shift+4 { screenshot; }
+    Super+Shift+5 { screenshot-window; }
+
+    // 媒体键（Touch Bar 由 tiny-dfr 发出这些键）
+    XF86AudioRaiseVolume allow-when-locked=true { spawn-sh "wpctl set-volume @DEFAULT_AUDIO_SINK@ 0.05+ -l 1.0"; }
+    XF86AudioLowerVolume allow-when-locked=true { spawn-sh "wpctl set-volume @DEFAULT_AUDIO_SINK@ 0.05-"; }
+    XF86AudioMute        allow-when-locked=true { spawn-sh "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"; }
+    XF86AudioMicMute     allow-when-locked=true { spawn-sh "wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"; }
+    XF86AudioPlay        allow-when-locked=true { spawn-sh "playerctl play-pause"; }
+    XF86AudioPrev        allow-when-locked=true { spawn-sh "playerctl previous"; }
+    XF86AudioNext        allow-when-locked=true { spawn-sh "playerctl next"; }
+    XF86MonBrightnessUp   allow-when-locked=true { spawn "brightnessctl" "--class=backlight" "set" "+10%"; }
+    XF86MonBrightnessDown allow-when-locked=true { spawn "brightnessctl" "--class=backlight" "set" "10%-"; }
+
+    // 逃生口：应用抢占快捷键时恢复
+    Mod+Escape allow-inhibiting=false { toggle-keyboard-shortcuts-inhibit; }
+
+    Mod+Shift+E { quit; }
+    Ctrl+Alt+Delete { quit; }
+    Mod+Shift+P { power-off-monitors; }
+}

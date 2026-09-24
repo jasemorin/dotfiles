@@ -11,9 +11,11 @@ config/
   niri/     -> ~/.config/niri     （Linux：平铺窗口管理器）
   waybar/   -> ~/.config/waybar   （niri 下的状态栏）
   fuzzel/   -> ~/.config/fuzzel   （niri 下的启动器）
-  mako/     -> ~/.config/mako     （niri 下的通知）
+  mako/     -> ~/.config/mako     （旧的通知守护进程，已换成 swaync，配置保留）
+  swaync/   -> ~/.config/swaync   （niri 下的通知 + 右上角快捷设置面板）
 system/
   keyd/     系统级，需手动部署（caps 层，见下方「键位约定」）
+backup/original/  改成 GNOME 风格顶栏 + swaync 之前的原始配置（恢复方法见里面的 README）
 install.sh  在新机器上建立 config/ 下的链接
 ```
 
@@ -80,6 +82,10 @@ kitty 的分屏键位只在 macOS 加载（`config/kitty/macos.conf`），Linux 
 - kitty ≥ 0.48，字体 JetBrains Mono
 - Neovim ≥ 0.11（配置用到 `vim.lsp.config` / `vim.hl.on_yank`）
 - `shellcheck`、`shfmt`（可选，bashls 靠它出 lint 诊断）
+- niri 桌面：`waybar`、`fuzzel`、`SwayNotificationCenter`、`swaybg`、`brightnessctl`
+- 顶栏图标字体 Symbols Nerd Font：从 nerd-fonts 的 releases 下载 `NerdFontsSymbolsOnly.tar.xz`，解压到 `~/.local/share/fonts/` 后 `fc-cache -f`
+- 让通知总是由 swaync 而不是 mako 自动启动：新建 `~/.local/share/dbus-1/services/org.freedesktop.Notifications.service`，
+  内容为 `[D-BUS Service]`、`Name=org.freedesktop.Notifications`、`Exec=/usr/bin/swaync`
 
 插件由 lazy.nvim 管理，首次启动 nvim 会自动安装；`lazy-lock.json` 锁定了
 精确 commit，纳入版本控制以保证各机器插件版本一致。
