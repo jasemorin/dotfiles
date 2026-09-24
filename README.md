@@ -32,6 +32,7 @@ system/     Linux 上手动部署的文件（不走 install.sh，见 docs/setup-
   mglru/    内存耗尽时防卡死（/etc/tmpfiles.d/）
   tuned/    gaming 电源模式：性能 + 保留 swappiness 60（/etc/tuned/profiles/）
   bash/     fzf、zoxide（链接到 ~/.bashrc.d/）
+scripts/    个人脚本（steam-arm64：链接到 ~/.local/bin/）
 docs/       速查表和指南
 backup/original/  改成 GNOME 风格顶栏 + swaync 之前的原始配置（恢复方法见里面的 README）
 install.sh  在新机器上建立 config/ 下的链接

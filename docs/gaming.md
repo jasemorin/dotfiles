@@ -23,11 +23,19 @@ sudo dnf install steam
 - 如果 GNOME 下报 `Failed to mount filesystems`：`sudo hostnamectl hostname 你的主机名`
 - niri 下 Steam 走 X11，由 xwayland-satellite 提供（已安装，niri 会自动启动）
 
-**ARM 原生 Steam 客户端（2026-09 的状况）**：Valve 为 ARM 的 Steam Frame 做了 arm64 Linux 客户端，
-目前只在 public beta 通道（`steam_client_publicbeta_linuxarm64`），官方没有给普通 ARM Linux 发行版正式发布。
-社区有给 Ubuntu Asahi 用的安装脚本（UbuntuAsahi/steam-arm64，写死了 Ubuntu 的路径，Fedora 上要改），
-Ubuntu 也有实验性的 snap。就算客户端是原生的，绝大多数游戏仍是 x86，照样要靠 muvm + FEX，
-主要省的是客户端本身的开销。**建议继续用 `dnf install steam`**，等 Valve 或 Fedora Asahi 正式支持再换。
+**ARM 原生 Steam 客户端（实验，已隔离安装）**：Valve 为 Steam Frame 做的 arm64 Linux 客户端，
+只在 public beta 通道，没有正式支持。用 `scripts/steam-arm64.sh`（改编自 UbuntuAsahi/steam-arm64）安装：
+
+```bash
+steam-arm64 install     # 下载客户端和 GE-Proton arm64（约 730 MB）
+steam-arm64             # 运行；第一次会装 Steam Runtime 4.0，需要登录
+steam-arm64 uninstall   # 整个删掉
+```
+
+- **隔离安装**：数据全在 `~/.local/share/steam-arm64`（单独的家目录），不碰现有 x86 Steam 的 `~/.local/share/Steam`
+- 启动器里叫「Steam (arm64)」；和 x86 Steam **不能同时开**，先从菜单退出另一个
+- 游戏大多仍是 x86，照样靠 muvm + FEX；省的主要是客户端界面（内嵌浏览器不用再经 x86 翻译）
+- beta 通道，随时可能坏；坏了就 `steam-arm64 uninstall`，回到 `steam`
 
 官方报告能玩的例子：Hollow Knight（满速）、Portal 2、Control、The Witcher 3、Fallout 4、Ghostrunner、Cyberpunk 2077（后几个在 8 GB 上很吃力）。
 
