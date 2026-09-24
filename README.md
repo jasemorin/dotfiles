@@ -40,6 +40,7 @@ scripts/    个人脚本（steam-arm64、reboot-macos：链接到 ~/.local/bin/�
 docs/       速查表和指南
 backup/original/  改成 GNOME 风格顶栏 + swaync 之前的原始配置（恢复方法见里面的 README）
 install.sh  在新机器上建立 config/ 下的链接
+restore.sh  重装后一键恢复全部（软件包 + 链接 + 系统配置 + 个人文件），见 docs/reinstall.md
 ```
 
 仓库里的目录名直接对应 `~/.config` 下的名字，`install.sh` 会遍历 `config/*/`

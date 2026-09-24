@@ -36,35 +36,25 @@ git add -A && git commit -m "重装前快照" && git push
    **不要动 macOS 的 APFS 容器和 Recovery**；删完把空间合并回来（或留着给新安装用）
 3. 终端运行 `curl https://alx.sh | sh`，选 Fedora Asahi Remix
 
-## 3. 重装后：恢复
+## 3. 重装后：一键恢复
+
+1. 连上网，先从 icloud.com 把 `home-backup-*.tar.gz`（和 `wifi.tgz`，如果有）下载到 `~/Downloads`
+2. 打开终端运行（开头输一次 sudo 密码）：
 
 ```bash
-# GitHub 登录并拉仓库
-sudo dnf install gh git && gh auth login && gh auth setup-git
-git clone https://github.com/jasemorin/dotfiles.git ~/dotfiles
-cd ~/dotfiles && git checkout asahi
-
-# 软件包（先加 COPR 源）
-xargs -rn1 sudo dnf copr enable -y < system/packages/copr.txt
-sudo dnf install --skip-unavailable $(cat system/packages/dnf.txt)
-xargs -rn1 flatpak install -y flathub < system/packages/flatpak.txt
-
-# 配置链接和桌面设置
-./install.sh --dry-run && ./install.sh
-dconf load / < system/dconf.ini
+bash <(curl -fsSL https://raw.githubusercontent.com/jasemorin/dotfiles/asahi/restore.sh)
 ```
 
-然后按 [setup-asahi.md](setup-asahi.md) 第 3、4 步部署系统级配置（keyd、tiny-dfr、zswap、
-mglru、tuned、bash、swaync 的 dbus 服务），以及：
+[`restore.sh`](../restore.sh) 会 clone 仓库到 `~/dotfiles`，然后依次：
 
-```bash
-# 个人脚本
-mkdir -p ~/.local/bin
-ln -s ~/dotfiles/scripts/steam-arm64.sh ~/.local/bin/steam-arm64
-ln -s ~/dotfiles/scripts/reboot-macos.sh ~/.local/bin/reboot-macos
-```
+- 启用 COPR，安装 `system/packages/` 里的全部软件包
+- `install.sh` 链接 `~/.config`；链接个人脚本、bash 增强；写 swaync 的 dbus 服务；git 身份
+- 部署 `/etc` 下的 keyd、tiny-dfr、zswap、mglru、tuned（即 setup-asahi.md 第 3 步）
+- 系统的 xwayland-satellite 低于 0.8.3 时自己编译（见 [troubleshooting.md](troubleshooting.md)）
+- `dconf load` 桌面设置
+- 解压 `~/Downloads` 里的备份包（不覆盖已有文件），恢复 Wi-Fi，刷新字体缓存
+- `gh auth login`
 
-- 自编译的 xwayland-satellite 0.8.3：见 [troubleshooting.md](troubleshooting.md)（Fedora 更新到 0.8.3 后可以不用）
-- 从 iCloud 下载备份包，`tar xzf home-backup-*.tar.gz -C ~` 解压，再 `fc-cache -f`
-- Firefox 登录 Sync；Firefox 内存设置见 [memory.md](memory.md)
-- 最后跑 setup-asahi.md 末尾的检查清单
+可以重复运行（已完成的会跳过）；先看会做什么用 `./restore.sh --dry-run`。
+
+跑完后手动：Firefox 登录 Sync；注销后在登录界面齿轮里选 **niri**；跑 setup-asahi.md 末尾的检查清单。
