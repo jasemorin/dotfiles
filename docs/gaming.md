@@ -64,6 +64,16 @@ Steam 的界面是内嵌浏览器（CEF），跑在 x86 翻译层上特别重；
 表现为 **Steam 窗口频繁闪退**（`~/.local/share/Steam/logs/webhelper.txt` 里渲染进程不停重启）。
 主机日志看不到，因为是虚拟机内部的系统结束的。
 
+**主机内存耗尽时整个 Steam 被结束**（2026-09-25 实际遇到两次）：内核日志里是
+`Out of memory: Killed process … (VM:fedora)`（`journalctl -k | grep -i "out of memory"`）。
+当时 8 GB 交换已用完，Steam 虚拟机 3.3 GB、Firefox 约 4.7 GB。内核结束的是占用最大的**单个进程**，
+Firefox 分成很多小进程，所以每次倒霉的都是 Steam 虚拟机。`steam-arm64` 已做两件事：
+
+- Steam 运行期间把 Firefox 各进程的 `oom_score_adj` 提到 800：内存再耗尽时先结束一个 Firefox 标签页（可重新加载）
+- 启动时可用内存不到 3 GB 会弹通知提醒
+
+根本办法还是玩的时候关掉 Firefox（或大部分标签页）。
+
 省内存的 Steam 设置：
 - 设置 → 界面：关「在网页视图中启用 GPU 加速渲染」（在 Asahi 上也更稳）、关动画头像和动画、关「启动时显示 Steam 新闻」
 - 设置 → 库：开「低性能模式」「低带宽模式」
@@ -78,7 +88,8 @@ Steam 的界面是内嵌浏览器（CEF），跑在 x86 翻译层上特别重；
 - 关掉 Firefox 和不用的 Claude Code 会话，这两个加起来能占 4 GB 以上（见 [memory.md](memory.md)）
 - 查看可用内存：`free -h` 的 available 列
 - 插上电源；游戏时切到 gaming 模式（性能模式 + 保留 swappiness 60，见 `system/tuned/gaming`）：
-  `sudo tuned-adm profile gaming`，玩完**切回** `sudo tuned-adm profile balanced`。
+  `sudo tuned-adm profile gaming`，玩完**切回**：顶栏快捷设置面板点「平衡」（不要用 `tuned-adm profile balanced`，
+  那样 PowerProfiles 接口会报 unknown，用电池时也不会切到省电的 balanced-battery）。
   不要用 `throughput-performance`：它把 swappiness 设成 10，8 GB 上更容易卡、Steam 更容易闪退
 
 ## niri 下的键位注意

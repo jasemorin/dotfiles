@@ -78,7 +78,8 @@ cmd_bar() {
     # 让 niri 来启动：成为 niri 的子进程（agent 的 shell 退出后还在），Wayland 环境也是 niri 的
     local envs=()
     [[ -n "${QS_ROOT:-}" ]] && envs=(env "LD_LIBRARY_PATH=$LD_LIBRARY_PATH" "QML_IMPORT_PATH=$QML_IMPORT_PATH" "QML2_IMPORT_PATH=$QML2_IMPORT_PATH")
-    niri msg action spawn -- sh -c 'exec "$@" >"'"$OUT/bar.log"'" 2>&1' sh "${envs[@]}" "$qs" -p "$DOTFILES/config/quickshell"
+    # 不带 -p：和 niri 启动项一样用 ~/.config/quickshell，这样 `qs ipc call …` 才找得到这个实例
+    niri msg action spawn -- sh -c 'exec "$@" >"'"$OUT/bar.log"'" 2>&1' sh "${envs[@]}" "$qs"
     # 以 niri 里出现 quickshell-bar 图层为准：连不上 Wayland 时日志也会写 Configuration Loaded
     if timeout 10 bash -c "until niri msg layers | grep -q '\"quickshell-bar\"'; do sleep 0.2; done"; then
       echo "quickshell 顶栏已显示，日志 $OUT/bar.log"
@@ -124,6 +125,8 @@ case "${1:-help}" in
   ss) shift; cmd_ss "$@" ;;
   state) cmd_state ;;
   msg) need_niri; shift; niri msg "$@" ;;
+  # qs ipc 只找同一个 Wayland 显示上的实例，所以也要用上面修正过的 WAYLAND_DISPLAY
+  ipc) need_niri; shift; qs=$(qs_cmd); "$qs" ipc call "$@" ;;
   *)
     cat <<'EOF'
 driver.sh check            校验：niri 配置、脚本、链接、dconf.ini、quickshell 能否加载
@@ -131,6 +134,7 @@ driver.sh bar              重启顶栏（quickshell；没有则 waybar），日
 driver.sh ss [名字] [top]  截整屏到 $OUT/名字.png；加 top 另存只含顶栏的裁剪图
 driver.sh state            输出、图层（顶栏/壁纸）、窗口列表
 driver.sh msg <参数…>      直接转给 niri msg（已设好 NIRI_SOCKET）
+driver.sh ipc <目标> <函数>  调用 quickshell 的 IpcHandler，如 ipc bar quickSettings
 环境变量：OUT（默认 /tmp/dotfiles-driver）、QS_ROOT（解压的 quickshell RPM 根目录）
 EOF
     ;;

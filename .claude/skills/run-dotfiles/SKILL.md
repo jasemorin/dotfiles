@@ -24,6 +24,7 @@ agent 的入口是 `.claude/skills/run-dotfiles/driver.sh`：它自己找 niri s
 .claude/skills/run-dotfiles/driver.sh ss after top   # -> /tmp/dotfiles-driver/after.png 和 after-top.png（只含顶栏）
 .claude/skills/run-dotfiles/driver.sh state          # 输出缩放、图层（顶栏/壁纸/通知）、窗口
 .claude/skills/run-dotfiles/driver.sh msg layers     # 任意 niri msg 子命令
+.claude/skills/run-dotfiles/driver.sh ipc bar quickSettings   # 打开/关闭快捷设置面板（再调一次关闭）
 ```
 
 | 命令 | 做什么 |
@@ -32,6 +33,7 @@ agent 的入口是 `.claude/skills/run-dotfiles/driver.sh`：它自己找 niri s
 | `bar` | 杀掉 waybar/quickshell，通过 `niri msg action spawn` 重新启动（成为 niri 的子进程，agent 的 shell 退出后还在），等 niri 里出现 `quickshell-bar` 图层才算成功，日志在 `/tmp/dotfiles-driver/bar.log` |
 | `ss [名字] [top]` | 整屏截图，会等文件写完；`top` 另存只含顶栏的一条 |
 | `state` / `msg …` | 查看 niri 状态 / 直接转发 `niri msg` |
+| `ipc <目标> <函数>` | 调用 quickshell 的 `IpcHandler`（`qs ipc call`，用修正过的 `WAYLAND_DISPLAY`） |
 
 截图后**用 Read 打开 PNG 看一眼**，这是确认顶栏或窗口样式改对了的唯一办法。
 
@@ -52,10 +54,19 @@ cd ~/dotfiles && QS_ROOT=/tmp/qs-rpm/root .claude/skills/run-dotfiles/driver.sh 
 ## 改配置的流程
 
 - **niri**（`config/niri/config.kdl`）：保存即自动重载，不用重启。先 `driver.sh check` 再看效果。
-- **quickshell**（`config/quickshell/*.qml`）：运行中的实例检测到文件变化会自己重载（日志出现 `Reloading configuration...`），重载失败或改了启动参数时用 `driver.sh bar`。
+- **quickshell**（`config/quickshell/*.qml`）：改完用 `driver.sh bar` 重启。通过 `~/.config/quickshell` 这个符号链接启动的实例**不会**自动重载（只有 `-p` 指向真实目录时才会）。
+  文件分工：`shell.qml` 入口；`Bar.qml` 顶栏；`QuickSettings.qml` 快捷设置面板；`Osd.qml` 音量/亮度提示；`Niri`/`SysInfo`/`Brightness.qml` 状态单例；`Pill`/`Label`/`SysIcon`/`Tooltip.qml` 组件。
 - **waybar**（备用顶栏，没装 quickshell 时 niri 才会启动它）：不会自动重载，用 `driver.sh bar`。
 - **新增 `config/<工具>/`**：`./install.sh` 会自动链接，不用改脚本。
 - **重装恢复**：`./restore.sh --dry-run` 看会做什么；真正运行要 sudo，让用户跑。
+
+### 看不到的东西怎么验证
+
+- **悬停提示、点击**：niri 没有移动指针的 IPC。把组件复制到临时目录，写一个 `WlrLayer.Overlay` 的测试 `shell.qml`，把 `Tooltip.qml` 的 `visible: shown && text !== ""` 改成 `visible: text !== ""` 强制显示，用 `niri msg action spawn -- sh -c "exec qs -p <临时目录>"` 起一个单独的实例截图。overlay 层在全屏窗口之上，用户开着全屏 Firefox 也能截到。
+- **快捷设置面板**：`driver.sh ipc bar quickSettings` 打开，截图，再调一次关闭（它打开时独占键盘，别让它一直开着）。
+- **音量/亮度提示**：`wpctl set-volume @DEFAULT_AUDIO_SINK@ 0.05+ -l 1.0` 后截屏幕下方，再 `0.05-` 调回；亮度先记下 `brightnessctl --class=backlight get`，`set +1%` 后截图，再 `set <原值>`。
+- **媒体胶囊**：需要一个 MPRIS 播放器。没有的话用 Python + `gi.repository.Gio` 注册 `org.mpris.MediaPlayer2.<名字>`，实现 `PlaybackStatus`/`Metadata` 属性和 `PlayPause`/`Next` 方法即可，用 `playerctl -l` 确认。
+- 杀测试进程别用 `pkill -f <路径>`：模式会匹配到执行它的那条 bash 命令，把命令自己杀掉（退出码 144）。用 `pgrep -f` 找到进程号再 `kill`。
 
 ## 用户自己怎么跑
 
@@ -66,6 +77,11 @@ cd ~/dotfiles && QS_ROOT=/tmp/qs-rpm/root .claude/skills/run-dotfiles/driver.sh 
 - **niri 只能模糊整个图层矩形。** waybar 的「分开的胶囊」配 `layer-rule { background-effect { blur true } }`，胶囊之间会出现一条磨砂横带。只模糊胶囊需要客户端通过 `ext-background-effect` 申请模糊区域，waybar 0.15 不支持，所以换成了 Quickshell（`BackgroundEffect.blurRegion` + `Region { item; radius }`）。
 - **waybar 设 `"width": 1` 不会缩到内容宽度**，图层照样占满整个屏幕宽度，所以「每个胶囊一个 waybar 实例」行不通。
 - **agent 的 shell 里 `WAYLAND_DISPLAY` 可能是过期的值**（遇到过 `wayland-0`，而 niri 用的是 `wayland-1`）。Qt 连不上就退回 xcb，顶栏画不出来，**日志却照样写 `Configuration Loaded`**。driver 发现 socket 不存在时会从 `NIRI_SOCKET` 重新推断，并且以 `niri msg layers` 里出现 `quickshell-bar` 为准判断是否成功。
+- **带 `grabFocus` 的 `PopupWindow` 必须由真实点击打开**，从 IPC / 快捷键打开会被 niri 立刻撤掉。所以快捷设置面板用的是 overlay 层的 `PanelWindow`，下面垫一层全屏透明窗口，点到外面就关闭。
+- **`qs ipc call` 报 `No running instances`**：它只找同一个 `WAYLAND_DISPLAY` 上、同一个配置路径的实例。用 `driver.sh ipc`；实例也要和 niri 启动项一样不带 `-p`（用 `~/.config/quickshell`）。
+- **niri 下 Qt 没有图标主题**（GNOME 下会自动用 Adwaita），fcitx 的 `input-keyboard-symbolic` 加载失败，染白后变成白方块。`shell.qml` 开头的 `//@ pragma IconTheme Adwaita` 解决；托盘右键菜单还需要 `//@ pragma UseQApplication`。
+- **模糊默认是 xray**（只模糊壁纸）。盖在窗口上的面板和提示会透出壁纸颜色（乌鲁鲁的红土色），niri 的 `layer-rule` 对 `quickshell-(osd|quicksettings)` 设了 `xray false`。
+- **`tuned-adm profile balanced` 会让 PowerProfiles 接口报 `unknown`**（tuned-ppd 在用电池时期望的是 `balanced-battery`），Quickshell 就停在默认值，误显示成「平衡」。面板按 `tuned-adm active` 显示；切换用 PowerProfiles（不用 sudo：`busctl --system set-property net.hadess.PowerProfiles /net/hadess/PowerProfiles net.hadess.PowerProfiles ActiveProfile s balanced`）。
 - **niri 的截图是异步的**：`niri msg action screenshot-screen --path` 立刻返回，文件稍后才写完。driver 会轮询直到 PNG 能打开。
 - **缩放 1.67**：截图是物理像素 2560×1600，niri 的窗口尺寸是逻辑像素 1536×960。裁剪用物理坐标。
 - **窗口方角**：新 Firefox 配置文件启动时请求最大化，niri 会贴边最大化，这种窗口不画圆角。靠全局 `open-maximized-to-edges false` 解决。
@@ -81,3 +97,4 @@ cd ~/dotfiles && QS_ROOT=/tmp/qs-rpm/root .claude/skills/run-dotfiles/driver.sh 
 - **`NIRI_SOCKET is not set, are you running this within niri?`**：agent 的 shell 不在 niri 里。用 `driver.sh msg …`，或者 `export NIRI_SOCKET=$(ls /run/user/$(id -u)/niri.*.sock)`。
 - **顶栏图标显示成方框**：缺 Symbols Nerd Font。`restore.sh` 会自动下载，手动装见 `docs/setup-asahi.md`。
 - **quickshell 日志里的 `Failed to register with host portal … already associated with an application ID`**：无害，可以忽略。
+- **`Error demarshalling property update … Invalid PowerProfile: unknown`**：见上面 tuned 那条；用 tuned-adm 切到 gaming 时也会出现，无害。

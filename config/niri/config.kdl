@@ -161,7 +161,17 @@ layer-rule {
     }
 }
 
-// 状态栏不开模糊：niri 会模糊整个图层矩形，胶囊之间会出现一条磨砂横带
+// Quickshell 的音量/亮度提示、快捷设置面板盖在窗口上：模糊背后的窗口，而不是默认的 xray（只透出壁纸）
+// 模糊区域由 quickshell 自己通过 ext-background-effect 申请，这里只改 xray
+layer-rule {
+    match namespace="^quickshell-(osd|quicksettings)$"
+    background-effect {
+        xray false
+    }
+}
+
+// waybar（备用顶栏）不开模糊：niri 会模糊整个图层矩形，胶囊之间会出现一条磨砂横带；
+// Quickshell 顶栏自己通过 ext-background-effect 申请只模糊胶囊，不需要规则
 
 // kitty 下拉终端（caps+shift+enter）模糊；namespace 来自 quick-access-terminal 的 app_id 默认值
 layer-rule {

@@ -100,7 +100,9 @@ put zswap/zswap-zstd.conf /etc/tmpfiles.d/zswap-zstd.conf
 put mglru/mglru.conf /etc/tmpfiles.d/mglru.conf
 run sudo systemd-tmpfiles --create /etc/tmpfiles.d/zswap-zstd.conf /etc/tmpfiles.d/mglru.conf
 for f in system/tuned/gaming/*; do put "tuned/gaming/$(basename "$f")" "/etc/tuned/profiles/gaming/$(basename "$f")"; done
-run sudo tuned-adm profile balanced
+# 通过 tuned-ppd 切到「平衡」（用电池时对应 balanced-battery）；直接 tuned-adm profile balanced 会让
+# PowerProfiles 接口报 unknown，顶栏快捷设置面板就认不出当前模式
+run busctl --system set-property net.hadess.PowerProfiles /net/hadess/PowerProfiles net.hadess.PowerProfiles ActiveProfile s balanced
 
 step "xwayland-satellite ≥ 0.8.3（修 Steam 菜单闪退，见 troubleshooting.md）"
 have=$(rpm -q --qf '%{version}' xwayland-satellite 2>/dev/null || echo 0)

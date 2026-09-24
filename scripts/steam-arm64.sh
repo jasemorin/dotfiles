@@ -117,10 +117,41 @@ fail() {
     exit 1
 }
 
+# 内存（8 GB）耗尽时，内核会结束占用最大的单个进程，也就是 Steam 的 muvm 虚拟机（整个 Steam 闪退）；
+# Firefox 分成很多小进程，反而躲过去。Steam 运行期间把 Firefox 各进程的 oom_score_adj 提到 800，
+# 让内核先结束一个标签页（可以重新加载）。Firefox 自己会改部分进程的值，所以每 20 秒补一次。
+# 调高不需要 root。2026-09-25 两次闪退时 8 GB 交换已用完：Steam 3.3 GB、Firefox 约 4.7 GB。
+guard_memory() {
+    local p adj
+    while :; do
+        for p in $(pgrep -f '^/usr/lib64/firefox/firefox( |$)'); do
+            adj=$(cat "/proc/$p/oom_score_adj" 2>/dev/null) || continue
+            [ "$adj" -lt 800 ] && echo 800 >"/proc/$p/oom_score_adj" 2>/dev/null
+        done
+        sleep 20
+    done
+}
+
+# 可用内存不到 3 GB 时提醒（Steam 客户端本身要 1.5 GB 以上，开游戏更多）
+warn_low_memory() {
+    local avail ff
+    avail=$(awk '/^MemAvailable:/ {print int($2 / 1048576 * 10) / 10}' /proc/meminfo)
+    if awk -v a="$avail" 'BEGIN { exit !(a < 3) }'; then
+        ff=$(ps -eo rss=,args= | awk '$2 ~ /^\/usr\/lib64\/firefox\/firefox/ {s += $1} END {printf "%.1f", s / 1048576}')
+        notify-send -a "Steam (arm64)" "内存紧张：只剩 ${avail} GB 可用" \
+            "Firefox 占 ${ff} GB。内存耗尽时会先结束 Firefox 标签页，但最好先关掉不用的标签。" 2>/dev/null || true
+    fi
+}
+
 run_steam() {
+    warn_low_memory
+    guard_memory &
+    local guard=$!
+    # 不用 exec：Steam 退出后要停掉 guard_memory
+    trap 'kill "$guard" 2>/dev/null' EXIT
     # muvm 会把 HOME 强制设回真实家目录（--env=HOME 无效），所以在虚拟机里用 env 设置，
     # 否则 ARM Steam 会读写真实的 ~/.steam（x86 Steam 的）
-    exec muvm -- env \
+    muvm -- env \
         HOME="$ARMHOME" \
         LD_LIBRARY_PATH="$STEAMROOT/steamrtarm64/${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}" \
         "$STEAMROOT/steamrtarm64/steam" -noverifyfiles "$@"
@@ -147,6 +178,7 @@ uninstall)
     # 第一次运行：装 Steam Runtime 4.0（需要在弹出的界面里登录）
     if ! [ -e "$STEAMROOT/steamapps/appmanifest_4185400.acf" ]; then
         run_steam steam://install/4185400
+        exit
     fi
     run_steam "$@"
     ;;

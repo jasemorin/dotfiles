@@ -59,7 +59,8 @@ sudo systemd-tmpfiles --create /etc/tmpfiles.d/mglru.conf
 
 # 电源模式：平衡（不要用 throughput-performance，见 memory.md；游戏用 gaming，见 gaming.md）
 sudo cp -r ~/dotfiles/system/tuned/gaming /etc/tuned/profiles/
-sudo tuned-adm profile balanced
+# 通过 tuned-ppd 切换，PowerProfiles 接口（顶栏快捷设置面板）才认得出当前模式
+busctl --system set-property net.hadess.PowerProfiles /net/hadess/PowerProfiles net.hadess.PowerProfiles ActiveProfile s balanced
 ```
 
 ## 4. 用户级设置
