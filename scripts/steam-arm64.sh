@@ -67,6 +67,16 @@ install_client() {
     vpx=$(find /usr/lib64 -maxdepth 1 -name 'libvpx.so.[0-9]*' | sort -V | tail -1)
     [ -n "$vpx" ] && ln -sfn "$vpx" "$STEAMROOT/steamrtarm64/libvpx.so.6"
 
+    # 自带的 ffmpeg 等库解压出来只有 libxxx.so，没有按 SONAME（如 libavutil.so.59）建的名字，
+    # 互相依赖时找不到；补上链接（Ubuntu 上可能碰巧由系统包提供）
+    local lib soname
+    for lib in "$STEAMROOT"/steamrtarm64/lib*.so; do
+        soname=$(readelf -d "$lib" 2>/dev/null | sed -n 's/.*(SONAME).*\[\(.*\)\]/\1/p')
+        [ -n "$soname" ] && [ "$soname" != "$(basename "$lib")" ] && ln -sfn "$(basename "$lib")" "$STEAMROOT/steamrtarm64/$soname"
+    done
+    # Ubuntu 叫 libbz2.so.1.0，Fedora 叫 libbz2.so.1
+    [ -e /usr/lib64/libbz2.so.1 ] && ln -sfn /usr/lib64/libbz2.so.1 "$STEAMROOT/steamrtarm64/libbz2.so.1.0"
+
     # 隔离家目录里的 ~/.steam 链接
     mkdir -p "$ARMHOME/.steam"
     ln -sfn "$STEAMROOT" "$ARMHOME/.steam/steam"
@@ -121,6 +131,11 @@ uninstall)
         exit 1
     fi
     [ -e "$STEAMROOT/steamrtarm64" ] || install_client
+    # steamui.so 需要 GTK2（Fedora 默认不装）
+    if ! [ -e /usr/lib64/libgtk-x11-2.0.so.0 ]; then
+        echo "缺少 GTK2，请先运行：sudo dnf install gtk2" >&2
+        exit 1
+    fi
     # 第一次运行：装 Steam Runtime 4.0（需要在弹出的界面里登录）
     if ! [ -e "$STEAMROOT/steamapps/appmanifest_4185400.acf" ]; then
         run_steam steam://install/4185400
