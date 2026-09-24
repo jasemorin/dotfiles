@@ -110,6 +110,13 @@ EOF
     echo "安装完成：$ARMHOME"
 }
 
+# 出错时同时打印和弹通知（从启动器打开时看不到终端输出）
+fail() {
+    echo "$1" >&2
+    notify-send -a "Steam (arm64)" "Steam (arm64) 无法启动" "$1" 2>/dev/null || true
+    exit 1
+}
+
 run_steam() {
     # muvm 会把 HOME 强制设回真实家目录（--env=HOME 无效），所以在虚拟机里用 env 设置，
     # 否则 ARM Steam 会读写真实的 ~/.steam（x86 Steam 的）
@@ -128,15 +135,14 @@ uninstall)
     echo "已删除 $ARMHOME"
     ;;
 *)
-    if pgrep -f 'fex-steam|steamrtarm64/steam' >/dev/null; then
-        echo "已有 Steam 在运行，请先从菜单 Steam → 退出" >&2
-        exit 1
+    # 只拦 x86 Steam；ARM Steam 已在运行时再启动一次，会交给已有实例并调出窗口
+    if pgrep -f '[f]ex-steam' >/dev/null; then
+        fail "x86 Steam 正在运行，请先从菜单 Steam → 退出"
     fi
     [ -e "$STEAMROOT/steamrtarm64" ] || install_client
     # steamui.so 需要 GTK2（Fedora 默认不装）
     if ! [ -e /usr/lib64/libgtk-x11-2.0.so.0 ]; then
-        echo "缺少 GTK2，请先运行：sudo dnf install gtk2" >&2
-        exit 1
+        fail "缺少 GTK2，请先运行：sudo dnf install gtk2"
     fi
     # 第一次运行：装 Steam Runtime 4.0（需要在弹出的界面里登录）
     if ! [ -e "$STEAMROOT/steamapps/appmanifest_4185400.acf" ]; then
