@@ -151,9 +151,10 @@ warn_low_memory() {
 run_steam() {
     warn_low_memory
     guard_memory &
-    local guard=$!
-    # 不用 exec：Steam 退出后要停掉 guard_memory
-    trap 'kill "$guard" 2>/dev/null' EXIT
+    # 不用 exec：Steam 退出后要停掉 guard_memory。进程号在这里就展开写进 trap：
+    # 退出时函数早已返回，引用局部变量会是空的，guard_memory 就成了孤儿一直跑（2026-09-25 遇到过）
+    # shellcheck disable=SC2064
+    trap "kill $! 2>/dev/null" EXIT
     # muvm 会把 HOME 强制设回真实家目录（--env=HOME 无效），所以在虚拟机里用 env 设置，
     # 否则 ARM Steam 会读写真实的 ~/.steam（x86 Steam 的）
     muvm --mem="$MEM" -- env \
