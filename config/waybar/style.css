@@ -1,0 +1,39 @@
+/* Catppuccin Mocha；半透明背景配合 niri 的 layer-rule 模糊 */
+* {
+  font-family: "JetBrains Mono", sans-serif;
+  font-size: 13px;
+  min-height: 0;
+}
+
+window#waybar {
+  background: rgba(30, 30, 46, 0.6);
+  color: #cdd6f4;
+}
+
+#workspaces button {
+  padding: 0 6px;
+  color: #6c7086;
+  border-radius: 6px;
+}
+
+#workspaces button.active {
+  color: #11111b;
+  background: #b4befe;
+}
+
+#window,
+#clock,
+#pulseaudio,
+#network,
+#battery,
+#tray {
+  padding: 0 6px;
+}
+
+#battery.warning {
+  color: #f9e2af;
+}
+
+#battery.critical {
+  color: #f38ba8;
+}

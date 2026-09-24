@@ -8,7 +8,13 @@ kitty 与 Neovim 的个人配置，通过符号链接部署到 `~/.config`。
 config/
   kitty/    -> ~/.config/kitty
   nvim/     -> ~/.config/nvim
-install.sh  在新机器上建立上述链接
+  niri/     -> ~/.config/niri     （Linux：平铺窗口管理器，键位对齐 AeroSpace）
+  waybar/   -> ~/.config/waybar   （niri 下的状态栏）
+  fuzzel/   -> ~/.config/fuzzel   （niri 下的启动器）
+  mako/     -> ~/.config/mako     （niri 下的通知）
+system/
+  keyd/     系统级，需手动 sudo cp 到 /etc/keyd/（caps lock 按住 ctrl / 单击 esc）
+install.sh  在新机器上建立 config/ 下的链接
 ```
 
 仓库里的目录名直接对应 `~/.config` 下的名字，`install.sh` 会遍历 `config/*/`

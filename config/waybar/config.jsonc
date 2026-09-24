@@ -1,0 +1,44 @@
+// 顶部状态栏，类似 macOS 菜单栏；只在 niri 下启动（见 niri/config.kdl）
+{
+  "layer": "top",
+  "position": "top",
+  "height": 28,
+  "spacing": 12,
+
+  "modules-left": ["niri/workspaces", "niri/window"],
+  "modules-center": ["clock"],
+  "modules-right": ["tray", "pulseaudio", "network", "battery"],
+
+  "niri/window": {
+    "max-length": 60
+  },
+
+  "clock": {
+    "format": "{:%a %d %b  %H:%M}",
+    "tooltip-format": "<tt>{calendar}</tt>"
+  },
+
+  "pulseaudio": {
+    "format": "vol {volume}%",
+    "format-muted": "muted",
+    "on-click": "env XDG_CURRENT_DESKTOP=GNOME gnome-control-center sound"
+  },
+
+  "network": {
+    "format-wifi": "{essid}",
+    "format-ethernet": "wired",
+    "format-disconnected": "offline",
+    "tooltip-format": "{ipaddr} ({signalStrength}%)",
+    "on-click": "env XDG_CURRENT_DESKTOP=GNOME gnome-control-center wifi"
+  },
+
+  "battery": {
+    "states": { "warning": 20, "critical": 10 },
+    "format": "bat {capacity}%",
+    "format-charging": "chg {capacity}%"
+  },
+
+  "tray": {
+    "spacing": 8
+  }
+}
