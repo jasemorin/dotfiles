@@ -23,6 +23,7 @@ config/
   mako/     -> ~/.config/mako     （旧的通知守护进程，已换成 swaync，配置保留）
   swaync/   -> ~/.config/swaync   （niri 下的通知 + 右上角快捷设置面板）
   swaylock/ -> ~/.config/swaylock （niri 下的锁屏样式）
+  autostart/ -> ~/.config/autostart（覆盖系统自启动项：niri 下不启动 imsettings）
 system/     Linux 上手动部署的文件（不走 install.sh，见 docs/setup-asahi.md）
   keyd/     caps 层、fn 层键位（/etc/keyd/）
   tiny-dfr/ Touch Bar 默认显示媒体键（/etc/tiny-dfr/）

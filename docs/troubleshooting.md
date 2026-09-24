@@ -21,6 +21,14 @@ fn（KEY_FN=464）发不出去。Touch Bar 程序 tiny-dfr 只认 fn 来切换�
 - Touch Bar 默认显示媒体键（`system/tiny-dfr/config.toml` 里 `MediaLayerDefault = true`，同 macOS）
 - F1-F12 由 keyd 的 fn 层提供：fn+数字行（keyd 能**读到** fn，只是发不出去）
 
+## 每次登录 niri 都弹一条失败通知
+
+**原因**：Fedora 的 imsettings（输入法启动器）通过 `/etc/xdg/autostart/imsettings-start.desktop` 自动启动；
+没配输入法时它在 niri 下子进程报错退出（`~/.cache/imsettings/log` 里 `Child process exited with code 1`），然后发通知。
+
+**解决**：`config/autostart/imsettings-start.desktop` 覆盖系统那份，加 `NotShowIn=niri;`（GNOME 下照常）。
+以后如果要装中文输入法（如 fcitx5），记得去掉这个覆盖。
+
 ## kitty 下拉终端（Caps+Shift+Enter）一打开就崩溃
 
 **原因**：kitty 0.47 的 bug。`kitty.conf` 里的 `hide_window_decorations titlebar-only` 被下拉终端继承，
