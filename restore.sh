@@ -104,6 +104,14 @@ run sudo systemctl restart tiny-dfr || true
 put zswap/zswap-zstd.conf /etc/tmpfiles.d/zswap-zstd.conf
 put mglru/mglru.conf /etc/tmpfiles.d/mglru.conf
 run sudo systemd-tmpfiles --create /etc/tmpfiles.d/zswap-zstd.conf /etc/tmpfiles.d/mglru.conf
+# 第二个 8 GB 交换文件（安装时自带的只有 8 GB，Steam + Firefox 会把它用光，程序接连被 OOM 结束，见 memory.md）
+if [[ -f /var/swap/swapfile2 ]]; then
+  echo "已就位 /var/swap/swapfile2"
+else
+  run sudo btrfs filesystem mkswapfile --size 8G /var/swap/swapfile2
+fi
+grep -q '^/var/swap/swapfile2 ' /etc/fstab || { $DRY_RUN && echo "+ 把 swapfile2 加进 /etc/fstab" || echo '/var/swap/swapfile2 swap swap sw 0 0' | sudo tee -a /etc/fstab >/dev/null; }
+swapon --show=NAME --noheadings | grep -q swapfile2 || run sudo swapon /var/swap/swapfile2
 for f in system/tuned/gaming/*; do put "tuned/gaming/$(basename "$f")" "/etc/tuned/profiles/gaming/$(basename "$f")"; done
 # 通过 tuned-ppd 切到「平衡」（用电池时对应 balanced-battery）；直接 tuned-adm profile balanced 会让
 # PowerProfiles 接口报 unknown，顶栏快捷设置面板就认不出当前模式

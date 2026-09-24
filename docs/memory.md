@@ -3,7 +3,9 @@
 ## 现在的机制
 
 - **zswap + 交换文件**：内存紧张时，页面先在内存里压缩（zswap），放不下才写到 SSD 上的
-  `/var/swap/swapfile`（8 GB）。Asahi 故意用这套而不是 zram（`/etc/systemd/zram-generator.conf` 关掉了 zram），
+  `/var/swap/swapfile` 和 `swapfile2`（各 8 GB，共 16 GB）。原来只有 8 GB：2026-09-25 开着 Steam、Firefox、Chromium 时
+  被用光，Firefox、Chromium、Steam 接连被内核 OOM 结束（`journalctl -k | grep "Out of memory"`）。
+  多出的 8 GB 让内存不够时变慢而不是直接结束程序；`restore.sh` 会自动建。Asahi 故意用这套而不是 zram（`/etc/systemd/zram-generator.conf` 关掉了 zram），
   两套压缩叠在一起会互相干扰，**不要再加 zram**。
 - **压缩算法**：已从默认的 lzo 改成 zstd，同样的内存能多装约三成（`system/zswap/zswap-zstd.conf`）。
 - **电源模式**：`balanced`（swappiness 60）。不要用 `throughput-performance`：它把 swappiness 设成 10，
@@ -15,7 +17,8 @@
 
 ## 最大的内存大户
 
-- **Steam**：只开客户端就占 3.6–3.9 GB（见 [gaming.md](gaming.md)），不玩时一定要退出
+- **Steam**：只开客户端就占 3.6–3.9 GB（见 [gaming.md](gaming.md)），不玩时一定要退出。
+  `steam-arm64` 把它的虚拟机限制在 3.5 GB：否则下载游戏时虚拟机把文件缓存在自己的内存里，涨到 4 GB 以上且不释放
 - **Firefox**：见下
 - **Claude Code**：约 0.6–2 GB，`claude daemon stop --any` 可以全部停掉（对话可用 `claude --resume` 继续）
 

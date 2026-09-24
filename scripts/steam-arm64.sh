@@ -19,6 +19,11 @@ DL="$ARMHOME/downloads"
 PROTON=GE-Proton11-5-aarch64
 PROTON_URL="https://github.com/GloriousEggroll/proton-ge-custom/releases/download/GE-Proton11-5/$PROTON.tar.gz"
 DESKTOP="$HOME/.local/share/applications/steam-arm64.desktop"
+# 虚拟机内存上限（MiB）。muvm 默认给主机内存的 80%（约 5.9 GB）：虚拟机里读写过的文件（比如下载游戏）
+# 会留在它自己的页缓存里，在主机上就是普通的程序内存，只能被挤进交换空间、不会还回来。
+# 2026-09-25 下 CS2 时虚拟机涨到 4.2 GB（3.2 GB 在交换里），交换被撑满，其他程序接连被 OOM 结束。
+# ARM Steam 客户端约 1.4 GB，3.5 GB 够玩小游戏；大游戏临时调高：STEAM_ARM64_MEM=5120 steam-arm64
+MEM="${STEAM_ARM64_MEM:-3584}"
 
 install_client() {
     mkdir -p "$DL" "$STEAMROOT"
@@ -151,7 +156,7 @@ run_steam() {
     trap 'kill "$guard" 2>/dev/null' EXIT
     # muvm 会把 HOME 强制设回真实家目录（--env=HOME 无效），所以在虚拟机里用 env 设置，
     # 否则 ARM Steam 会读写真实的 ~/.steam（x86 Steam 的）
-    muvm -- env \
+    muvm --mem="$MEM" -- env \
         HOME="$ARMHOME" \
         LD_LIBRARY_PATH="$STEAMROOT/steamrtarm64/${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}" \
         "$STEAMROOT/steamrtarm64/steam" -noverifyfiles "$@"
