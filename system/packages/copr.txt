@@ -1,1 +1,2 @@
 alternateved/keyd
+errornointernet/quickshell

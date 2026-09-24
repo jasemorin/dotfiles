@@ -111,7 +111,8 @@ environment {
 screenshot-path "~/Pictures/Screenshots/Screenshot from %Y-%m-%d %H-%M-%S.png"
 
 // ── 开机启动 ──────────────────────────────────
-spawn-at-startup "waybar"
+// 顶栏：Quickshell（config/quickshell，胶囊各自模糊）；没装时退回 waybar
+spawn-sh-at-startup "command -v qs >/dev/null && exec qs || exec waybar"
 // 通知 + 右上角面板（点击顶栏时钟/系统图标打开）
 spawn-at-startup "swaync"
 // 壁纸：~/Pictures/wallpaper/uluru1.JPEG；没有的话用纯色
@@ -160,13 +161,7 @@ layer-rule {
     }
 }
 
-// 状态栏模糊
-layer-rule {
-    match namespace="^waybar$"
-    background-effect {
-        blur true
-    }
-}
+// 状态栏不开模糊：niri 会模糊整个图层矩形，胶囊之间会出现一条磨砂横带
 
 // kitty 下拉终端（caps+shift+enter）模糊；namespace 来自 quick-access-terminal 的 app_id 默认值
 layer-rule {

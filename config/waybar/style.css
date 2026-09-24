@@ -1,4 +1,4 @@
-/* 仿 GNOME 顶栏：Adwaita Sans 粗体、白色图标；半透明背景配合 niri 的 layer-rule 模糊 */
+/* 仿 GNOME 顶栏：Adwaita Sans 粗体、白色图标；每个模块是独立的半透明胶囊，栏本身透明 */
 * {
   font-family: "Adwaita Sans", "Noto Sans CJK SC", "Symbols Nerd Font", sans-serif;
   font-size: 14px;
@@ -9,7 +9,7 @@
 }
 
 window#waybar {
-  background: rgba(0, 0, 0, 0.35);
+  background: transparent;
   color: #ffffff;
 }
 
@@ -22,16 +22,17 @@ tooltip label {
   font-weight: normal;
 }
 
-/* 每个模块悬停时出现圆角高亮，和 GNOME 一样 */
+/* 胶囊：每个模块单独一个圆角底色，悬停变亮 */
+#workspaces,
 #window,
 #custom-clock,
 #memory,
 #network.speed,
 #tray,
 #system {
-  padding: 0 12px;
-  margin: 3px 2px;
+  padding: 0 14px;
   border-radius: 99px;
+  background: rgba(20, 20, 24, 0.7);
   transition: background 150ms;
 }
 
@@ -39,25 +40,25 @@ tooltip label {
 #memory:hover,
 #tray:hover,
 #system:hover {
-  background: rgba(255, 255, 255, 0.15);
+  background: rgba(55, 55, 60, 0.8);
 }
 
-/* 没有窗口时不留空白 */
-window#waybar.empty #window {
+/* 没有窗口 / 托盘为空时不显示空胶囊 */
+window#waybar.empty #window,
+#tray.empty {
   padding: 0;
-  margin: 0;
+  background: transparent;
 }
 
 /* 工作区：圆点，当前的是长条 */
 #workspaces {
-  margin-left: 10px;
-  padding: 0 4px;
+  padding: 0 8px;
 }
 
 #workspaces button {
   min-width: 8px;
   min-height: 8px;
-  margin: 11px 3px;
+  margin: 12px 3px;
   padding: 0;
   border-radius: 99px;
   background: rgba(255, 255, 255, 0.45);

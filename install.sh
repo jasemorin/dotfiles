@@ -25,7 +25,8 @@ link() {
 
   # 已存在真实文件/目录：先备份，不直接删除
   if [[ -e "$dst" || -L "$dst" ]]; then
-    local backup="$dst.backup.$(date +%Y%m%d%H%M%S)"
+    local backup
+    backup="$dst.backup.$(date +%Y%m%d%H%M%S)"
     echo "备份 $dst -> $backup"
     $DRY_RUN || mv "$dst" "$backup"
   fi

@@ -316,6 +316,7 @@ qt6-qtbase
 qt6-qtbase-gui
 qt6-qtdeclarative
 qt6-qtwayland-adwaita-decoration
+quickshell
 quota
 realmd
 realtek-firmware
