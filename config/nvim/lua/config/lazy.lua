@@ -11,4 +11,6 @@ require("lazy").setup({
   },
   install = { colorscheme = { "tokyonight" } },
   checker = { enabled = true, notify = false },
+  -- 没有插件依赖 luarocks；关掉以免 :checkhealth 在没装 luarocks 的机器上报错
+  rocks = { enabled = false },
 })
