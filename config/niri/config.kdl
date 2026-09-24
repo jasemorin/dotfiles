@@ -110,7 +110,7 @@ window-rule {
     clip-to-geometry true
 }
 
-// kitty 背景模糊（kitty.conf 里 background_opacity 0.70）
+// kitty 背景模糊（linux.conf 里 background_opacity 0.80）
 // draw-border-with-background false：否则聚焦时 focus ring 会画成实心底色透出来，看着像不透明
 window-rule {
     match app-id="^kitty$"
@@ -139,6 +139,14 @@ layer-rule {
 // 状态栏模糊
 layer-rule {
     match namespace="^waybar$"
+    background-effect {
+        blur true
+    }
+}
+
+// kitty 下拉终端（caps+shift+enter）模糊；namespace 来自 quick-access-terminal 的 app_id 默认值
+layer-rule {
+    match namespace="^kitty-quick-access$"
     background-effect {
         blur true
     }

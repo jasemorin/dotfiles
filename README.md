@@ -63,6 +63,15 @@ Caps 层的窗口键（加 Shift 为括号内动作）：
 - `Enter` 新开 kitty（下拉终端）
 - `Shift+/` 显示全部快捷键；`Esc` 应用抢占快捷键时恢复
 
+kitty 的命令统一用 Cmd（两台机器共用）：
+
+- `Cmd+T` / `Cmd+W` / `Cmd+1-5` / `Cmd+Shift+[ ]` 标签页；`Cmd+Shift+T` 从列表选标签（仅 Linux）
+- `Cmd+C` / `Cmd+V` 复制粘贴；`Cmd+K` 清屏（仅 Linux，Mac 上 `Cmd+Alt+K`）
+- `Cmd+↑ ↓` 跳到上一个/下一个命令提示符；`Cmd+Shift+↑ ↓` 回滚顶部/底部
+- `Cmd+F` 搜索回滚；`Cmd+G` 看上一条命令的完整输出
+- `Cmd+E` 打开链接（加 Shift 复制链接）；`Cmd+O` 打开文件路径（加 Shift 插入到命令行）
+- `Caps+Shift+Enter` 下拉终端（niri 键位）
+
 新增窗口键时，`system/keyd/default.conf` 和 `config/niri/config.kdl` 两边都要改。
 kitty 的分屏键位只在 macOS 加载（`config/kitty/macos.conf`），Linux 上分屏交给 niri。
 
