@@ -44,6 +44,22 @@ Ubuntu 也有实验性的 snap。就算客户端是原生的，绝大多数游�
 GeForce NOW、Xbox Cloud Gaming 在浏览器里玩，游戏在服务器上跑，不吃本机内存和显卡，只要网络好。
 这类服务对 Chromium 支持最好（`sudo dnf install chromium`）。
 
+## Steam 本身就很吃内存
+
+实测：只开 Steam 客户端（不开游戏），muvm 虚拟机就占主机约 **3.6–3.9 GB**。
+Steam 的界面是内嵌浏览器（CEF），跑在 x86 翻译层上特别重；内存不够时虚拟机里的进程被结束，
+表现为 **Steam 窗口频繁闪退**（`~/.local/share/Steam/logs/webhelper.txt` 里渲染进程不停重启）。
+主机日志看不到，因为是虚拟机内部的系统结束的。
+
+省内存的 Steam 设置：
+- 设置 → 界面：关「在网页视图中启用 GPU 加速渲染」（在 Asahi 上也更稳）、关动画头像和动画、关「启动时显示 Steam 新闻」
+- 设置 → 库：开「低性能模式」「低带宽模式」
+- 设置 → 游戏中：关 Steam 覆盖层
+- 设置 → 好友：关启动时自动登录好友
+- 平时用「视图 → 小模式」
+- 不开主界面直接启动游戏：`steam -silent steam://rungameid/游戏ID`（ID 在商店网址里，如 Hollow Knight 是 367520）
+- **不玩的时候退出 Steam**（菜单 Steam → 退出，关窗口只是缩到后台）
+
 ## 玩之前（8 GB 内存必做）
 
 - 关掉 Firefox 和不用的 Claude Code 会话，这两个加起来能占 4 GB 以上（见 [memory.md](memory.md)）
