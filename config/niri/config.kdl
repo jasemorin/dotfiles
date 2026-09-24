@@ -85,6 +85,12 @@ blur {
 
 prefer-no-csd
 
+// 临时用自己编译的 xwayland-satellite 0.8.3（~/.local/src，cargo build --release）：
+// Fedora 的 0.8.2 有回归，Steam 等 X11 应用的下拉菜单一打开就消失。Fedora 更新到 0.8.3 后删掉这段
+xwayland-satellite {
+    path "~/.local/bin/xwayland-satellite"
+}
+
 hotkey-overlay {
     skip-at-startup
 }

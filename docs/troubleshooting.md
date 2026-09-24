@@ -29,6 +29,14 @@ fn（KEY_FN=464）发不出去。Touch Bar 程序 tiny-dfr 只认 fn 来切换�
 **解决**：`config/autostart/imsettings-start.desktop` 覆盖系统那份，加 `NotShowIn=niri;`（GNOME 下照常）。
 中文输入法 fcitx5 由 niri 直接启动（`spawn-at-startup`），不经过 imsettings，所以这个覆盖保留即可。
 
+## Steam 等 X11 应用的下拉菜单闪一下就消失
+
+**原因**：xwayland-satellite 0.8.2 的回归（上游 issue #503），0.8.3 已修，Fedora 还没更新。
+
+**解决**：`sudo dnf install cargo clang libxcb-devel xcb-util-cursor-devel`，在 `~/.local/src` 编译 v0.8.3
+（`cargo build --release`），装到 `~/.local/bin/xwayland-satellite`，niri 配置里 `xwayland-satellite { path ... }` 指向它。
+Fedora 更新到 0.8.3 后删掉那段配置即可。
+
 ## kitty 下拉终端（Caps+Shift+Enter）一打开就崩溃
 
 **原因**：kitty 0.47 的 bug。`kitty.conf` 里的 `hide_window_decorations titlebar-only` 被下拉终端继承，
