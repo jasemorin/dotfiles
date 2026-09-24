@@ -179,6 +179,7 @@ ibus-libpinyin
 ibus-m17n
 ibus-table-chinese-cangjie
 ibus-typing-booster
+ImageMagick
 im-chooser
 imsettings
 imsettings-gsettings
@@ -386,6 +387,7 @@ wget2-wget
 which
 whois
 wireplumber
+wlsunset
 words
 wpa_supplicant
 xcb-util-cursor-devel

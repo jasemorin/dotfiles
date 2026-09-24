@@ -1,10 +1,16 @@
 # 锁屏（仅 niri 下），Catppuccin Mocha，与 kitty 主题一致
-# 触发：cmd+ctrl+q、闲置 5 分钟、睡眠前（见 niri/config.kdl）
+# 触发：cmd+ctrl+q、电源菜单（cmd+shift+q）、闲置 5 分钟、睡眠前（见 niri/config.kdl）
+# 背景：壁纸的模糊暗化版，niri 启动时用 magick 生成到 ~/.cache/swaylock/（壁纸没变就不重新生成）；
+# 图还没生成时 swaylock 只记一行 Failed to load background image，照样锁屏，用下面的纯色
+image=~/.cache/swaylock/wallpaper.png
+scaling=fill
 color=1e1e2e
 font=JetBrains Mono
 font-size=24
 indicator-radius=100
 indicator-thickness=8
+# 没输入时也显示圆环，锁屏上有个视觉中心
+indicator-idle-visible
 show-failed-attempts
 ignore-empty-password
 
@@ -16,10 +22,11 @@ ring-clear-color=f9e2af
 key-hl-color=cba6f7
 bs-hl-color=f38ba8
 
-inside-color=1e1e2e
-inside-ver-color=1e1e2e
-inside-wrong-color=1e1e2e
-inside-clear-color=1e1e2e
+# 圆环中间半透明，透出背后的模糊壁纸
+inside-color=1e1e2ecc
+inside-ver-color=1e1e2ecc
+inside-wrong-color=1e1e2ecc
+inside-clear-color=1e1e2ecc
 
 text-color=cdd6f4
 text-ver-color=89b4fa

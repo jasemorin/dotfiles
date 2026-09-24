@@ -58,6 +58,10 @@ layout {
     }
     default-column-width { proportion 0.5; }
 
+    // 工作区透明：壁纸放在背景层（backdrop，见下面 wallpaper 的 layer-rule），
+    // 切工作区时壁纸不跟着滑走，概览（caps+`）里也能看到壁纸而不是灰底
+    background-color "transparent"
+
     // Catppuccin Mocha，与 kitty 主题一致
     focus-ring {
         width 2
@@ -117,6 +121,8 @@ spawn-sh-at-startup "command -v qs >/dev/null && exec qs || exec waybar"
 spawn-sh-at-startup "command -v qs >/dev/null || exec swaync"
 // 壁纸：~/Pictures/wallpaper/uluru1.JPEG；没有的话用纯色
 spawn-sh-at-startup "if [ -f ~/Pictures/wallpaper/uluru1.JPEG ]; then exec swaybg -m fill -i ~/Pictures/wallpaper/uluru1.JPEG; else exec swaybg -c '#1e1e2e'; fi"
+// 锁屏背景（config/swaylock）：壁纸缩小、模糊、叠一层底色，约 1 秒；壁纸比缓存新时才重新生成
+spawn-sh-at-startup "w=~/Pictures/wallpaper/uluru1.JPEG c=~/.cache/swaylock/wallpaper.png; [ -f $w ] && [ ! $c -nt $w ] && mkdir -p ~/.cache/swaylock && magick $w -resize 1280x -blur 0x20 -fill '#1e1e2e' -colorize 40% $c"
 // 5 分钟锁屏，再过 30 秒关屏，合盖前锁屏
 spawn-sh-at-startup "swayidle -w timeout 300 'swaylock -f' timeout 330 'niri msg action power-off-monitors' before-sleep 'swaylock -f'"
 // 密码弹窗（polkit 认证代理）：没有它，需要管理员权限的图形操作会静默失败
@@ -161,8 +167,15 @@ layer-rule {
     }
 }
 
+// 壁纸（swaybg 的 namespace 是 wallpaper）放进 backdrop：配合上面透明的工作区背景，壁纸固定不动、概览里也显示
+layer-rule {
+    match namespace="^wallpaper$"
+    place-within-backdrop true
+}
+
 // Quickshell 的音量/亮度提示、快捷设置面板、通知弹窗和通知中心盖在窗口上：模糊背后的窗口，而不是默认的 xray（只透出壁纸）
 // 模糊区域由 quickshell 自己通过 ext-background-effect 申请，这里只改 xray
+// 电源菜单（quickshell-session）故意不在这里：全屏的菜单用 xray，只看到模糊的壁纸，和锁屏背景一致
 layer-rule {
     match namespace="^quickshell-(osd|quicksettings|notifications|notificationcenter)$"
     background-effect {
@@ -253,6 +266,8 @@ binds {
     Super+Space  hotkey-overlay-title="启动器 (Spotlight)" { spawn "fuzzel"; }
     Super+Q      repeat=false { close-window; }
     Super+Ctrl+Q hotkey-overlay-title="锁屏" { spawn "swaylock" "-f"; }
+    // 电源菜单：锁屏 / 睡眠 / 注销 / 重启 / 关机 / 重启进 macOS（config/quickshell/SessionMenu.qml）
+    Super+Shift+Q repeat=false hotkey-overlay-title="电源菜单" { spawn "qs" "ipc" "call" "session" "toggle"; }
     // 剪贴板历史：选中后用 cmd+v / caps+v 粘贴
     Super+Shift+V hotkey-overlay-title="剪贴板历史" { spawn-sh "cliphist list | fuzzel --dmenu --prompt '剪贴板 ' | cliphist decode | wl-copy"; }
 

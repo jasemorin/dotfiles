@@ -1,5 +1,6 @@
 // 快捷设置面板：点顶栏右上角系统图标打开（或 qs ipc call bar quickSettings），点外面或按 Esc 关闭
-// Wi-Fi / 蓝牙 / 勿扰开关、音量和亮度滑块、电源模式；通知在 NotificationCenter.qml（点时钟打开）
+// Wi-Fi / 蓝牙 / 勿扰 / 保持唤醒 / 夜间模式开关、音量和亮度滑块、电源模式；右上角锁屏和电源菜单（SessionMenu.qml）
+// 通知在 NotificationCenter.qml（点时钟打开）
 // 用 layer-shell 窗口而不是 PopupWindow：带 grabFocus 的弹出窗口必须由真实点击触发，
 // 从 IPC / 快捷键打开会被 niri 立刻撤掉。点外面关闭靠下面一层全屏透明窗口。
 import QtQuick
@@ -145,6 +146,32 @@ Scope {
             }
         }
 
+        // 右上角的圆形图标按钮（锁屏、电源）
+        component IconButton: Rectangle {
+            id: iconButton
+            property string icon
+            signal clicked
+
+            implicitWidth: 32
+            implicitHeight: 32
+            radius: 16
+            color: iconMouse.containsMouse ? Qt.rgba(1, 1, 1, 0.18) : Qt.rgba(1, 1, 1, 0.1)
+            Behavior on color { ColorAnimation { duration: 150 } }
+
+            Text {
+                anchors.centerIn: parent
+                text: iconButton.icon
+                color: "white"
+                font.pixelSize: 16
+            }
+            MouseArea {
+                id: iconMouse
+                anchors.fill: parent
+                hoverEnabled: true
+                onClicked: iconButton.clicked()
+            }
+        }
+
         component Slider: Item {
             id: slider
             property string icon
@@ -223,25 +250,53 @@ Scope {
                 focus: true
                 Keys.onEscapePressed: panel.open = false
 
-                // 顶部：电池
-                Row {
-                    readonly property var dev: UPower.displayDevice
-                    spacing: 8
-                    visible: dev.isLaptopBattery
-                    Text {
-                        text: "󰁹  " + Math.round(parent.dev.percentage * 100) + "%"
-                        color: "white"
-                        font.family: "Adwaita Sans"
-                        font.pixelSize: 14
-                        font.bold: true
-                    }
-                    Text {
+                // 顶部：左边电池，右边锁屏和电源菜单
+                Item {
+                    width: parent.width
+                    implicitHeight: 32
+
+                    Row {
                         readonly property var dev: UPower.displayDevice
+                        anchors.left: parent.left
                         anchors.verticalCenter: parent.verticalCenter
-                        text: dev.state === UPowerDeviceState.Charging ? "正在充电" : dev.state === UPowerDeviceState.FullyCharged ? "已充满" : dev.timeToEmpty > 0 ? "剩余 " + Math.floor(dev.timeToEmpty / 3600) + " 小时 " + Math.round(dev.timeToEmpty % 3600 / 60) + " 分" : ""
-                        color: Qt.rgba(1, 1, 1, 0.6)
-                        font.family: "Adwaita Sans"
-                        font.pixelSize: 13
+                        spacing: 8
+                        visible: dev.isLaptopBattery
+                        Text {
+                            text: "󰁹  " + Math.round(parent.dev.percentage * 100) + "%"
+                            color: "white"
+                            font.family: "Adwaita Sans"
+                            font.pixelSize: 14
+                            font.bold: true
+                        }
+                        Text {
+                            readonly property var dev: UPower.displayDevice
+                            anchors.verticalCenter: parent.verticalCenter
+                            text: dev.state === UPowerDeviceState.Charging ? "正在充电" : dev.state === UPowerDeviceState.FullyCharged ? "已充满" : dev.timeToEmpty > 0 ? "剩余 " + Math.floor(dev.timeToEmpty / 3600) + " 小时 " + Math.round(dev.timeToEmpty % 3600 / 60) + " 分" : ""
+                            color: Qt.rgba(1, 1, 1, 0.6)
+                            font.family: "Adwaita Sans"
+                            font.pixelSize: 13
+                        }
+                    }
+
+                    Row {
+                        anchors.right: parent.right
+                        anchors.verticalCenter: parent.verticalCenter
+                        spacing: 8
+
+                        IconButton {
+                            icon: "󰌾"
+                            onClicked: {
+                                panel.open = false;
+                                Quickshell.execDetached(["swaylock", "-f"]);
+                            }
+                        }
+                        IconButton {
+                            icon: "󰐥"
+                            onClicked: {
+                                panel.open = false;
+                                Toggles.sessionMenu = true;
+                            }
+                        }
                     }
                 }
 
@@ -284,6 +339,25 @@ Scope {
                             panel.open = false;
                             Notifs.centerOpen = true;
                         }
+                    }
+                    // 看视频、跑长任务时不自动锁屏；开着时顶栏时钟旁有个咖啡杯
+                    Tile {
+                        width: (parent.width - 10) / 2
+                        icon: "󰅶"
+                        title: "保持唤醒"
+                        subtitle: Toggles.keepAwake ? "不会自动锁屏" : "关闭"
+                        active: Toggles.keepAwake
+                        onToggled: Toggles.keepAwake = !Toggles.keepAwake
+                    }
+                    Tile {
+                        width: (parent.width - 10) / 2
+                        icon: "󰖔"
+                        title: "夜间模式"
+                        // 方块只放得下 7 个字左右；没装时要 sudo dnf install wlsunset
+                        subtitle: !Toggles.nightLightAvailable ? "未安装" : Toggles.nightLight ? "暖色 4000K" : "关闭"
+                        active: Toggles.nightLight
+                        onToggled: if (Toggles.nightLightAvailable)
+                            Toggles.nightLight = !Toggles.nightLight
                     }
                 }
 

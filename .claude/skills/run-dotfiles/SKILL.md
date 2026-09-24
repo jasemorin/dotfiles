@@ -55,7 +55,7 @@ cd ~/dotfiles && QS_ROOT=/tmp/qs-rpm/root .claude/skills/run-dotfiles/driver.sh 
 
 - **niri**（`config/niri/config.kdl`）：保存即自动重载，不用重启。先 `driver.sh check` 再看效果。
 - **quickshell**（`config/quickshell/*.qml`）：改完用 `driver.sh bar` 重启。通过 `~/.config/quickshell` 这个符号链接启动的实例**不会**自动重载（只有 `-p` 指向真实目录时才会）。
-  文件分工：`shell.qml` 入口；`Bar.qml` 顶栏；`QuickSettings.qml` 快捷设置面板；`Osd.qml` 音量/亮度提示；`NotificationPopups.qml` 通知弹窗、`NotificationCenter.qml` 通知中心（月历 + 历史）、`NotificationCard.qml` 一条通知（可侧滑）；`Niri`/`SysInfo`/`Brightness`/`Notifs.qml` 状态单例；`Pill`/`Label`/`SysIcon`/`Tooltip.qml` 组件。
+  文件分工：`shell.qml` 入口；`Bar.qml` 顶栏；`QuickSettings.qml` 快捷设置面板；`Osd.qml` 音量/亮度提示；`SessionMenu.qml` 电源菜单（`ipc session toggle`）；`BatteryWarn.qml` 低电量通知；`NotificationPopups.qml` 通知弹窗、`NotificationCenter.qml` 通知中心（月历 + 历史）、`NotificationCard.qml` 一条通知（可侧滑）；`Niri`/`SysInfo`/`Brightness`/`Notifs`/`Toggles.qml` 状态单例（Toggles：保持唤醒、夜间模式、电源菜单开关）；`Pill`/`Label`/`SysIcon`/`Tooltip.qml` 组件。
   **重启会丢掉通知历史**（`keepOnReload` 只管重载），测通知前别在中途重启。
 - **waybar**（备用顶栏，没装 quickshell 时 niri 才会启动它）：不会自动重载，用 `driver.sh bar`。
 - **新增 `config/<工具>/`**：`./install.sh` 会自动链接，不用改脚本。
@@ -65,6 +65,13 @@ cd ~/dotfiles && QS_ROOT=/tmp/qs-rpm/root .claude/skills/run-dotfiles/driver.sh 
 
 - **悬停提示、点击**：niri 没有移动指针的 IPC。把组件复制到临时目录，写一个 `WlrLayer.Overlay` 的测试 `shell.qml`，把 `Tooltip.qml` 的 `visible: shown && text !== ""` 改成 `visible: text !== ""` 强制显示，用 `niri msg action spawn -- sh -c "exec qs -p <临时目录>"` 起一个单独的实例截图。overlay 层在全屏窗口之上，用户开着全屏 Firefox 也能截到。
 - **快捷设置面板**：`driver.sh ipc bar quickSettings` 打开，截图，再调一次关闭（它打开时独占键盘，别让它一直开着）。通知中心同理：`driver.sh ipc bar notifications`。
+- **电源菜单**：它打开时独占键盘，用户正好按下 Enter 就会真的锁屏 / 重启。把配置复制到临时目录，
+  `sed -i -E 's/cmd: \[[^]]*\]/cmd: ["true"]/' SessionMenu.qml` 把所有动作换成 `true`，
+  `driver.sh msg action spawn -- qs -p <临时目录>` 起实例，`WAYLAND_DISPLAY=wayland-1 qs ipc -p <临时目录> call session toggle` 打开、截图、再调一次关闭。
+- **worktree 里改的 niri 配置**（`~/.config/niri` 指向主工作区，不会自动加载 worktree 的）：
+  `driver.sh msg action load-config-file --path <worktree>/config/niri/config.kdl` 临时加载，截图（概览用 `msg action toggle-overview`），
+  **一定要**再 `load-config-file --path ~/.config/niri/config.kdl` 换回来：`--path` 会改掉 niri 监视的文件，日志里 `loaded config from` 可以确认。
+- **锁屏配置**：别真的锁屏。`WAYLAND_DISPLAY=does-not-exist swaylock -d -C <配置>` 会解析配置、加载背景图（日志 `Loaded image …` 或 `Failed to load background image`），然后连不上显示器退出。
 - **通知**：`notify-send -a 应用 -i 图标 "标题" "正文"`；动作按钮用 `-A "id=文字" --wait`（放后台跑）；紧急用 `-u critical`。确认通知服务是 quickshell：`busctl --user status org.freedesktop.Notifications | grep ^Comm`。注意 **niri 每次截图都会发一条「Screenshot captured」通知**（transient，弹窗过后不进历史）。
 - **只能靠逻辑验证的交互**（侧滑等）：临时实例里用假的 `QtObject` 当通知，直接调 `offset` / `finishSwipe()`，用 `console.warn` 输出结果。测试窗口别放在屏幕中间：用户的鼠标可能正好在上面，真实输入会干扰结果。
 - **音量/亮度提示**：`wpctl set-volume @DEFAULT_AUDIO_SINK@ 0.05+ -l 1.0` 后截屏幕下方，再 `0.05-` 调回；亮度先记下 `brightnessctl --class=backlight get`，`set +1%` 后截图，再 `set <原值>`。
@@ -83,7 +90,7 @@ cd ~/dotfiles && QS_ROOT=/tmp/qs-rpm/root .claude/skills/run-dotfiles/driver.sh 
 - **带 `grabFocus` 的 `PopupWindow` 必须由真实点击打开**，从 IPC / 快捷键打开会被 niri 立刻撤掉。所以快捷设置面板用的是 overlay 层的 `PanelWindow`，下面垫一层全屏透明窗口，点到外面就关闭。
 - **`qs ipc call` 报 `No running instances`**：它只找同一个 `WAYLAND_DISPLAY` 上、同一个配置路径的实例。用 `driver.sh ipc`；实例也要和 niri 启动项一样不带 `-p`（用 `~/.config/quickshell`）。
 - **niri 下 Qt 没有图标主题**（GNOME 下会自动用 Adwaita），fcitx 的 `input-keyboard-symbolic` 加载失败，染白后变成白方块。`shell.qml` 开头的 `//@ pragma IconTheme Adwaita` 解决；托盘右键菜单还需要 `//@ pragma UseQApplication`。
-- **模糊默认是 xray**（只模糊壁纸）。盖在窗口上的面板和提示会透出壁纸颜色（乌鲁鲁的红土色），niri 的 `layer-rule` 对 `quickshell-(osd|quicksettings)` 设了 `xray false`。
+- **模糊默认是 xray**（只模糊壁纸）。盖在窗口上的面板和提示会透出壁纸颜色（乌鲁鲁的红土色），niri 的 `layer-rule` 对 `quickshell-(osd|quicksettings|notifications|notificationcenter)` 设了 `xray false`。全屏的电源菜单（`quickshell-session`）故意保留 xray，只透出模糊壁纸。壁纸在 backdrop 里（`place-within-backdrop`）时 xray 照样能透出它。
 - **`tuned-adm profile balanced` 会让 PowerProfiles 接口报 `unknown`**（tuned-ppd 在用电池时期望的是 `balanced-battery`），Quickshell 就停在默认值，误显示成「平衡」。面板按 `tuned-adm active` 显示；切换用 PowerProfiles（不用 sudo：`busctl --system set-property net.hadess.PowerProfiles /net/hadess/PowerProfiles net.hadess.PowerProfiles ActiveProfile s balanced`）。
 - **QML 里的 `console.log` 看不到**：日志默认不输出 debug 级别，`qs log -r "*.debug=true"` 也读不出来。调试用 `console.warn`，它会出现在 `/tmp/dotfiles-driver/bar.log`。
 - **通知服务只能有一个**：swaync 占着 `org.freedesktop.Notifications` 时 quickshell 注册不上（日志 `Could not register notification server`，对方退出后会自动重试）。`~/.local/share/dbus-1/services/org.freedesktop.Notifications.service` 的自动启动已改成只在没装 quickshell 时启动 swaync，否则 quickshell 重启的间隙会被 swaync 抢走。

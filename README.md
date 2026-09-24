@@ -6,6 +6,7 @@ Mac 和 Asahi 两台机器共用；只属于一边的设置分开放（见下方
 ## 文档
 
 - [docs/keybindings.md](docs/keybindings.md)：键位速查（Caps 层 / Cmd / kitty / shell）
+- [docs/desktop.md](docs/desktop.md)：桌面功能一览（顶栏、快捷设置、通知、电源菜单、锁屏、夜间模式）
 - [docs/setup-asahi.md](docs/setup-asahi.md)：Asahi 上从零部署
 - [docs/reinstall.md](docs/reinstall.md)：重装系统并保留所有设置（备份到 GitHub + iCloud）
 - [docs/troubleshooting.md](docs/troubleshooting.md)：踩过的坑和解决办法
@@ -20,12 +21,12 @@ config/
   kitty/    -> ~/.config/kitty
   nvim/     -> ~/.config/nvim
   niri/     -> ~/.config/niri     （Linux：平铺窗口管理器）
-  quickshell/ -> ~/.config/quickshell（niri 下的顶栏、快捷设置、通知、音量/亮度提示，背景模糊）
+  quickshell/ -> ~/.config/quickshell（niri 下的顶栏、快捷设置、通知、音量/亮度提示、电源菜单、低电量提醒，背景模糊）
   waybar/   -> ~/.config/waybar   （备用顶栏：没装 quickshell 时启动）
   fuzzel/   -> ~/.config/fuzzel   （niri 下的启动器）
   mako/     -> ~/.config/mako     （旧的通知守护进程，已换成 swaync，配置保留）
   swaync/   -> ~/.config/swaync   （备用通知中心：没装 quickshell 时启动）
-  swaylock/ -> ~/.config/swaylock （niri 下的锁屏样式）
+  swaylock/ -> ~/.config/swaylock （niri 下的锁屏样式，背景是模糊的壁纸）
   autostart/ -> ~/.config/autostart（覆盖系统自启动项：niri 下不启动 imsettings）
   fcitx5/   -> ~/.config/fcitx5   （中文输入法：小鹤双拼，Alt+Space 切换）
 system/     Linux 上手动部署的文件（不走 install.sh，见 docs/setup-asahi.md）
