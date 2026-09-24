@@ -24,6 +24,7 @@ window#waybar {
 #window,
 #clock,
 #pulseaudio,
+#bluetooth,
 #network,
 #battery,
 #tray {

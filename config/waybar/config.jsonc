@@ -7,7 +7,7 @@
 
   "modules-left": ["niri/workspaces", "niri/window"],
   "modules-center": ["clock"],
-  "modules-right": ["tray", "pulseaudio", "network", "battery"],
+  "modules-right": ["tray", "bluetooth", "pulseaudio", "network", "battery"],
 
   "niri/window": {
     "max-length": 60
@@ -22,6 +22,15 @@
     "format": "vol {volume}%",
     "format-muted": "muted",
     "on-click": "env XDG_CURRENT_DESKTOP=GNOME gnome-control-center sound"
+  },
+
+  "bluetooth": {
+    "format": "bt",
+    "format-off": "bt off",
+    "format-connected": "bt {device_alias}",
+    "tooltip-format-connected": "{device_enumerate}",
+    "tooltip-format-enumerate-connected": "{device_alias} {device_battery_percentage}%",
+    "on-click": "env XDG_CURRENT_DESKTOP=GNOME gnome-control-center bluetooth"
   },
 
   "network": {
