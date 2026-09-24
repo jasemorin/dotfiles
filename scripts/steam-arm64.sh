@@ -111,9 +111,11 @@ EOF
 }
 
 run_steam() {
-    exec env HOME="$ARMHOME" muvm \
-        --env=HOME="$ARMHOME" \
-        --env=LD_LIBRARY_PATH="$STEAMROOT/steamrtarm64/${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}" \
+    # muvm 会把 HOME 强制设回真实家目录（--env=HOME 无效），所以在虚拟机里用 env 设置，
+    # 否则 ARM Steam 会读写真实的 ~/.steam（x86 Steam 的）
+    exec muvm -- env \
+        HOME="$ARMHOME" \
+        LD_LIBRARY_PATH="$STEAMROOT/steamrtarm64/${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}" \
         "$STEAMROOT/steamrtarm64/steam" -noverifyfiles "$@"
 }
 
