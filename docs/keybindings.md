@@ -8,6 +8,7 @@
 | 按键 | 作用 |
 |---|---|
 | Caps 单击 | Esc |
+| 左 Shift + 右 Shift | 大小写锁定（再按一次关闭；Linux / niri） |
 | Caps 按住 + 窗口键 | niri 窗口管理（keyd 发出 `ctrl+alt+super+键`） |
 | Caps 按住 + 其他键 | Ctrl（Caps+C 中断、Caps+R 搜历史、Firefox 里 Caps+T 新标签等） |
 | 物理 Control | 普通 Ctrl，不受 keyd 影响（Control+L 清屏、nvim 的 Control+hjkl 等） |
@@ -45,7 +46,18 @@
 | Cmd+滚轮 上下 / 左右 | 切工作区 / 切列 |
 | 按住 Cmd 拖动 | 移动窗口 |
 
-其他：Touch Bar 的音量、屏幕亮度、播放键照常；按住 fn 时 Touch Bar 第 5、6 个键调键盘背光；Ctrl+Alt+Delete 退出 niri；鼠标悬停即聚焦（只对完全在屏幕内的窗口）。
+其他：Touch Bar 默认显示媒体键（屏幕亮度、键盘背光、音量、播放）；Ctrl+Alt+Delete 退出 niri；鼠标悬停即聚焦（只对完全在屏幕内的窗口）。
+
+## fn（Linux，keyd 提供，同 macOS）
+
+| 按键 | 作用 |
+|---|---|
+| fn+1 … fn+0、fn+-、fn+= | F1 … F12 |
+| fn+↑ / fn+↓ | Page Up / Page Down |
+| fn+← / fn+→ | Home / End |
+| fn+Delete | 向后删除 |
+
+Touch Bar 不会随 fn 切换（原因见 troubleshooting.md），一直显示媒体键。
 
 ## kitty（Cmd，两台机器通用）
 

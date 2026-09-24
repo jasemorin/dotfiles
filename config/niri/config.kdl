@@ -11,7 +11,9 @@ input {
     keyboard {
         xkb {
             layout "us"
-            // caps lock 由 keyd 处理，这里不要再加 caps: 选项
+            // caps lock 键由 keyd 处理，这里不要再加 caps: 选项
+            // 大小写锁定改为同时按左右 shift（再按一次关闭）
+            options "shift:both_capslock"
         }
         repeat-delay 250
         repeat-rate 40

@@ -42,6 +42,10 @@ sudo mkdir -p /etc/systemd/system/keyd.service.d
 printf '[Service]\nRestart=on-failure\nRestartSec=1\n' | sudo tee /etc/systemd/system/keyd.service.d/restart.conf
 sudo systemctl daemon-reload
 
+# Touch Bar 默认显示媒体键（F1-F12 用 keyd 的 fn+数字行）
+sudo mkdir -p /etc/tiny-dfr && sudo cp ~/dotfiles/system/tiny-dfr/config.toml /etc/tiny-dfr/
+sudo systemctl restart tiny-dfr
+
 # zswap 改用 zstd 压缩（不用重启）
 sudo cp ~/dotfiles/system/zswap/zswap-zstd.conf /etc/tmpfiles.d/
 sudo systemd-tmpfiles --create /etc/tmpfiles.d/zswap-zstd.conf

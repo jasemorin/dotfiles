@@ -9,6 +9,7 @@ Mac 和 Asahi 两台机器共用；只属于一边的设置分开放（见下方
 - [docs/setup-asahi.md](docs/setup-asahi.md)：Asahi 上从零部署
 - [docs/troubleshooting.md](docs/troubleshooting.md)：踩过的坑和解决办法
 - [docs/memory.md](docs/memory.md)：内存管理（zswap、Firefox、电源模式）
+- [docs/gaming.md](docs/gaming.md)：在 Asahi 上玩游戏（Steam、原生游戏、云游戏）
 
 ## 结构
 
@@ -23,7 +24,8 @@ config/
   swaync/   -> ~/.config/swaync   （niri 下的通知 + 右上角快捷设置面板）
   swaylock/ -> ~/.config/swaylock （niri 下的锁屏样式）
 system/     Linux 上手动部署的文件（不走 install.sh，见 docs/setup-asahi.md）
-  keyd/     caps 层键位（/etc/keyd/）
+  keyd/     caps 层、fn 层键位（/etc/keyd/）
+  tiny-dfr/ Touch Bar 默认显示媒体键（/etc/tiny-dfr/）
   zswap/    zswap 改用 zstd（/etc/tmpfiles.d/）
   bash/     fzf、zoxide（链接到 ~/.bashrc.d/）
 docs/       速查表和指南

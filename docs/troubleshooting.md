@@ -11,6 +11,16 @@ journalctl -u keyd -b | tail      # 看是否有 SEGV / core-dump
 ```
 预防：部署新配置用 `sudo systemctl restart keyd`；并加上崩溃自动重启（见 setup-asahi.md 第 3 步）。
 
+## 按住 fn 时 Touch Bar 不切换到 F1-F12
+
+**原因**：keyd 独占物理键盘后，通过自己的虚拟键盘转发按键；而它的虚拟键盘只支持到键码 372，
+fn（KEY_FN=464）发不出去。Touch Bar 程序 tiny-dfr 只认 fn 来切换层，所以收不到。重启 tiny-dfr 没用。
+（检查方法：`/proc/bus/input/devices` 里 `keyd virtual keyboard` 的 KEY 位图没有 464。）
+
+**解决**：
+- Touch Bar 默认显示媒体键（`system/tiny-dfr/config.toml` 里 `MediaLayerDefault = true`，同 macOS）
+- F1-F12 由 keyd 的 fn 层提供：fn+数字行（keyd 能**读到** fn，只是发不出去）
+
 ## kitty 下拉终端（Caps+Shift+Enter）一打开就崩溃
 
 **原因**：kitty 0.47 的 bug。`kitty.conf` 里的 `hide_window_decorations titlebar-only` 被下拉终端继承，
