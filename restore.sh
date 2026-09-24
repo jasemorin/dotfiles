@@ -137,6 +137,18 @@ if [[ -n "$wifi" ]]; then
   run sudo systemctl restart NetworkManager
 fi
 
+step "顶栏图标字体 Symbols Nerd Font"
+if [[ -n "$(fc-list "Symbols Nerd Font")" ]]; then
+  echo "已安装"
+elif ! $DRY_RUN; then
+  mkdir -p ~/.local/share/fonts/NerdFontsSymbolsOnly
+  curl -fsSL https://github.com/ryanoasis/nerd-fonts/releases/latest/download/NerdFontsSymbolsOnly.tar.xz |
+    tar xJ -C ~/.local/share/fonts/NerdFontsSymbolsOnly
+  fc-cache -f
+else
+  echo "+ 下载 NerdFontsSymbolsOnly.tar.xz 到 ~/.local/share/fonts"
+fi
+
 step "GitHub 登录"
 if gh auth status >/dev/null 2>&1; then
   echo "已登录"

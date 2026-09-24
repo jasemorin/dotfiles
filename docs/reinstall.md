@@ -52,6 +52,7 @@ bash <(curl -fsSL https://raw.githubusercontent.com/jasemorin/dotfiles/asahi/res
 - 部署 `/etc` 下的 keyd、tiny-dfr、zswap、mglru、tuned（即 setup-asahi.md 第 3 步）
 - 系统的 xwayland-satellite 低于 0.8.3 时自己编译（见 [troubleshooting.md](troubleshooting.md)）
 - `dconf load` 桌面设置
+- 没有 Symbols Nerd Font（顶栏图标）时自动下载
 - 解压 `~/Downloads` 里的备份包（不覆盖已有文件），恢复 Wi-Fi，刷新字体缓存
 - `gh auth login`
 

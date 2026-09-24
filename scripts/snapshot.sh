@@ -19,7 +19,8 @@ echo "软件包：$(wc -l <"$PKG/dnf.txt") 个 dnf，$(wc -l <"$PKG/flatpak.txt"
   echo '# 恢复：dconf load / < ~/dotfiles/system/dconf.ini'
   echo
   dconf dump / |
-    awk '/^\[/{skip = ($0 ~ /window-state|file-chooser|filechooser|gnome-system-monitor|nm-applet|control-center|org\/gnome\/calendar|org\/gnome\/software|app-folders|settings-daemon\/plugins\/color|color-chooser|org\/gnome\/Ptyxis|notifications|world-clocks|nautilus/)} !skip' |
+    # login-screen 被系统锁定，dconf load 会报错
+    awk '/^\[/{skip = ($0 ~ /window-state|file-chooser|filechooser|gnome-system-monitor|nm-applet|control-center|org\/gnome\/calendar|org\/gnome\/software|app-folders|settings-daemon\/plugins\/color|color-chooser|org\/gnome\/Ptyxis|notifications|world-clocks|nautilus|login-screen/)} !skip' |
     grep -vE 'last-selected|welcome-dialog' | cat -s
 } >"$DOTFILES/system/dconf.ini"
 echo "dconf：已导出到 system/dconf.ini"

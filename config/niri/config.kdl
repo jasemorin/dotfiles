@@ -114,8 +114,8 @@ screenshot-path "~/Pictures/Screenshots/Screenshot from %Y-%m-%d %H-%M-%S.png"
 spawn-at-startup "waybar"
 // 通知 + 右上角面板（点击顶栏时钟/系统图标打开）
 spawn-at-startup "swaync"
-// 壁纸：~/Pictures/wallpaper/ryo-blue.JPEG；没有的话用纯色
-spawn-sh-at-startup "if [ -f ~/Pictures/wallpaper/ryo-blue.JPEG ]; then exec swaybg -m fill -i ~/Pictures/wallpaper/ryo-blue.JPEG; else exec swaybg -c '#1e1e2e'; fi"
+// 壁纸：~/Pictures/wallpaper/uluru1.JPEG；没有的话用纯色
+spawn-sh-at-startup "if [ -f ~/Pictures/wallpaper/uluru1.JPEG ]; then exec swaybg -m fill -i ~/Pictures/wallpaper/uluru1.JPEG; else exec swaybg -c '#1e1e2e'; fi"
 // 5 分钟锁屏，再过 30 秒关屏，合盖前锁屏
 spawn-sh-at-startup "swayidle -w timeout 300 'swaylock -f' timeout 330 'niri msg action power-off-monitors' before-sleep 'swaylock -f'"
 // 密码弹窗（polkit 认证代理）：没有它，需要管理员权限的图形操作会静默失败
@@ -127,9 +127,11 @@ spawn-at-startup "fcitx5" "-d" "--replace"
 
 // ── 窗口规则 ──────────────────────────────────
 // 所有窗口圆角；blur 需要正确的几何裁剪
+// open-maximized-to-edges false：Firefox 等请求最大化时只占满列（保留间隙和圆角），不贴边变方角
 window-rule {
     geometry-corner-radius 10
     clip-to-geometry true
+    open-maximized-to-edges false
 }
 
 // kitty 背景模糊（linux.conf 里 background_opacity 0.80）
