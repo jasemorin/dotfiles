@@ -10,6 +10,7 @@ Mac 和 Asahi 两台机器共用；只属于一边的设置分开放（见下方
 - [docs/troubleshooting.md](docs/troubleshooting.md)：踩过的坑和解决办法
 - [docs/memory.md](docs/memory.md)：内存管理（zswap、Firefox、电源模式）
 - [docs/gaming.md](docs/gaming.md)：在 Asahi 上玩游戏（Steam、原生游戏、云游戏）
+- [docs/disk-space.md](docs/disk-space.md)：从 macOS 让出空间给 Linux
 
 ## 结构
 
