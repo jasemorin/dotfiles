@@ -45,7 +45,7 @@
 | Cmd+滚轮 上下 / 左右 | 切工作区 / 切列 |
 | 按住 Cmd 拖动 | 移动窗口 |
 
-其他：Touch Bar 的音量、亮度、播放键照常；Ctrl+Alt+Delete 退出 niri；鼠标悬停即聚焦（只对完全在屏幕内的窗口）。
+其他：Touch Bar 的音量、屏幕亮度、播放键照常；按住 fn 时 Touch Bar 第 5、6 个键调键盘背光；Ctrl+Alt+Delete 退出 niri；鼠标悬停即聚焦（只对完全在屏幕内的窗口）。
 
 ## kitty（Cmd，两台机器通用）
 

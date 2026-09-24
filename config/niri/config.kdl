@@ -254,6 +254,9 @@ binds {
     XF86AudioNext        allow-when-locked=true { spawn-sh "playerctl next"; }
     XF86MonBrightnessUp   allow-when-locked=true { spawn "brightnessctl" "--class=backlight" "set" "+10%"; }
     XF86MonBrightnessDown allow-when-locked=true { spawn "brightnessctl" "--class=backlight" "set" "10%-"; }
+    // 键盘背光：Touch Bar 媒体层（按住 fn）第 5、6 个键
+    XF86KbdBrightnessUp   allow-when-locked=true { spawn "brightnessctl" "--device=kbd_backlight" "set" "+10%"; }
+    XF86KbdBrightnessDown allow-when-locked=true { spawn "brightnessctl" "--device=kbd_backlight" "set" "10%-"; }
 
     Ctrl+Alt+Delete { quit; }
 }
