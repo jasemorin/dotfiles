@@ -31,7 +31,7 @@
 | `` ` `` | 概览（类似 Mission Control） | — |
 | `Enter` | 新开 kitty | 下拉终端（再按一次收起） |
 | `/` | — | 显示全部快捷键 |
-| `Esc` | 应用抢占快捷键时恢复 | — |
+| `Esc` | 应用抢占快捷键时恢复 | 重启进 macOS（只这一次，弹密码框确认） |
 
 新增窗口键时，`system/keyd/default.conf` 和 `config/niri/config.kdl` 两边都要改。
 

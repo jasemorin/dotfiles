@@ -239,6 +239,8 @@ binds {
 
     // 逃生口：应用抢占快捷键时 caps+esc 恢复
     Ctrl+Alt+Super+Escape allow-inhibiting=false { toggle-keyboard-shortcuts-inhibit; }
+    // caps+shift+esc：重启进 macOS（只这一次，会弹密码框确认）
+    Ctrl+Alt+Super+Shift+Escape hotkey-overlay-title="重启进 macOS" { spawn "reboot-macos"; }
 
     // ── cmd：macOS 习惯 ──
     Super+Space  hotkey-overlay-title="启动器 (Spotlight)" { spawn "fuzzel"; }
