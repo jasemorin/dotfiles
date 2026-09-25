@@ -1,6 +1,6 @@
 // 快捷设置面板：点顶栏右上角系统图标、Cmd+Shift+S，或 qs ipc call bar quickSettings 打开；点外面或按 Esc 关闭
 // Wi-Fi / 蓝牙 / 勿扰 / 保持唤醒 / 夜间模式开关、音量和亮度滑块、电源模式；右上角锁屏和电源菜单（SessionMenu.qml）
-// Wi-Fi、蓝牙方块右边的 󰅂 展开网络 / 设备列表（WifiList.qml、BluetoothList.qml）
+// Wi-Fi、蓝牙方块右边的 󰅂 展开网络 / 设备列表（WifiList.qml、BluetoothList.qml）；有播放器时显示正在播放（MediaCard.qml）
 // 通知在 NotificationCenter.qml（点时钟打开）
 //
 // 键盘优先：方向键或 hjkl 移动焦点框，Tab / Shift+Tab 按顺序走，Enter / 空格执行；
@@ -74,6 +74,8 @@ Scope {
         const ids = detail === "wifi" ? wifiList.focusIds : detail === "bt" ? btList.focusIds : [];
         for (const id of ids)
             rows.push([id]);
+        if (media.focusIds.length > 0)
+            rows.push(media.focusIds);
         rows.push(["volume"], ["brightness"], profiles.map(p => p.id));
         return rows;
     }
@@ -171,7 +173,9 @@ Scope {
                 if (prof) {
                     PowerProfiles.profile = prof.p;
                     tunedRefresh.restart();
-                } else if (id.startsWith("net:"))
+                } else if (id.startsWith("media:"))
+                    media.activate(id);
+                else if (id.startsWith("net:"))
                     wifiList.activate(id);
                 else if (id.startsWith("dev:"))
                     btList.activate(id);
@@ -640,6 +644,14 @@ Scope {
                         focusedId: panel.kbd ? panel.focusId : ""
                         onRowClicked: id => panel.click(id)
                     }
+                }
+
+                // 正在播放（没有播放器时不显示）
+                MediaCard {
+                    id: media
+                    width: parent.width
+                    focusedId: panel.kbd ? panel.focusId : ""
+                    onButtonClicked: id => panel.click(id)
                 }
 
                 Slider {
