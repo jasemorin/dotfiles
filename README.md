@@ -8,8 +8,8 @@ kitty 与 Neovim 的个人配置，通过符号链接部署到 `~/.config`。
 config/
   kitty/      -> ~/.config/kitty
   nvim/       -> ~/.config/nvim
-  karabiner/  -> ~/.config/karabiner    键盘改造（Caps Lock 双重身份 / Hyper 键）
-  aerospace/  -> ~/.config/aerospace    平铺窗口管理，官方默认配置（alt 键位）
+  karabiner/  -> ~/.config/karabiner    键盘改造（Caps：单击 Esc / 按住 Ctrl / 窗口层；右 Cmd = Hyper）
+  aerospace/  -> ~/.config/aerospace    旧的平铺窗口管理配置（已换成 OmniWM，暂留）
   git/        -> ~/.config/git          全局 gitignore
   rstudio/    -> ~/.config/rstudio      RStudio 偏好与自定义 CSS
 install.sh  在新机器上建立上述链接
@@ -61,12 +61,14 @@ Neovim 配置基于 **LazyVim**：`lua/config/` 与 `lua/plugins/` 里只写与 
 | 层 | 工具 | 配置位置 |
 | --- | --- | --- |
 | 按键改造 | Karabiner-Elements | `config/karabiner/` |
-| 窗口管理 | AeroSpace | `config/aerospace/` |
+| 窗口管理 | OmniWM（niri 布局） | `~/.config/omniwm/settings.toml`（不在仓库，由 app 自己写） |
 | 终端 | kitty | `config/kitty/` |
 | 编辑器 | Neovim + LazyVim | `config/nvim/` |
 
-AeroSpace 用官方默认配置（`alt-hjkl` 移焦点、`alt-数字/字母` 切工作区、`alt-shift-;` 进 service 模式）。
-Karabiner 里的 Hyper 键（按住右 Cmd）目前没有被 AeroSpace 使用，留着给以后用。
+键位与 Linux（`asahi` 分支，niri + keyd）一致，完整表格见 [docs/keybindings.md](docs/keybindings.md)：
+按住 Caps + 窗口键 → Karabiner 发出 `⌃⌥⌘+键` → OmniWM；加 Shift 就是 `⌃⌥⇧⌘+键`。
+Option 不给窗口管理用，留给终端（kitty 里 Option 当 Alt）。
+右 Cmd 的 Hyper 同样是 `⌃⌥⇧⌘`，所以 右Cmd+窗口键 = Caps+Shift+窗口键。
 
 ## 注意
 
