@@ -10,8 +10,10 @@
 // Bar.qml          顶栏（胶囊、悬停提示、媒体）
 // QuickSettings.qml 点系统图标打开的面板
 // Osd.qml          音量 / 亮度提示
+// SessionMenu.qml  电源菜单（cmd+shift+Q）
+// BatteryWarn.qml  低电量通知
 // Notifs.qml       通知服务（状态单例）；NotificationPopups.qml 弹窗；NotificationCenter.qml 点时钟打开的通知中心
-// Niri / SysInfo / Brightness.qml  状态单例
+// Niri / SysInfo / Brightness / Toggles.qml  状态单例（Toggles：保持唤醒、夜间模式、电源菜单开关）
 import QtQuick
 import Quickshell
 import Quickshell.Services.Pipewire
@@ -30,4 +32,8 @@ ShellRoot {
     Osd {}
 
     NotificationPopups {}
+
+    SessionMenu {}
+
+    BatteryWarn {}
 }

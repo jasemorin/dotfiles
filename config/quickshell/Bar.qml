@@ -49,6 +49,12 @@ PanelWindow {
         precision: SystemClock.Minutes
     }
 
+    // 保持唤醒（快捷设置里的开关）：顶栏一直可见，挂在它上面的 idle inhibitor 让 swayidle 不锁屏、不关屏
+    IdleInhibitor {
+        window: bar
+        enabled: Toggles.keepAwake
+    }
+
     function sh(cmd) {
         Quickshell.execDetached(["sh", "-c", cmd]);
     }
@@ -119,7 +125,7 @@ PanelWindow {
         }
     }
 
-    // ── 中：时钟，点击打开通知中心；有未读通知时右边一个小圆点，勿扰时显示铃铛 ──
+    // ── 中：时钟，点击打开通知中心；有未读通知时右边一个小圆点，勿扰时显示铃铛，保持唤醒时显示咖啡杯 ──
     Pill {
         id: clockPill
         anchors.centerIn: parent
@@ -132,6 +138,10 @@ PanelWindow {
 
         Label {
             text: Qt.formatDateTime(clock.date, "M月d日  HH:mm")
+        }
+        Label {
+            visible: Toggles.keepAwake
+            text: "󰅶"
         }
         Label {
             visible: Notifs.dnd
