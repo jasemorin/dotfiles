@@ -28,7 +28,7 @@
 
 - `~/.config/mozilla/firefox/<配置>/user.js`（**不在 dotfiles 里**，换机器要重新建）：
   - `browser.tabs.unloadOnLowMemory = true`：内存紧张时自动卸载很久没看的标签页
-  - `dom.ipc.processCount = 4`（默认 8）：网页内容进程减半，标签多时约省 0.5–1 GB
+  - `dom.ipc.processCount = 4`（默认 8）：只限制不隔离的网页进程。开着站点隔离（Fission，进程名 `Isolated Web Co`）时每个网站有自己的进程、不受它限制，所以效果很小（约 0–200 MB）
 - 装了 uBlock Origin：屏蔽广告和追踪脚本
 
 ## niri 会话里不跑的 GNOME 后台服务
