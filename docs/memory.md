@@ -26,9 +26,18 @@
 
 曾经一个 Firefox 占到约 7 GB（2 GB 内存 + 5 GB 交换）。已做的设置：
 
-- `about:config` 里 `browser.tabs.unloadOnLowMemory = true`（写在 Firefox 配置目录的 `user.js`，
-  **不在 dotfiles 里**，换机器要重新设）：内存紧张时自动卸载很久没看的标签页
+- `~/.config/mozilla/firefox/<配置>/user.js`（**不在 dotfiles 里**，换机器要重新建）：
+  - `browser.tabs.unloadOnLowMemory = true`：内存紧张时自动卸载很久没看的标签页
+  - `dom.ipc.processCount = 4`（默认 8）：网页内容进程减半，标签多时约省 0.5–1 GB
 - 装了 uBlock Origin：屏蔽广告和追踪脚本
+
+## niri 会话里不跑的 GNOME 后台服务
+
+- `config/autostart/org.gnome.Evolution-alarm-notify.desktop`：niri 下不启动日历提醒。
+  系统里这一项没有 `OnlyShowIn`，会连带拉起 evolution-source-registry / calendar-factory / addressbook-factory
+- 其他 GNOME 自启动项（localsearch 文件索引、gsd-*、gnome-keyring 等）自带 `OnlyShowIn=GNOME`，niri 下本来就不启动
+- 系统服务：`~/optimise-memory.sh` 逐项询问后关掉 ModemManager、ABRT、cups、avahi、atd、rsyslog，
+  可选去掉 GDM（tty1 登录直接进 niri）；撤销命令在 `~/optimise-memory-undo.sh`
 
 日常习惯：
 - `about:unloads`：手动卸载最占内存的标签页（标签还在，点开重新加载）
