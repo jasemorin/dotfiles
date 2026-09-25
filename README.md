@@ -33,7 +33,7 @@ system/     Linux 上手动部署的文件（不走 install.sh，见 docs/setup-
   keyd/     caps 层、fn 层键位（/etc/keyd/）
   tiny-dfr/ Touch Bar 默认显示媒体键（/etc/tiny-dfr/）
   zswap/    zswap 改用 zstd（/etc/tmpfiles.d/）
-  mglru/    内存耗尽时防卡死（/etc/tmpfiles.d/）
+  mglru/    启用 MGLRU，关闭 min_ttl 防卡死（/etc/tmpfiles.d/）
   tuned/    gaming 电源模式：性能 + 保留 swappiness 60（/etc/tuned/profiles/）
   bash/     fzf、zoxide（链接到 ~/.bashrc.d/）
   packages/ dnf / flatpak / COPR 软件包列表（scripts/snapshot.sh 生成）

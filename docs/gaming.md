@@ -64,6 +64,10 @@ Steam 的界面是内嵌浏览器（CEF），跑在 x86 翻译层上特别重；
 表现为 **Steam 窗口频繁闪退**（`~/.local/share/Steam/logs/webhelper.txt` 里渲染进程不停重启）。
 主机日志看不到，因为是虚拟机内部的系统结束的。
 
+**交换还很空却被结束**（2026-09-25 玩 Big Walk 两次）：内核日志是 `kswapd0 invoked oom-killer`，`Free swap` 还有 13 GB。
+原因是 MGLRU 的 `min_ttl_ms=1000`：游戏加载时短时间读入大量数据，最近 1 秒的页面留不住就直接 OOM，不等交换。
+已改成 0（见 [memory.md](memory.md)）。确认：`cat /sys/kernel/mm/lru_gen/min_ttl_ms` 应为 0。
+
 **主机内存耗尽时整个 Steam 被结束**（2026-09-25 实际遇到两次）：内核日志里是
 `Out of memory: Killed process … (VM:fedora)`（`journalctl -k | grep -i "out of memory"`）。
 当时 8 GB 交换已用完，Steam 虚拟机 3.3 GB、Firefox 约 4.7 GB。内核结束的是占用最大的**单个进程**，

@@ -12,8 +12,10 @@
   内存紧时系统先丢文件缓存而不是把闲置页面压进 zswap，更容易卡，而且 CPU 一直高频更费电。
   如果在 GNOME 电源菜单里选过「性能」，会被切成这个模式。
 - **systemd-oomd**：内存和交换都快满时，会结束占用最多的那组进程。
-- **MGLRU 防卡死**（`system/mglru/mglru.conf`）：完整启用内核的新内存回收机制，`min_ttl_ms=1000` 保护最近 1 秒用过的页面；
-  内存实在耗尽时直接结束占用最多的进程，而不是整机卡顿好几秒（ChromeOS 的做法）。
+- **MGLRU**（`system/mglru/mglru.conf`）：完整启用内核的新内存回收机制。`min_ttl_ms` 设为 **0**（关闭）：
+  原来的 1000（最近 1 秒用过的页面留不住就直接 OOM）不看交换空间，2026-09-25 玩 Big Walk 时交换还剩 13 GB，
+  整个 Steam 虚拟机却在加载阶段两次被结束（内核日志 `kswapd0 invoked oom-killer` + `Free swap` 很大就是它）。
+  防卡死改由 systemd-oomd 负责。
 
 ## 最大的内存大户
 
@@ -26,9 +28,18 @@
 
 曾经一个 Firefox 占到约 7 GB（2 GB 内存 + 5 GB 交换）。已做的设置：
 
-- `about:config` 里 `browser.tabs.unloadOnLowMemory = true`（写在 Firefox 配置目录的 `user.js`，
-  **不在 dotfiles 里**，换机器要重新设）：内存紧张时自动卸载很久没看的标签页
+- `~/.config/mozilla/firefox/<配置>/user.js`（**不在 dotfiles 里**，换机器要重新建）：
+  - `browser.tabs.unloadOnLowMemory = true`：内存紧张时自动卸载很久没看的标签页
+  - `dom.ipc.processCount = 4`（默认 8）：只限制不隔离的网页进程。开着站点隔离（Fission，进程名 `Isolated Web Co`）时每个网站有自己的进程、不受它限制，所以效果很小（约 0–200 MB）
 - 装了 uBlock Origin：屏蔽广告和追踪脚本
+
+## niri 会话里不跑的 GNOME 后台服务
+
+- `config/autostart/org.gnome.Evolution-alarm-notify.desktop`：niri 下不启动日历提醒。
+  系统里这一项没有 `OnlyShowIn`，会连带拉起 evolution-source-registry / calendar-factory / addressbook-factory
+- 其他 GNOME 自启动项（localsearch 文件索引、gsd-*、gnome-keyring 等）自带 `OnlyShowIn=GNOME`，niri 下本来就不启动
+- 系统服务：`~/optimise-memory.sh` 逐项询问后关掉 ModemManager、ABRT、cups、avahi、atd、rsyslog，
+  可选去掉 GDM（tty1 登录直接进 niri）；撤销命令在 `~/optimise-memory-undo.sh`
 
 日常习惯：
 - `about:unloads`：手动卸载最占内存的标签页（标签还在，点开重新加载）

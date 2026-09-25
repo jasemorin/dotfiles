@@ -55,7 +55,7 @@ sudo systemctl restart tiny-dfr
 sudo cp ~/dotfiles/system/zswap/zswap-zstd.conf /etc/tmpfiles.d/
 sudo systemd-tmpfiles --create /etc/tmpfiles.d/zswap-zstd.conf
 
-# 内存耗尽时防卡死（MGLRU）
+# MGLRU（min_ttl_ms=0，原因见 docs/memory.md）
 sudo cp ~/dotfiles/system/mglru/mglru.conf /etc/tmpfiles.d/
 sudo systemd-tmpfiles --create /etc/tmpfiles.d/mglru.conf
 
@@ -100,7 +100,7 @@ Firefox 内存设置见 [memory.md](memory.md)。
 niri validate                                   # niri 配置无误
 systemctl is-active keyd                        # active
 cat /sys/module/zswap/parameters/compressor    # zstd
-cat /sys/kernel/mm/lru_gen/min_ttl_ms          # 1000
+cat /sys/kernel/mm/lru_gen/min_ttl_ms          # 0
 tuned-adm active                                # balanced
 pgrep -a polkit-mate                            # 密码弹窗代理在跑
 pgrep -af 'cliphist store'                      # 剪贴板历史在记录

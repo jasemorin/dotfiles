@@ -148,12 +148,25 @@ warn_low_memory() {
     fi
 }
 
+# 磁盘剩余不到 5 GB 时提醒：Steam 一打开就会继续未完成的下载 / 更新，写满磁盘会让一堆程序 SIGBUS 崩溃、
+# 正在保存的文件被截成 0 字节（2026-09-25 下 CS2、Elden Ring 时遇到两次）
+warn_low_disk() {
+    local free
+    free=$(df -B1M --output=avail "$HOME" | tail -1 | awk '{printf "%.1f", $1 / 1024}')
+    if awk -v f="$free" 'BEGIN { exit !(f < 5) }'; then
+        notify-send -u critical -a "Steam (arm64)" "磁盘只剩 ${free} GB" \
+            "Steam 会继续未完成的下载和更新，写满磁盘会让程序崩溃。先在「下载」里看看还要多少空间；清理办法见 Obsidian 的「磁盘与分区」。" 2>/dev/null || true
+    fi
+}
+
 run_steam() {
     warn_low_memory
+    warn_low_disk
     guard_memory &
-    local guard=$!
-    # 不用 exec：Steam 退出后要停掉 guard_memory
-    trap 'kill "$guard" 2>/dev/null' EXIT
+    # 不用 exec：Steam 退出后要停掉 guard_memory。进程号在这里就展开写进 trap：
+    # 退出时函数早已返回，引用局部变量会是空的，guard_memory 就成了孤儿一直跑（2026-09-25 遇到过）
+    # shellcheck disable=SC2064
+    trap "kill $! 2>/dev/null" EXIT
     # muvm 会把 HOME 强制设回真实家目录（--env=HOME 无效），所以在虚拟机里用 env 设置，
     # 否则 ARM Steam 会读写真实的 ~/.steam（x86 Steam 的）
     muvm --mem="$MEM" -- env \

@@ -170,7 +170,7 @@ window-rule {
 // 启动器模糊；圆角要和 fuzzel.ini 的 radius 一致，否则模糊层是方角
 layer-rule {
     match namespace="^launcher$"
-    geometry-corner-radius 12
+    geometry-corner-radius 22
     background-effect {
         blur true
     }
