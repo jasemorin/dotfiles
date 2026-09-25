@@ -12,8 +12,10 @@
   内存紧时系统先丢文件缓存而不是把闲置页面压进 zswap，更容易卡，而且 CPU 一直高频更费电。
   如果在 GNOME 电源菜单里选过「性能」，会被切成这个模式。
 - **systemd-oomd**：内存和交换都快满时，会结束占用最多的那组进程。
-- **MGLRU 防卡死**（`system/mglru/mglru.conf`）：完整启用内核的新内存回收机制，`min_ttl_ms=1000` 保护最近 1 秒用过的页面；
-  内存实在耗尽时直接结束占用最多的进程，而不是整机卡顿好几秒（ChromeOS 的做法）。
+- **MGLRU**（`system/mglru/mglru.conf`）：完整启用内核的新内存回收机制。`min_ttl_ms` 设为 **0**（关闭）：
+  原来的 1000（最近 1 秒用过的页面留不住就直接 OOM）不看交换空间，2026-09-25 玩 Big Walk 时交换还剩 13 GB，
+  整个 Steam 虚拟机却在加载阶段两次被结束（内核日志 `kswapd0 invoked oom-killer` + `Free swap` 很大就是它）。
+  防卡死改由 systemd-oomd 负责。
 
 ## 最大的内存大户
 
