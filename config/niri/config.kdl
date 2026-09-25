@@ -159,11 +159,11 @@ window-rule {
 }
 
 // Steam 的通知不走通知服务，而是弹一个浮动窗口（默认出现在屏幕中间 / 随机位置）：
-// 固定到右下角（离边 10px，和窗口间隙一致；右上角留给 Quickshell 的通知弹窗），弹出时不抢键盘焦点
+// 固定到右上角、顶栏下方（y=46 和 Quickshell 通知弹窗同一个位置：顶栏 6+32 再空 8），弹出时不抢键盘焦点
 // 写法来自 niri wiki 的 Application Issues → Steam
 window-rule {
     match app-id="steam" title=r#"^notificationtoasts_\d+_desktop$"#
-    default-floating-position x=10 y=10 relative-to="bottom-right"
+    default-floating-position x=10 y=46 relative-to="top-right"
     open-focused false
 }
 
