@@ -1,39 +1,47 @@
 # 键位速查
 
-> 窗口管理部分只在 Linux（niri + keyd）上有；kitty 的 Cmd 键位两台机器通用，个别只在一边的已标注。
-> 在 niri 里随时按 **Caps+Shift+/** 可以在屏幕上看全部快捷键。
+> Caps 层窗口管理两台机器通用：Linux 是 keyd + niri，Mac 是 Karabiner + OmniWM（同样发 `⌃⌥⌘+键`）。
+> kitty 的 Cmd 键位也两边通用。只在一边有的已标注。
+> 随时按 **Caps+Shift+/**：niri 显示全部快捷键，OmniWM 打开命令面板。
 
 ## 总原则：一个修饰键只管一类事
 
 | 按键 | 作用 |
 |---|---|
 | Caps 单击 | Esc |
-| 左 Shift + 右 Shift | 大小写锁定（再按一次关闭；Linux / niri） |
-| Caps 按住 + 窗口键 | niri 窗口管理（keyd 发出 `ctrl+alt+super+键`） |
+| 左 Shift + 右 Shift | 大小写锁定（再按一次关闭；两边都有） |
+| Caps 按住 + 窗口键 | 窗口管理（keyd / Karabiner 发出 `ctrl+alt+super+键` / `⌃⌥⌘+键`） |
 | Caps 按住 + 其他键 | Ctrl（Caps+C 中断、Caps+R 搜历史、Firefox 里 Caps+T 新标签等） |
-| 物理 Control | 普通 Ctrl，不受 keyd 影响（Control+L 清屏、nvim 的 Control+hjkl 等） |
+| 物理 Control | 普通 Ctrl，不受 keyd / Karabiner 影响（Control+L 清屏、nvim 的 Control+hjkl 等） |
 | Cmd | macOS 式的应用 / 系统命令 |
 | Alt | 不占用，留给终端和应用（Alt+b/f 按词跳、Alt+C 模糊 cd） |
 | Alt+Space | 中英文输入切换（fcitx5 小鹤双拼，Linux） |
 
-## niri：Caps 层（按住 Caps）
+## Caps 层（按住 Caps；niri / OmniWM）
 
 | 按键 | 作用 | 加 Shift |
 |---|---|---|
 | `h` / `l` | 焦点移到左 / 右列 | 把整列往左 / 右移 |
 | `j` / `k` | 焦点移到下 / 上窗口（到头切工作区） | 窗口往下 / 上移（到头移到相邻工作区） |
-| `1`–`9` | 切到工作区；再按一次当前数字回到上一个 | 把当前列送过去 |
+| `1`–`9` | 切到工作区；再按一次当前数字回到上一个（仅 Linux；Mac 用 Caps+Tab） | 把当前列送过去 |
 | `,` / `.` | 列变窄 / 变宽 10% | 窗口变矮 / 变高 10% |
-| `'` | 轮换列宽（⅓ → ½ → ⅔ → 全宽） | 在浮动 / 平铺窗口间切焦点 |
+| `'` | 轮换列宽（⅓ → ½ → ⅔ → 全宽） | 在浮动 / 平铺窗口间切焦点（仅 Linux） |
 | `m` | 最大化列 | 全屏 |
 | `[` / `]` | 把窗口并入左 / 右列，或拆出来 | — |
 | `;` | 同列窗口叠成标签 | 切换浮动 |
 | `` ` `` | 概览（类似 Mission Control） | — |
-| `Enter` | 新开 kitty | 下拉终端（再按一次收起） |
-| `/` | — | 显示全部快捷键 |
-| `Esc` | 应用抢占快捷键时恢复 | 重启进 macOS（只这一次，弹密码框确认） |
+| `Enter` | 新开 kitty | 下拉终端（再按一次收起；Mac 上是 OmniWM 的 quake 终端） |
+| `Tab` | 回到上一个工作区（仅 Mac） | — |
+| `/` | — | 显示全部快捷键（Mac：OmniWM 命令面板） |
+| `Esc` | 应用抢占快捷键时恢复（仅 Linux） | 重启进 macOS（仅 Linux，只这一次，弹密码框确认） |
 
-新增窗口键时，`system/keyd/default.conf` 和 `config/niri/config.kdl` 两边都要改。
+新增窗口键时要改四处：Linux 的 `system/keyd/default.conf` + `config/niri/config.kdl`，
+Mac 的 `config/karabiner/karabiner.json`（「Caps 层窗口键」规则）+ `~/.config/omniwm/settings.toml`（`[[hotkeys]]`）。
+
+Mac 上的几个例外（Karabiner 直接调用 `omniwmctl`，不发热键）：
+- Caps+`[` / `]`：OmniWM 没有「并入或拆出」的热键，只有 CLI 命令。
+- Caps+Shift+`,` / `.`：`⌃⌥⇧⌘+.` 会触发系统 sysdiagnose，不能当热键发。
+- Caps+Enter：`open -na kitty`。
 
 ## niri：Cmd
 
