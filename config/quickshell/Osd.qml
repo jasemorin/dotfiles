@@ -1,4 +1,5 @@
-// 音量 / 亮度提示：按键调节时在屏幕下方弹出一个模糊胶囊，1.5 秒后消失
+// 音量 / 屏幕亮度 / 键盘背光 / 大写锁定提示：变化时在屏幕下方弹出一个模糊胶囊，1.5 秒后消失
+// 大写锁定（同时按左右 Shift 切换，见 niri 配置）没有进度条，中间写「大写锁定 开 / 关」
 import QtQuick
 import Quickshell
 import Quickshell.Wayland
@@ -7,14 +8,14 @@ import Quickshell.Services.Pipewire
 PanelWindow {
     id: osd
 
-    property string kind: "volume"   // volume / brightness
+    property string kind: "volume"   // volume / brightness / keyboard / capslock
     property bool shown: false
     // 启动时的初始值变化不算
     property bool armed: false
 
     readonly property var audio: Pipewire.defaultAudioSink ? Pipewire.defaultAudioSink.audio : null
-    readonly property real value: kind === "volume" ? (audio && !audio.muted ? audio.volume : 0) : Brightness.value
-    readonly property string icon: kind === "brightness" ? "󰃠" : !audio || audio.muted ? "󰝟" : ["󰕿", "󰖀", "󰕾"][Math.min(2, Math.floor(audio.volume * 3))]
+    readonly property real value: kind === "volume" ? (audio && !audio.muted ? audio.volume : 0) : kind === "keyboard" ? Keyboard.backlightValue : Brightness.value
+    readonly property string icon: kind === "brightness" ? "󰃠" : kind === "keyboard" ? "󰌌" : kind === "capslock" ? "󰪛" : !audio || audio.muted ? "󰝟" : ["󰕿", "󰖀", "󰕾"][Math.min(2, Math.floor(audio.volume * 3))]
 
     function show(k) {
         if (!armed)
@@ -43,6 +44,11 @@ PanelWindow {
     Connections {
         target: Brightness
         function onChangesChanged() { osd.show("brightness"); }
+    }
+    Connections {
+        target: Keyboard
+        function onBacklightChangesChanged() { osd.show("keyboard"); }
+        function onCapsChangesChanged() { osd.show("capslock"); }
     }
 
     visible: shown
@@ -74,7 +80,18 @@ PanelWindow {
             color: "white"
             font.pixelSize: 18
         }
+        // 大写锁定：文字代替进度条
+        Text {
+            visible: osd.kind === "capslock"
+            anchors.centerIn: parent
+            text: "大写锁定  " + (Keyboard.capsLock ? "开" : "关")
+            color: "white"
+            font.family: "Adwaita Sans"
+            font.pixelSize: 14
+            font.bold: true
+        }
         Rectangle {
+            visible: osd.kind !== "capslock"
             anchors.left: icon.right
             anchors.leftMargin: 10
             anchors.right: pct.left
@@ -93,6 +110,7 @@ PanelWindow {
         }
         Text {
             id: pct
+            visible: osd.kind !== "capslock"
             anchors.right: parent.right
             anchors.rightMargin: 18
             anchors.verticalCenter: parent.verticalCenter
