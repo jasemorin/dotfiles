@@ -11,6 +11,7 @@ Rectangle {
 
     required property var notif
     property bool popup: false
+    property bool focused: false   // 通知中心里的键盘焦点
     signal swiped
 
     // ── 侧滑 ──
@@ -224,5 +225,9 @@ Rectangle {
             hoverEnabled: true
             onClicked: card.notif.dismiss()
         }
+    }
+
+    FocusRing {
+        visible: card.focused
     }
 }

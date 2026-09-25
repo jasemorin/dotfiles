@@ -95,6 +95,23 @@ xwayland-satellite {
     path "~/.local/bin/xwayland-satellite"
 }
 
+// Cmd+Tab 切换窗口（niri 自带的最近窗口切换器，按住 Cmd 时显示）：Cmd+` 只在同一个应用的窗口间切；加 Shift 反向。
+// 切换器里 ←→ / h l 选，Q 关掉选中的窗口（和 Cmd+Q 一样），Esc 取消。
+// 自己写 binds 会去掉默认的 Alt+Tab / Alt+`：Alt 留给终端和应用。高亮用强调色、圆角和面板一致
+recent-windows {
+    highlight {
+        active-color "#b4befe"
+        urgent-color "#f38ba8"
+        corner-radius 18
+    }
+    binds {
+        Mod+Tab         { next-window; }
+        Mod+Shift+Tab   { previous-window; }
+        Mod+grave       { next-window     filter="app-id"; }
+        Mod+Shift+grave { previous-window filter="app-id"; }
+    }
+}
+
 hotkey-overlay {
     skip-at-startup
 }
@@ -277,6 +294,9 @@ binds {
     Super+Ctrl+Q hotkey-overlay-title="锁屏" { spawn "swaylock" "-f"; }
     // 电源菜单：锁屏 / 睡眠 / 注销 / 重启 / 关机 / 重启进 macOS（config/quickshell/SessionMenu.qml）
     Super+Shift+Q repeat=false hotkey-overlay-title="电源菜单" { spawn "qs" "ipc" "call" "session" "toggle"; }
+    // 快捷设置 / 通知中心（Quickshell），打开后全程可以用键盘操作；再按一次关闭
+    Super+Shift+S repeat=false hotkey-overlay-title="快捷设置" { spawn "qs" "ipc" "call" "bar" "quickSettings"; }
+    Super+Shift+N repeat=false hotkey-overlay-title="通知中心" { spawn "qs" "ipc" "call" "bar" "notifications"; }
     // 剪贴板历史：选中后用 cmd+v / caps+v 粘贴
     Super+Shift+V hotkey-overlay-title="剪贴板历史" { spawn-sh "cliphist list | fuzzel --dmenu --prompt '剪贴板 ' | cliphist decode | wl-copy"; }
 
