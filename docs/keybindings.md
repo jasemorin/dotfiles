@@ -43,6 +43,9 @@
 | Cmd+Shift+V | 剪贴板历史（选中后 Cmd+V / Caps+V 粘贴） |
 | Cmd+Q | 关闭窗口 |
 | Cmd+Ctrl+Q | 锁屏 |
+| Cmd+Shift+S | 快捷设置（方向键 / hjkl 移动，Enter 执行，Esc 关闭，见 desktop.md） |
+| Cmd+Shift+N | 通知中心（j k 选，Enter 打开，x 删除，d 勿扰，Esc 关闭） |
+| Cmd+Tab / Cmd+` | 切换窗口 / 同一应用的窗口（按住 Cmd，←→ 选，Q 关掉选中的窗口；加 Shift 反向）。Alt+Tab 不占用 |
 | Cmd+Shift+Q | 电源菜单：锁屏 / 睡眠 / 注销 / 重启 / 关机 / 重启进 macOS（←→ 选，Enter 确认，Esc 取消） |
 | Cmd+Shift+3 / 4 / 5 | 截图：全屏 / 选区 / 窗口（存到 `~/Pictures/Screenshots`，同时复制到剪贴板） |
 | Cmd+滚轮 上下 / 左右 | 切工作区 / 切列 |
