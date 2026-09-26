@@ -11,6 +11,7 @@ Rectangle {
     id: card
 
     property string focusedId: ""
+    property bool active: true   // 面板开着：只有这时才每秒刷新进度
     signal buttonClicked(string id)
 
     readonly property var player: {
@@ -43,7 +44,7 @@ Rectangle {
     Timer {
         interval: 1000
         repeat: true
-        running: card.visible && card.player !== null && card.player.isPlaying
+        running: card.active && card.visible && card.player !== null && card.player.isPlaying
         onTriggered: card.player.positionChanged()
     }
 

@@ -650,6 +650,7 @@ Scope {
                 MediaCard {
                     id: media
                     width: parent.width
+                    active: panel.open
                     focusedId: panel.kbd ? panel.focusId : ""
                     onButtonClicked: id => panel.click(id)
                 }

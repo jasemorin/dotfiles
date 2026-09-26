@@ -1,8 +1,10 @@
-// 内存、网速（读 /proc）和网络状态（nmcli）
+// 内存、网速（读 /proc）和网络状态（Quickshell.Networking，NetworkManager 有变化时自己推送）
+// 不起进程：/proc 文件用 FileView 定时重读；以前每 2 / 5 秒起一次 cat，每 5 秒起一个 sh + 三次 nmcli
 pragma Singleton
 import QtQuick
 import Quickshell
 import Quickshell.Io
+import Quickshell.Networking
 
 Singleton {
     id: root
@@ -14,10 +16,18 @@ Singleton {
     property string netDown: "0.0B/s"
     property var lastNet: null
 
-    property string netState: "none"   // wifi / ethernet / none
-    property int wifiSignal: 0
-    property string wifiSsid: ""
-    property bool wifiEnabled: true
+    // ── 网络状态 ──
+    readonly property var wifiDevice: Networking.devices.values.find(d => d.type === DeviceType.Wifi) ?? null
+    readonly property var wifiNetwork: wifiDevice ? wifiDevice.networks.values.find(n => n.connected) ?? null : null
+    readonly property bool wiredConnected: Networking.devices.values.some(d => d.type === DeviceType.Wired && d.connected)
+    readonly property string netState: wifiNetwork ? "wifi" : wiredConnected ? "ethernet" : "none"   // wifi / ethernet / none
+    readonly property int wifiSignal: wifiNetwork ? Math.round(wifiNetwork.signalStrength * 100) : 0
+    readonly property string wifiSsid: wifiNetwork ? wifiNetwork.name : ""
+    readonly property bool wifiEnabled: Networking.wifiEnabled
+
+    function setWifi(on) {
+        Networking.wifiEnabled = on;
+    }
 
     // 和 waybar 的 {bandwidthUpBytes} 一样：1000 进制，一位小数
     function speed(bytes) {
@@ -30,91 +40,57 @@ Singleton {
         return bytes.toFixed(1) + units[i] + "/s";
     }
 
-    function setWifi(on) {
-        root.wifiEnabled = on;
-        Quickshell.execDetached(["nmcli", "radio", "wifi", on ? "on" : "off"]);
-        nmTimer.restart();
-    }
-
-    Process {
-        id: memQuery
-        command: ["cat", "/proc/meminfo"]
-        stdout: StdioCollector {
-            onStreamFinished: {
-                const get = k => parseInt(text.match(new RegExp("^" + k + ":\\s+(\\d+)", "m"))[1]);
-                const total = get("MemTotal");
-                const used = total - get("MemAvailable");
-                root.memPercent = Math.round(used / total * 100);
-                root.memUsedGiB = used / 1048576;
-                root.memTotalGiB = total / 1048576;
-            }
-        }
+    FileView {
+        id: meminfo
+        path: "/proc/meminfo"
+        blockLoading: true
     }
     Timer {
         interval: 5000
         running: true
         repeat: true
         triggeredOnStart: true
-        onTriggered: memQuery.running = true
+        onTriggered: {
+            meminfo.reload();
+            const text = meminfo.text();
+            const get = k => parseInt((text.match(new RegExp("^" + k + ":\\s+(\\d+)", "m")) || [0, 0])[1]);
+            const total = get("MemTotal");
+            if (!total)
+                return;
+            const used = total - get("MemAvailable");
+            root.memPercent = Math.round(used / total * 100);
+            root.memUsedGiB = used / 1048576;
+            root.memTotalGiB = total / 1048576;
+        }
     }
 
-    Process {
-        id: netQuery
-        command: ["cat", "/proc/net/dev"]
-        stdout: StdioCollector {
-            onStreamFinished: {
-                let rx = 0, tx = 0;
-                for (const line of text.split("\n").slice(2)) {
-                    const f = line.trim().split(/[:\s]+/);
-                    if (f.length < 10 || f[0] === "lo")
-                        continue;
-                    rx += Number(f[1]);
-                    tx += Number(f[9]);
-                }
-                const now = Date.now();
-                if (root.lastNet) {
-                    const dt = (now - root.lastNet.t) / 1000;
-                    root.netDown = root.speed(Math.max(0, rx - root.lastNet.rx) / dt);
-                    root.netUp = root.speed(Math.max(0, tx - root.lastNet.tx) / dt);
-                }
-                root.lastNet = { t: now, rx: rx, tx: tx };
-            }
-        }
+    FileView {
+        id: netdev
+        path: "/proc/net/dev"
+        blockLoading: true
     }
     Timer {
         interval: 2000
         running: true
         repeat: true
         triggeredOnStart: true
-        onTriggered: netQuery.running = true
-    }
-
-    // 第一行：Wi-Fi 开关；第二行：当前 Wi-Fi「信号:名称」；第三行：已连接的有线网卡数
-    Process {
-        id: nmQuery
-        command: ["sh", "-c", "nmcli radio wifi; nmcli -t -f IN-USE,SIGNAL,SSID dev wifi list --rescan no | sed -n 's/^\\*://p' | head -1; nmcli -t -f TYPE,STATE dev | grep -c '^ethernet:connected$'"]
-        stdout: StdioCollector {
-            onStreamFinished: {
-                const lines = text.split("\n");
-                root.wifiEnabled = lines[0].trim() === "enabled";
-                const m = lines[1].match(/^(\d+):(.*)$/);
-                if (m) {
-                    root.netState = "wifi";
-                    root.wifiSignal = parseInt(m[1]);
-                    root.wifiSsid = m[2].replace(/\\:/g, ":");
-                } else {
-                    root.netState = parseInt(lines[2]) > 0 ? "ethernet" : "none";
-                    root.wifiSsid = "";
-                }
+        onTriggered: {
+            netdev.reload();
+            let rx = 0, tx = 0;
+            for (const line of netdev.text().split("\n").slice(2)) {
+                const f = line.trim().split(/[:\s]+/);
+                if (f.length < 10 || f[0] === "lo")
+                    continue;
+                rx += Number(f[1]);
+                tx += Number(f[9]);
             }
+            const now = Date.now();
+            if (root.lastNet) {
+                const dt = (now - root.lastNet.t) / 1000;
+                root.netDown = root.speed(Math.max(0, rx - root.lastNet.rx) / dt);
+                root.netUp = root.speed(Math.max(0, tx - root.lastNet.tx) / dt);
+            }
+            root.lastNet = { t: now, rx: rx, tx: tx };
         }
-    }
-    Timer {
-        id: nmTimer
-        interval: 5000
-        running: true
-        repeat: true
-        triggeredOnStart: true
-        onTriggered: nmQuery.running = true
     }
 }
