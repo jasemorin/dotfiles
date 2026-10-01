@@ -83,7 +83,7 @@ Touch Bar 不会随 fn 切换（原因见 troubleshooting.md），一直显示�
 
 分屏：Linux 上交给 niri（每个 kitty 窗口就是一个 niri 窗口）；Mac 上的 Cmd+D 等分屏键位见 `config/kitty/macos.conf`。
 
-## Shell（Linux 的 bash，见 `system/bash/tools.sh`）
+## Shell（Linux 的 bash，见 `system/bash/tools.sh` 和 `system/bash/inputrc`）
 
 | 按键 / 命令 | 作用 |
 |---|---|
@@ -94,3 +94,8 @@ Touch Bar 不会随 fn 切换（原因见 troubleshooting.md），一直显示�
 | `zi` | 交互选择常去的目录 |
 | Control+L | 清屏（物理 Control 键） |
 | Alt+b / Alt+f | 按词左右跳 |
+| ↑ / ↓ | 按已输入的开头搜历史（输 `git` 再按 ↑ 只翻 git 开头的命令） |
+| Tab | 补全，不分大小写；有多个候选时直接列出 |
+| 直接输目录名 | cd 进去（autocd），小拼写错误会自动纠正 |
+| `ls` / `ll` / `la` / `lt` | eza：带图标列表 / 详细（含 git 状态）/ 含隐藏文件 / 树状两层 |
+| `cat 文件` | bat：带语法高亮显示（管道里原样输出）；`man` 也会着色 |

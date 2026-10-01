@@ -68,8 +68,9 @@ busctl --system set-property net.hadess.PowerProfiles /net/hadess/PowerProfiles 
 ## 4. 用户级设置
 
 ```bash
-# bash 增强（fzf、zoxide）
+# bash 增强（fzf、zoxide、eza、bat、starship；readline 设置）
 mkdir -p ~/.bashrc.d && ln -s ~/dotfiles/system/bash/tools.sh ~/.bashrc.d/tools.sh
+ln -s ~/dotfiles/system/bash/inputrc ~/.inputrc
 
 # git 身份
 git config --global user.name jasemorin

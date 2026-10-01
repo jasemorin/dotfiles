@@ -35,7 +35,7 @@ system/     Linux 上手动部署的文件（不走 install.sh，见 docs/setup-
   zswap/    zswap 改用 zstd（/etc/tmpfiles.d/）
   mglru/    启用 MGLRU，关闭 min_ttl 防卡死（/etc/tmpfiles.d/）
   tuned/    gaming 电源模式：性能 + 保留 swappiness 60（/etc/tuned/profiles/）
-  bash/     fzf、zoxide（链接到 ~/.bashrc.d/）
+  bash/     fzf、zoxide、eza、bat、starship、历史设置（tools.sh 链接到 ~/.bashrc.d/，inputrc 链接到 ~/.inputrc）
   packages/ dnf / flatpak / COPR 软件包列表（scripts/snapshot.sh 生成）
   dconf.ini 桌面设置（dconf load 恢复）
 scripts/    个人脚本（steam-arm64、reboot-macos：链接到 ~/.local/bin/；snapshot.sh：重装前备份）
