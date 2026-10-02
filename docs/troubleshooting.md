@@ -73,12 +73,13 @@ swaybg 读不了 AVIF（有些图片扩展名是 .jpg 实际是 AVIF，用 `file
 
 见 [memory.md](memory.md)。
 
-## nvim：试过 LazyVim 后想回到自己的配置
+## nvim：想从 LazyVim 回到原来的手写配置
 
-配置在 git 里，直接恢复：
+现在仓库里的 `config/nvim` 就是 LazyVim（Mac 和 Linux 共用）。手写配置留在 `cec81c1` 这个提交里，恢复到工作区：
 ```bash
-cd ~/dotfiles && git restore --source=HEAD --staged --worktree config/nvim
+cd ~/dotfiles && git restore --source=cec81c1 --worktree config/nvim
 ```
+这样只改工作区、不改提交；想回到 LazyVim 就 `git restore config/nvim`。
 插件数据：LazyVim 会用自己的 `~/.local/share/nvim` 等目录，切换前先把原目录改名备份，回来时换回去。
 
 ## 访问 macOS 那边的文件
