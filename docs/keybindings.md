@@ -51,6 +51,10 @@ Mac 上的几个例外（Karabiner 直接调用 `omniwmctl`，不发热键）：
 | Cmd+Shift+V | 剪贴板历史（选中后 Cmd+V / Caps+V 粘贴） |
 | Cmd+Q | 关闭窗口 |
 | Cmd+Ctrl+Q | 锁屏 |
+| Cmd+Shift+S | 快捷设置（方向键 / hjkl 移动，Enter 执行，Esc 关闭，见 desktop.md） |
+| Cmd+Shift+N | 通知中心（j k 选，Enter 打开，x 删除，d 勿扰，Esc 关闭） |
+| Cmd+Tab / Cmd+` | 切换窗口 / 同一应用的窗口（按住 Cmd，←→ 选，Q 关掉选中的窗口；加 Shift 反向）。Alt+Tab 不占用 |
+| Cmd+Shift+Q | 电源菜单：锁屏 / 睡眠 / 注销 / 重启 / 关机 / 重启进 macOS（←→ 选，Enter 确认，Esc 取消） |
 | Cmd+Shift+3 / 4 / 5 | 截图：全屏 / 选区 / 窗口（存到 `~/Pictures/Screenshots`，同时复制到剪贴板） |
 | Cmd+滚轮 上下 / 左右 | 切工作区 / 切列 |
 | 按住 Cmd 拖动 | 移动窗口 |
@@ -87,7 +91,7 @@ Touch Bar 不会随 fn 切换（原因见 troubleshooting.md），一直显示�
 
 分屏：Linux 上交给 niri（每个 kitty 窗口就是一个 niri 窗口）；Mac 上的 Cmd+D 等分屏键位见 `config/kitty/macos.conf`。
 
-## Shell（Linux 的 bash，见 `system/bash/tools.sh`）
+## Shell（Linux 的 bash，见 `system/bash/tools.sh` 和 `system/bash/inputrc`）
 
 | 按键 / 命令 | 作用 |
 |---|---|
@@ -98,3 +102,8 @@ Touch Bar 不会随 fn 切换（原因见 troubleshooting.md），一直显示�
 | `zi` | 交互选择常去的目录 |
 | Control+L | 清屏（物理 Control 键） |
 | Alt+b / Alt+f | 按词左右跳 |
+| ↑ / ↓ | 按已输入的开头搜历史（输 `git` 再按 ↑ 只翻 git 开头的命令） |
+| Tab | 补全，不分大小写；有多个候选时直接列出 |
+| 直接输目录名 | cd 进去（autocd），小拼写错误会自动纠正 |
+| `ls` / `ll` / `la` / `lt` | eza：带图标列表 / 详细（含 git 状态）/ 含隐藏文件 / 树状两层 |
+| `cat 文件` | bat：带语法高亮显示（管道里原样输出）；`man` 也会着色 |

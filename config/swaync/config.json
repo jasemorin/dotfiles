@@ -1,0 +1,82 @@
+{
+  "$schema": "/etc/xdg/swaync/configSchema.json",
+  "positionX": "right",
+  "positionY": "top",
+  "layer": "overlay",
+  "control-center-layer": "top",
+  "layer-shell": true,
+  "control-center-margin-top": 6,
+  "control-center-margin-right": 6,
+  "control-center-margin-bottom": 6,
+  "control-center-margin-left": 6,
+  "control-center-width": 400,
+  "fit-to-screen": false,
+  "notification-window-width": 400,
+  "notification-icon-size": 48,
+  "timeout": 6,
+  "timeout-low": 3,
+  "timeout-critical": 0,
+  "hide-on-clear": false,
+  "hide-on-action": true,
+  "relative-timestamps": true,
+  "image-visibility": "when-available",
+  "widgets": [
+    "volume",
+    "backlight",
+    "buttons-grid",
+    "mpris",
+    "title",
+    "dnd",
+    "notifications"
+  ],
+  "widget-config": {
+    "volume": {
+      "label": "󰕾"
+    },
+    "backlight": {
+      "label": "󰃟",
+      "device": "apple-panel-bl"
+    },
+    "buttons-grid": {
+      "buttons-per-row": 2,
+      "actions": [
+        {
+          "label": "󰤨  Wi-Fi",
+          "type": "toggle",
+          "command": "/home/jcao/.config/swaync/scripts/toggle.sh wifi set",
+          "update-command": "/home/jcao/.config/swaync/scripts/toggle.sh wifi status"
+        },
+        {
+          "label": "󰂯  蓝牙",
+          "type": "toggle",
+          "command": "/home/jcao/.config/swaync/scripts/toggle.sh bluetooth set",
+          "update-command": "/home/jcao/.config/swaync/scripts/toggle.sh bluetooth status"
+        },
+        {
+          "label": "󰒓  设置",
+          "command": "/home/jcao/.config/swaync/scripts/run.sh env XDG_CURRENT_DESKTOP=GNOME gnome-control-center"
+        },
+        {
+          "label": "󰌾  锁屏",
+          "command": "/home/jcao/.config/swaync/scripts/run.sh swaylock -f"
+        }
+      ]
+    },
+    "mpris": {
+      "image-size": 64
+    },
+    "title": {
+      "text": "通知",
+      "clear-all-button": true,
+      "button-text": "全部清除"
+    },
+    "dnd": {
+      "text": "勿扰模式"
+    },
+    "notifications": {
+      "vexpand": true
+    }
+  },
+  "control-center-height": 880,
+  "transition-time": 80
+}

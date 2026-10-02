@@ -14,3 +14,9 @@ config/nvim/sessions/
 # Karabiner 自动备份（每次改配置都会生成，不是配置本身）
 config/karabiner/automatic_backups/
 config/karabiner/*.bak-*
+
+# fcitx5 运行时缓存
+config/fcitx5/conf/cached_layouts
+
+# Codex 自动复制的 skill（原件在 .claude/skills，路径被改成 .Codex）
+.agents/

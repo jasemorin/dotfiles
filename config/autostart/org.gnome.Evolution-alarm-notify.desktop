@@ -1,0 +1,8 @@
+# 覆盖 /etc/xdg/autostart/org.gnome.Evolution-alarm-notify.desktop：niri 下不启动日历提醒
+# 它没有 OnlyShowIn，niri 下也会启动，并拉起 evolution-source-registry / calendar-factory /
+# addressbook-factory 三个常驻服务（合计约 60–120 MB）；niri 下没用日历，GNOME 下照常
+[Desktop Entry]
+Type=Application
+Name=Evolution Alarm Notify
+Exec=/usr/libexec/evolution-data-server/evolution-alarm-notify
+NotShowIn=niri;

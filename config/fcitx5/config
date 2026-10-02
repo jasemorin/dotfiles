@@ -1,0 +1,8 @@
+# 中英切换：Alt+Space（Ctrl+Space 留给 nvim 补全；单按 Shift 不切换）
+[Hotkey]
+EnumerateWithTriggerKeys=True
+
+[Hotkey/TriggerKeys]
+0=Alt+space
+
+[Hotkey/AltTriggerKeys]

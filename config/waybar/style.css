@@ -1,0 +1,102 @@
+/* 仿 GNOME 顶栏：Adwaita Sans 粗体、白色图标；每个模块是独立的半透明胶囊，栏本身透明 */
+* {
+  font-family: "Adwaita Sans", "Noto Sans CJK SC", "Symbols Nerd Font", sans-serif;
+  font-size: 14px;
+  font-weight: bold;
+  min-height: 0;
+  border: none;
+  border-radius: 0;
+}
+
+window#waybar {
+  background: transparent;
+  color: #ffffff;
+}
+
+tooltip {
+  background: rgba(30, 30, 30, 0.95);
+  border-radius: 10px;
+}
+
+tooltip label {
+  font-weight: normal;
+}
+
+/* 胶囊：每个模块单独一个圆角底色，悬停变亮 */
+#workspaces,
+#window,
+#custom-clock,
+#memory,
+#network.speed,
+#tray,
+#system {
+  padding: 0 14px;
+  border-radius: 99px;
+  background: rgba(20, 20, 24, 0.7);
+  transition: background 150ms;
+}
+
+#custom-clock:hover,
+#memory:hover,
+#tray:hover,
+#system:hover {
+  background: rgba(55, 55, 60, 0.8);
+}
+
+/* 没有窗口 / 托盘为空时不显示空胶囊 */
+window#waybar.empty #window,
+#tray.empty {
+  padding: 0;
+  background: transparent;
+}
+
+/* 工作区：圆点，当前的是长条 */
+#workspaces {
+  padding: 0 8px;
+}
+
+#workspaces button {
+  min-width: 8px;
+  min-height: 8px;
+  margin: 12px 3px;
+  padding: 0;
+  border-radius: 99px;
+  background: rgba(255, 255, 255, 0.45);
+  box-shadow: none;
+  transition: min-width 200ms, background 200ms;
+}
+
+/* 按钮里的空文字也会撑高，缩到最小 */
+#workspaces button label {
+  font-size: 1px;
+  padding: 0;
+  margin: 0;
+}
+
+#workspaces button.active {
+  min-width: 30px;
+  background: #ffffff;
+}
+
+#workspaces button:hover {
+  background: rgba(255, 255, 255, 0.75);
+}
+
+/* 系统图标组里各图标的间距 */
+#bluetooth,
+#network,
+#pulseaudio {
+  padding: 0 7px;
+}
+
+#battery {
+  padding-left: 7px;
+}
+
+#battery.warning:not(.charging) {
+  color: #f8e45c;
+}
+
+#battery.critical:not(.charging) {
+  color: #ff7b63;
+}
