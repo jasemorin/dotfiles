@@ -1,0 +1,55 @@
+// 本机额外设置（不是 DMS 生成的，DMS 更新配置时不会动它）
+// gh 的 GitHub 令牌存在 KWallet；niri 下没人启动它，git push 会失败
+spawn-at-startup "kwalletd6"
+
+// Caps 层（keyd 把 Caps+键 改发成 Ctrl+Alt+Super+键，见 system/keyd/default.conf）
+// 和 DMS 的 Mod+键 对应，Mod 键位照常可用；加 Shift 是移动而不是切换
+binds {
+    // 切换窗口
+    Ctrl+Alt+Super+H     { focus-column-left; }
+    Ctrl+Alt+Super+J     { focus-window-down; }
+    Ctrl+Alt+Super+K     { focus-window-up; }
+    Ctrl+Alt+Super+L     { focus-column-right; }
+    Ctrl+Alt+Super+Left  { focus-column-left; }
+    Ctrl+Alt+Super+Down  { focus-window-down; }
+    Ctrl+Alt+Super+Up    { focus-window-up; }
+    Ctrl+Alt+Super+Right { focus-column-right; }
+
+    // 移动窗口
+    Ctrl+Alt+Super+Shift+H     { move-column-left; }
+    Ctrl+Alt+Super+Shift+J     { move-window-down; }
+    Ctrl+Alt+Super+Shift+K     { move-window-up; }
+    Ctrl+Alt+Super+Shift+L     { move-column-right; }
+    Ctrl+Alt+Super+Shift+Left  { move-column-left; }
+    Ctrl+Alt+Super+Shift+Down  { move-window-down; }
+    Ctrl+Alt+Super+Shift+Up    { move-window-up; }
+    Ctrl+Alt+Super+Shift+Right { move-column-right; }
+
+    // 工作区：Caps+数字 切换，Caps+Shift+数字 把窗口送过去
+    Ctrl+Alt+Super+1 { focus-workspace 1; }
+    Ctrl+Alt+Super+2 { focus-workspace 2; }
+    Ctrl+Alt+Super+3 { focus-workspace 3; }
+    Ctrl+Alt+Super+4 { focus-workspace 4; }
+    Ctrl+Alt+Super+5 { focus-workspace 5; }
+    Ctrl+Alt+Super+6 { focus-workspace 6; }
+    Ctrl+Alt+Super+7 { focus-workspace 7; }
+    Ctrl+Alt+Super+8 { focus-workspace 8; }
+    Ctrl+Alt+Super+9 { focus-workspace 9; }
+    Ctrl+Alt+Super+Shift+1 { move-column-to-workspace 1; }
+    Ctrl+Alt+Super+Shift+2 { move-column-to-workspace 2; }
+    Ctrl+Alt+Super+Shift+3 { move-column-to-workspace 3; }
+    Ctrl+Alt+Super+Shift+4 { move-column-to-workspace 4; }
+    Ctrl+Alt+Super+Shift+5 { move-column-to-workspace 5; }
+    Ctrl+Alt+Super+Shift+6 { move-column-to-workspace 6; }
+    Ctrl+Alt+Super+Shift+7 { move-column-to-workspace 7; }
+    Ctrl+Alt+Super+Shift+8 { move-column-to-workspace 8; }
+    Ctrl+Alt+Super+Shift+9 { move-column-to-workspace 9; }
+    Ctrl+Alt+Super+U       { focus-workspace-down; }
+    Ctrl+Alt+Super+I       { focus-workspace-up; }
+    Ctrl+Alt+Super+Shift+U { move-column-to-workspace-down; }
+    Ctrl+Alt+Super+Shift+I { move-column-to-workspace-up; }
+
+    // 总览
+    Ctrl+Alt+Super+O   repeat=false { toggle-overview; }
+    Ctrl+Alt+Super+Tab repeat=false { toggle-overview; }
+}

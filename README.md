@@ -69,9 +69,10 @@ git clone -b nobara https://github.com/jasemorin/dotfiles.git ~/dotfiles
 cd ~/dotfiles && ./install.sh kitty nvim
 ln -s ~/dotfiles/system/bash/tools.sh ~/.bashrc.d/tools.sh
 
-# keyd：caps 单击 esc、按住 ctrl
+# keyd：caps 单击 esc、按住 ctrl；Caps+hjkl / 数字 / u i o tab 交给 niri（见 system/niri/local.kdl）
 sudo dnf copr enable -y alternateved/keyd && sudo dnf install -y keyd
 sudo cp system/keyd/default.conf /etc/keyd/ && sudo systemctl enable --now keyd
+ln -s ~/dotfiles/system/niri/local.kdl ~/.config/niri/local.kdl   # 并在 config.kdl 末尾加 include optional=true "local.kdl"
 ```
 
 niri 桌面用现成的 DankMaterialShell（`curl -fsSL https://install.duxlabs.dev | sh`），
