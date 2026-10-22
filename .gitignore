@@ -16,3 +16,6 @@ config/fcitx5/conf/cached_layouts
 
 # Codex 自动复制的 skill（原件在 .claude/skills，路径被改成 .Codex）
 .agents/
+
+# DankMaterialShell 按壁纸生成的 kitty 配色（nobara 上的 niri 桌面）
+config/kitty/dank-*.conf
