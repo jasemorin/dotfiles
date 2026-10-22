@@ -21,6 +21,13 @@ fi
 DOTFILES="$(cd "$(dirname "$SELF")" && pwd)"
 cd "$DOTFILES"
 
+# 整个脚本只适用于 Asahi（aarch64 软件包、tiny-dfr、asahi-bless、niri 的 dconf）；
+# 在别的机器上跑会装错包、覆盖桌面设置
+if [[ "$(uname -m)" != aarch64 ]] || ! command -v asahi-bless >/dev/null; then
+  echo "restore.sh 只用于 Asahi Linux。其他机器只链接需要的配置，例如：./install.sh kitty nvim" >&2
+  exit 1
+fi
+
 step() { printf '\n\033[1;35m==> %s\033[0m\n' "$*"; }
 run() {
   echo "+ $*"

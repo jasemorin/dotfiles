@@ -59,6 +59,25 @@ cd ~/dotfiles
 已存在的真实目录会被改名成 `.backup.<时间戳>` 而不是删除。
 Asahi 上还有软件包和系统级配置，步骤见 [docs/setup-asahi.md](docs/setup-asahi.md)。
 
+### Nobara（`nobara` 分支：x86 台式机，KDE 桌面）
+
+从 `asahi` 分出来，只用 kitty、Neovim 和 keyd；niri、quickshell 等不链接，`restore.sh` 会拒绝运行。
+
+```bash
+sudo dnf install -y kitty neovim jetbrains-mono-fonts ShellCheck shfmt fzf zoxide
+git clone -b nobara https://github.com/jasemorin/dotfiles.git ~/dotfiles
+cd ~/dotfiles && ./install.sh kitty nvim
+ln -s ~/dotfiles/system/bash/tools.sh ~/.bashrc.d/tools.sh
+
+# keyd：caps 单击 esc、按住 ctrl
+sudo dnf copr enable -y alternateved/keyd && sudo dnf install -y keyd
+sudo cp system/keyd/default.conf /etc/keyd/ && sudo systemctl enable --now keyd
+```
+
+kitty 在这里用 `kitty_mod`（ctrl+shift）而不是 cmd（Linux 上是 Super，会被 KDE 抢走）：
+ctrl+shift+enter 左右分屏，ctrl+shift+alt+enter 上下分屏，ctrl+shift+hjkl 切换，
+ctrl+shift+alt+hjkl 调大小，ctrl+shift+z 最大化当前分屏，见 `config/kitty/linux.conf`。
+
 ## Mac / Linux 分开
 
 - kitty：共用的放 `kitty.conf`；只给 Linux 的放 `linux.conf`，只给 Mac 的放 `macos.conf`

@@ -30,12 +30,12 @@ return {
           local map = vim.keymap.set
           map("n", "gd", vim.lsp.buf.definition, opts)
           map("n", "gD", vim.lsp.buf.declaration, opts)
-          map("n", "gr", vim.lsp.buf.references, opts)
-          map("n", "gi", vim.lsp.buf.implementation, opts)
-          map("n", "K", vim.lsp.buf.hover, opts)
+          -- references / implementation / hover 用 0.11 自带的 grr / gri / K；
+          -- 自己映射 gr 会挡住 grn、gra、grr、gri
           map("n", "<leader>rn", vim.lsp.buf.rename, opts)
           map("n", "<leader>ca", vim.lsp.buf.code_action, opts)
-          map("n", "<leader>f", function()
+          -- 不用 <leader>f：它是 Telescope <leader>ff 等的前缀，停顿超过 timeoutlen 就会误格式化
+          map("n", "<leader>cf", function()
             vim.lsp.buf.format({ async = true })
           end, opts)
         end,

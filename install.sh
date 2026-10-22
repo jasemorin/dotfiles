@@ -1,12 +1,14 @@
 #!/usr/bin/env bash
 # 在新机器上把本仓库的配置链接到 ~/.config
-# 用法: ./install.sh [--dry-run]
+# 用法: ./install.sh [--dry-run] [名字...]
+#   不带名字：链接 config/ 下的全部目录
+#   带名字：只链接这几个，例如 ./install.sh kitty nvim
 set -euo pipefail
 
 DOTFILES="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 TARGET="${XDG_CONFIG_HOME:-$HOME/.config}"
 DRY_RUN=false
-[[ "${1:-}" == "--dry-run" ]] && DRY_RUN=true
+[[ "${1:-}" == "--dry-run" ]] && { DRY_RUN=true; shift; }
 
 link() {
   local src="$DOTFILES/config/$1"
@@ -36,9 +38,15 @@ link() {
 }
 
 mkdir -p "$TARGET"
-for name in "$DOTFILES"/config/*/; do
-  link "$(basename "$name")"
-done
+if (($#)); then
+  for name in "$@"; do
+    link "$name"
+  done
+else
+  for name in "$DOTFILES"/config/*/; do
+    link "$(basename "$name")"
+  done
+fi
 
 echo
 echo "完成。kitty 需要完全退出后重开；nvim 下次启动时 lazy.nvim 会自动装插件。"

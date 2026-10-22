@@ -21,6 +21,8 @@ o.listchars = { tab = "» ", trail = "·", nbsp = "␣" }
 o.inccommand = "split"
 o.cursorline = true
 o.scrolloff = 8
+-- treesitter 折叠：打开文件时不自动折叠
+o.foldlevelstart = 99
 
 o.expandtab = true
 o.shiftwidth = 2

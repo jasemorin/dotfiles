@@ -26,6 +26,7 @@ autocmd("FileType", {
   group = augroup("ShellIndent", { clear = true }),
   pattern = { "sh", "bash", "zsh" },
   callback = function()
+    vim.bo.expandtab = false
     vim.bo.shiftwidth = 4
     vim.bo.tabstop = 4
   end,

@@ -18,10 +18,11 @@ map("n", "<C-d>", "<C-d>zz")
 map("n", "<C-u>", "<C-u>zz")
 
 -- diagnostics
-map("n", "[d", vim.diagnostic.goto_prev, { desc = "Previous diagnostic" })
-map("n", "]d", vim.diagnostic.goto_next, { desc = "Next diagnostic" })
+-- goto_prev/goto_next 在 0.11 已弃用
+map("n", "[d", function() vim.diagnostic.jump({ count = -1, float = true }) end, { desc = "Previous diagnostic" })
+map("n", "]d", function() vim.diagnostic.jump({ count = 1, float = true }) end, { desc = "Next diagnostic" })
 map("n", "<leader>e", vim.diagnostic.open_float, { desc = "Show diagnostic" })
 
 -- escape to normal mode
+-- 不用 kk：bookkeeper 之类的词会误触
 map("i", "jj", "<Esc>", { desc = "Exit insert mode" })
-map("i", "kk", "<Esc>", { desc = "Exit insert mode" })
