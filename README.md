@@ -74,6 +74,14 @@ sudo dnf copr enable -y alternateved/keyd && sudo dnf install -y keyd
 sudo cp system/keyd/default.conf /etc/keyd/ && sudo systemctl enable --now keyd
 ```
 
+niri 桌面用现成的 DankMaterialShell（`curl -fsSL https://install.duxlabs.dev | sh`），
+不用 asahi 分支自己的 niri / quickshell 配置。NVIDIA 显卡要先装显存修复（niri 不加会占很多显存）：
+
+```bash
+sudo install -Dm644 system/nvidia/50-limit-free-buffer-pool-in-wayland-compositors.json \
+  /etc/nvidia/nvidia-application-profiles-rc.d/50-limit-free-buffer-pool-in-wayland-compositors.json
+```
+
 kitty 在这里用 `kitty_mod`（ctrl+shift）而不是 cmd（Linux 上是 Super，会被 KDE 抢走）：
 ctrl+shift+enter 左右分屏，ctrl+shift+alt+enter 上下分屏，ctrl+shift+hjkl 切换，
 ctrl+shift+alt+hjkl 调大小，ctrl+shift+z 最大化当前分屏，见 `config/kitty/linux.conf`。
