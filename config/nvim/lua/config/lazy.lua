@@ -10,7 +10,7 @@ require("lazy").setup({
     -- LazyVim 本体：提供默认插件集与默认配置
     { "LazyVim/LazyVim", import = "lazyvim.plugins" },
 
-    -- Extras：官方维护的可选配置包（也可用 :LazyExtras 图形界面增删）
+    -- Extras：官方维护的可选配置包。统一写在这里，不用 :LazyExtras（它会写进 lazyvim.json，两处重复）
     { import = "lazyvim.plugins.extras.lang.java" },
     { import = "lazyvim.plugins.extras.lang.python" },
     { import = "lazyvim.plugins.extras.lang.markdown" },

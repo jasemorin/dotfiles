@@ -1,26 +1,9 @@
 -- Markdown 写作增强。
--- 渲染本身由 LazyVim 的 lang.markdown extra 提供（render-markdown.nvim），
--- 这里只补 extra 没有的部分：浏览器预览、表格自动对齐、写作时的软换行。
+-- 渲染（render-markdown.nvim）和浏览器预览（markdown-preview.nvim，<leader>cp）
+-- 都由 LazyVim 的 lang.markdown extra 提供，这里只补 extra 没有的表格自动对齐。
+-- 写作时的软换行见 config/autocmds.lua。
 
 return {
-  -- 浏览器实时预览：:MarkdownPreviewToggle 或 <leader>mp
-  {
-    "iamcco/markdown-preview.nvim",
-    cmd = { "MarkdownPreviewToggle", "MarkdownPreview", "MarkdownPreviewStop" },
-    ft = { "markdown" },
-    build = function()
-      vim.fn["mkdp#util#install"]()
-    end,
-    keys = {
-      {
-        "<leader>mp",
-        "<cmd>MarkdownPreviewToggle<cr>",
-        ft = "markdown",
-        desc = "Markdown Preview (browser)",
-      },
-    },
-  },
-
   -- 表格自动对齐：插入模式下打 | 会自动补齐列宽
   {
     "dhruvasagar/vim-table-mode",

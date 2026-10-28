@@ -12,6 +12,5 @@ map("v", "K", ":m '<-2<CR>gv=gv", { desc = "Move selection up" })
 map("n", "<C-d>", "<C-d>zz")
 map("n", "<C-u>", "<C-u>zz")
 
--- 快速退出插入模式
+-- 快速退出插入模式（不用 kk：bookkeeper 之类的词会误触）
 map("i", "jj", "<Esc>", { desc = "Exit insert mode" })
-map("i", "kk", "<Esc>", { desc = "Exit insert mode" })
