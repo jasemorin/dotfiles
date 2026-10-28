@@ -1,33 +1,25 @@
-local autocmd = vim.api.nvim_create_autocmd
-local augroup = vim.api.nvim_create_augroup
+-- LazyVim 已自带：yank 高亮、恢复上次光标位置、关闭某些 buffer 的 q 键等。
+-- 这里只保留个人特有的规则。
 
--- briefly highlight yanked text
-autocmd("TextYankPost", {
-  group = augroup("HighlightYank", { clear = true }),
-  callback = function()
-    vim.hl.on_yank()
-  end,
-})
-
--- return to last cursor position when reopening a file
-autocmd("BufReadPost", {
-  group = augroup("LastPosition", { clear = true }),
-  callback = function(ev)
-    local mark = vim.api.nvim_buf_get_mark(ev.buf, '"')
-    local lines = vim.api.nvim_buf_line_count(ev.buf)
-    if mark[1] > 0 and mark[1] <= lines then
-      pcall(vim.api.nvim_win_set_cursor, 0, mark)
-    end
-  end,
-})
-
--- shell scripts: real tabs, POSIX-ish width
-autocmd("FileType", {
-  group = augroup("ShellIndent", { clear = true }),
+vim.api.nvim_create_autocmd("FileType", {
+  group = vim.api.nvim_create_augroup("ShellIndent", { clear = true }),
   pattern = { "sh", "bash", "zsh" },
   callback = function()
-    vim.bo.expandtab = false
     vim.bo.shiftwidth = 4
     vim.bo.tabstop = 4
+  end,
+})
+
+-- Markdown 写作模式：软换行按单词断行，j/k 按视觉行移动，关闭行号干扰
+vim.api.nvim_create_autocmd("FileType", {
+  group = vim.api.nvim_create_augroup("MarkdownWriting", { clear = true }),
+  pattern = { "markdown" },
+  callback = function()
+    vim.opt_local.wrap = true
+    vim.opt_local.linebreak = true -- 在单词边界断行，不会把词切断
+    vim.opt_local.spell = true
+    vim.opt_local.spelllang = "en_au"
+    vim.keymap.set({ "n", "v" }, "j", "gj", { buffer = true })
+    vim.keymap.set({ "n", "v" }, "k", "gk", { buffer = true })
   end,
 })
