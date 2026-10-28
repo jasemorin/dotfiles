@@ -2,6 +2,15 @@
 // gh 的 GitHub 令牌存在 KWallet；niri 下没人启动它，git push 会失败
 spawn-at-startup "kwalletd6"
 
+// 中文输入法（万象拼音 Pro 小鹤音形，Ctrl+Space 切换）；--replace 防止和别处启动的重复
+spawn-at-startup "fcitx5" "-d" "--replace"
+// Wayland 原生应用（GTK、kitty、Firefox）走 text-input 协议，不设 GTK_IM_MODULE；
+// Qt 先试 Wayland 再退回 fcitx 模块；X11 应用（xwayland-satellite）用 XMODIFIERS
+environment {
+    QT_IM_MODULES "wayland;fcitx"
+    XMODIFIERS "@im=fcitx"
+}
+
 // Caps 层（keyd 把 Caps+键 改发成 Ctrl+Alt+Super+键，见 system/keyd/default.conf）
 // 和 DMS 的 Mod+键 对应，Mod 键位照常可用；加 Shift 是移动而不是切换
 binds {
