@@ -56,13 +56,17 @@ fi
 # ── bat：cat 带高亮；man 也用 bat 着色 ──────────────────────────────────
 if command -v bat >/dev/null; then
   alias cat='bat -pp'
+  export BAT_THEME=gruvbox-dark
   export MANPAGER="sh -c 'col -bx | bat -l man -p'"
   export MANROFFOPT='-c'
 fi
 
 # ── fzf：Ctrl-R 模糊搜历史、Ctrl-T 找文件、Alt-C 模糊 cd ─────────────────
 if command -v fzf >/dev/null; then
-  export FZF_DEFAULT_OPTS='--height 40% --layout reverse --border'
+  # Gruvbox Dark 配色（bg 留空，跟随终端背景/透明度）
+  export FZF_DEFAULT_OPTS='--height 40% --layout reverse --border
+    --color=fg:#ebdbb2,hl:#fabd2f,fg+:#ebdbb2,bg+:#3c3836,hl+:#fabd2f
+    --color=info:#83a598,prompt:#b8bb26,pointer:#fb4934,marker:#8ec07c,spinner:#d3869b,header:#928374,border:#665c54'
   if command -v rg >/dev/null; then
     export FZF_DEFAULT_COMMAND="rg --files --hidden --glob '!.git'"
     export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"

@@ -1,2 +1,5 @@
--- LazyVim 默认就是 tokyonight，只需把风格改成 night
-return { "folke/tokyonight.nvim", opts = { style = "night" } }
+-- 配色：Gruvbox Dark（与 Ghostty / kitty / bat / fzf 统一）
+return {
+  { "ellisonleao/gruvbox.nvim", priority = 1000, opts = { contrast = "" } },
+  { "LazyVim/LazyVim", opts = { colorscheme = "gruvbox" } },
+}

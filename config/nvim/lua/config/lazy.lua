@@ -20,7 +20,7 @@ require("lazy").setup({
     -- 个人覆盖：必须放在最后，才能覆盖上面的默认值
     { import = "plugins" },
   },
-  install = { colorscheme = { "tokyonight" } },
+  install = { colorscheme = { "gruvbox", "tokyonight" } },
   -- 没有插件需要 luarocks，关掉以免 checkhealth 报 hererocks 未安装
   rocks = { enabled = false },
   checker = { enabled = true, notify = false },
