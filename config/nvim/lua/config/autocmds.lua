@@ -2,8 +2,8 @@
 -- 这里只保留个人特有的规则。
 
 vim.api.nvim_create_autocmd("FileType", {
-  group = vim.api.nvim_create_augroup("ShellIndent", { clear = true }),
-  pattern = { "sh", "bash", "zsh" },
+  group = vim.api.nvim_create_augroup("FourSpaceIndent", { clear = true }),
+  pattern = { "sh", "bash", "zsh", "java" },
   callback = function()
     vim.bo.shiftwidth = 4
     vim.bo.tabstop = 4

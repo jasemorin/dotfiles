@@ -1,0 +1,57 @@
+# skhd：yabai 的快捷键，照搬 Linux niri 的 Caps 层
+# 按住 Caps 时 Karabiner 发出 ⌃⌥⌘+键；Caps+Shift 就是四个修饰键全按（skhd 里叫 hyper）
+# 改完执行：skhd --reload
+# 标点键要写键码：, 0x2B   . 0x2F   ' 0x27   ; 0x29   ` 0x32   [ 0x21   ] 0x1E   / 0x2C
+
+# ── Caps + H/J/K/L：焦点（J/K 在叠放模式下切换叠着的窗口）──
+ctrl + alt + cmd - h : yabai -m window --focus west
+ctrl + alt + cmd - l : yabai -m window --focus east
+ctrl + alt + cmd - j : yabai -m window --focus south || yabai -m window --focus stack.next
+ctrl + alt + cmd - k : yabai -m window --focus north || yabai -m window --focus stack.prev
+
+# ── Caps + Shift + H/J/K/L：移动窗口（和那个方向的窗口互换）──
+hyper - h : yabai -m window --swap west
+hyper - l : yabai -m window --swap east
+hyper - j : yabai -m window --swap south
+hyper - k : yabai -m window --swap north
+
+# ── Caps + , / . ：变窄 / 变宽（约 10%）──
+ctrl + alt + cmd - 0x2B : yabai -m window --resize right:-140:0 || yabai -m window --resize left:140:0
+ctrl + alt + cmd - 0x2F : yabai -m window --resize right:140:0 || yabai -m window --resize left:-140:0
+
+# ── Caps + Shift + , / . ：变矮 / 变高（约 10%）──
+# ⌃⌥⇧⌘+. 被系统的 sysdiagnose 占用，所以 Karabiner 改发 ⌃⌥⌘+F18 / F19
+ctrl + alt + cmd - f18 : yabai -m window --resize bottom:0:-90 || yabai -m window --resize top:0:90
+ctrl + alt + cmd - f19 : yabai -m window --resize bottom:0:90 || yabai -m window --resize top:0:-90
+
+# ── Caps + ' ：所有窗口均分（代替 niri 的轮换列宽）──
+ctrl + alt + cmd - 0x27 : yabai -m space --balance
+
+# ── Caps + M：最大化；Caps + Shift + M：全屏 ──
+ctrl + alt + cmd - m : yabai -m window --toggle zoom-fullscreen
+hyper - m : yabai -m window --toggle native-fullscreen
+
+# ── Caps + [ / ] ：把窗口搬到左 / 右邻居旁边（代替 niri 的并入 / 拆出）──
+ctrl + alt + cmd - 0x21 : yabai -m window --warp west
+ctrl + alt + cmd - 0x1E : yabai -m window --warp east
+
+# ── Caps + ; ：叠成一摞 / 恢复平铺（代替 niri 的标签列）；加 Shift：浮动 ──
+ctrl + alt + cmd - 0x29 : yabai -m space --layout "$(yabai -m query --spaces --space | /usr/bin/jq -r 'if .type == "bsp" then "stack" else "bsp" end')"
+hyper - 0x29 : yabai -m window --toggle float
+
+# ── Caps + ` ：概览（调度中心）──
+ctrl + alt + cmd - 0x32 : open -a "Mission Control"
+
+# ── Caps + Shift + Enter：下拉终端（Karabiner 发出的是 ⌃⌥⌘+Return）──
+# Caps + Enter 新开 kitty 由 Karabiner 直接执行，不经过这里
+ctrl + alt + cmd - return : /Applications/kitty.app/Contents/MacOS/kitten quick-access-terminal
+
+# ── Caps + Shift + / ：看快捷键（Karabiner 发出的是 ⌃⌥⌘+/）──
+ctrl + alt + cmd - 0x2C : open -e ~/.config/skhd/skhdrc
+
+# ── Caps + 1–9：切换桌面 ──
+# 不在这里：由 系统设置 › 键盘 › 键盘快捷键 › 调度中心 的「切换到桌面 N」接收 ⌃⌥⌘+数字
+
+# ── 不关 SIP 做不到，留着备查 ──
+# hyper - 1 : yabai -m window --space 1      # Caps + Shift + 数字：把窗口送到桌面
+# ctrl + alt + cmd - tab : yabai -m space --focus recent   # Caps + Tab：回到上一个桌面

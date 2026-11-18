@@ -10,9 +10,11 @@
 |---|---|
 | Caps 单击 | Esc |
 | 左 Shift + 右 Shift | 大小写锁定（再按一次关闭；两边都有） |
-| Caps 按住 + 窗口键 | 窗口管理（keyd / Karabiner 发出 `ctrl+alt+super+键` / `⌃⌥⌘+键`） |
+| Caps 按住 + 窗口键 | 窗口管理（keyd / Karabiner 发出 `ctrl+alt+super+键` / `⌃⌥⌘+键`）；Karabiner 的 AeroSpace profile 没有这一层，Caps 按住就是普通 Ctrl |
 | Caps 按住 + 其他键 | Ctrl（Caps+C 中断、Caps+R 搜历史、Firefox 里 Caps+T 新标签等） |
 | 物理 Control | 普通 Ctrl，不受 keyd / Karabiner 影响（Control+L 清屏、nvim 的 Control+hjkl 等） |
+| HHKB 右 Option | HHKB 没有物理 Control（Caps 位的 Control 就是 Caps 层），由它充当上面的普通 Ctrl |
+| Caps 按住 + Cmd + 窗口键 | 不进窗口层，原样发 `⌃⌘+键` 给前台应用（kitty 的分屏 / 标签页移动） |
 | Cmd | macOS 式的应用 / 系统命令 |
 | Alt | 不占用，留给终端和应用（Alt+b/f 按词跳、Alt+C 模糊 cd） |
 | Alt+Space | 中英文输入切换（fcitx5 小鹤双拼，Linux） |
@@ -42,6 +44,47 @@ Mac 上的几个例外（Karabiner 直接调用 `omniwmctl`，不发热键）：
 - Caps+`[` / `]`：OmniWM 没有「并入或拆出」的热键，只有 CLI 命令。
 - Caps+Shift+`,` / `.`：`⌃⌥⇧⌘+.` 会触发系统 sysdiagnose，不能当热键发。
 - Caps+Enter：`open -na kitty`。
+
+## 40% 外接键盘（44 键 Vial，仅 Mac / Karabiner）
+
+> 规则都带 `device_unless is_built_in_keyboard`，只对外接键盘生效；MacBook 自带键盘不受影响。
+> 固件现状：键帽「Esc」发 Tab，键帽「Tab」发 Esc，右 Alt 发 ←，最右键发 →，两个空格都发空格，Fn 是固件层键（电脑收不到，别乱按 Fn 组合）。
+
+| 按键 | 作用 |
+|---|---|
+| 印「Tab」的键（发 Esc）轻按 / 按住 | Esc 并清零层状态 / Control + Caps 窗口层（同 MacBook 的 Caps） |
+| 印「Esc」的键 | 普通 Tab |
+| 按住空格 + 键 | 符号层（先松字母、后松空格才算；打字连按照常出空格） |
+| 右 Alt 轻按 / 按住 | ← / 导航层 |
+| 最右键 | 普通 → |
+| 右 Shift（固件轻按发 /） | 永远是右 Shift；`/` 用空格+L |
+
+符号层（按住空格，加 Shift 得上档符号，如 Shift+j = `:`）：
+
+| | Q | W | E | R | T | Y | U | I | O | P |
+|---|---|---|---|---|---|---|---|---|---|---|
+| 行 1 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 0 |
+
+| | A | S | D | F | G | H | J | K | L |
+|---|---|---|---|---|---|---|---|---|---|
+| 行 2 | `` ` `` | `-` | `=` | `[` | `]` | `\` | `;` | `'` | `/` |
+
+行 3：N = `(`，M = `)`，`,` = `{`，`.` = `}`
+
+导航层（按住右 Alt）：
+
+| 按键 | 作用 |
+|---|---|
+| h j k l | ← ↓ ↑ → |
+| n / m / , / . | Home / PgDn / PgUp / End |
+| q … p，a，s | F1 … F10，F11，F12 |
+| Back | 向后删除（Del） |
+| z / x / c / v | 静音 / 音量- / 音量+ / 播放暂停 |
+
+Caps 层里 40% 上没有的键（数字、`; ' [ ] / ``）：**按住 Esc 键（印 Tab）+ 按住空格**，再按符号层上对应位置。
+例：Esc 键+空格+e = 工作区 3，+k = 轮换列宽（`'`），+j = 叠成标签（`;`）。
+
+层卡住（字母变数字/符号）时：轻按一下 Esc 键即可清零。
 
 ## niri：Cmd
 

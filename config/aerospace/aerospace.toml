@@ -11,11 +11,11 @@ config-version = 2
 after-startup-command = []
 
 # Start AeroSpace at login
-start-at-login = false
+start-at-login = true
 
 # Automatically reload the config when the config file is saved
 # After setting this to true, reload once manually to start the auto-reloading
-auto-reload-config = false
+auto-reload-config = true
 
 # Normalizations. See: https://nikitabobko.github.io/AeroSpace/guide#normalization
 enable-normalization-flatten-containers = true
@@ -73,12 +73,15 @@ key-mapping.preset = 'qwerty'
 #                 Monitor pattern is the same as for 'workspace-to-monitor-force-assignment'.
 #                 See:
 #                 https://nikitabobko.github.io/AeroSpace/guide#assign-workspaces-to-monitors
-gaps.inner.horizontal = 8
-gaps.inner.vertical =   8
-gaps.outer.left =       8
-gaps.outer.bottom =     8
-gaps.outer.top =        8
-gaps.outer.right =      8
+gaps.inner.horizontal = [{ monitor.main = 5}, 8]
+gaps.inner.vertical =   [{ monitor.main = 5}, 8]
+gaps.outer.top =        [{ monitor.main = 0}, 4]
+gaps.outer.bottom =     [{ monitor.main = 5}, 4]
+gaps.outer.left =       [{ monitor.main = 5}, 4]
+gaps.outer.right =      [{ monitor.main = 5}, 4]
+
+
+
 
 # 'main' binding mode declaration
 # See: https://nikitabobko.github.io/AeroSpace/guide#binding-modes
@@ -114,10 +117,10 @@ gaps.outer.right =      8
     alt-comma = 'layout accordion horizontal vertical'
 
     # See: https://nikitabobko.github.io/AeroSpace/commands#focus
-    alt-h = 'focus left'
-    alt-j = 'focus down'
-    alt-k = 'focus up'
-    alt-l = 'focus right'
+    alt-h = 'focus --boundaries all-monitors-outer-frame left'
+    alt-j = 'focus --boundaries all-monitors-outer-frame down'
+    alt-k = 'focus --boundaries all-monitors-outer-frame up'
+    alt-l = 'focus --boundaries all-monitors-outer-frame right'
 
     # See: https://nikitabobko.github.io/AeroSpace/commands#move
     alt-shift-h = 'move left'
@@ -130,37 +133,37 @@ gaps.outer.right =      8
     alt-equal = 'resize smart +50'
 
     # See: https://nikitabobko.github.io/AeroSpace/commands#workspace
-    alt-1 = 'workspace 1'
-    alt-2 = 'workspace 2'
-    alt-3 = 'workspace 3'
-    alt-4 = 'workspace 4'
-    alt-5 = 'workspace 5'
-    alt-6 = 'workspace 6'
-    alt-7 = 'workspace 7'
-    alt-8 = 'workspace 8'
-    alt-9 = 'workspace 9'
-    alt-a = 'workspace A' # In your config, you can drop workspace bindings that you don't need
-    alt-b = 'workspace B'
-    alt-c = 'workspace C'
-    alt-d = 'workspace D'
-    alt-e = 'workspace E'
-    alt-f = 'workspace F'
-    alt-g = 'workspace G'
-    alt-i = 'workspace I'
-    alt-m = 'workspace M'
-    alt-n = 'workspace N'
-    alt-o = 'workspace O'
-    alt-p = 'workspace P'
-    alt-q = 'workspace Q'
-    alt-r = 'workspace R'
-    alt-s = 'workspace S'
-    alt-t = 'workspace T'
-    alt-u = 'workspace U'
-    alt-v = 'workspace V'
-    alt-w = 'workspace W'
-    alt-x = 'workspace X'
-    alt-y = 'workspace Y'
-    alt-z = 'workspace Z'
+    alt-1 = 'summon-workspace 1'
+    alt-2 = 'summon-workspace 2'
+    alt-3 = 'summon-workspace 3'
+    alt-4 = 'summon-workspace 4'
+    alt-5 = 'summon-workspace 5'
+    alt-6 = 'summon-workspace 6'
+    alt-7 = 'summon-workspace 7'
+    alt-8 = 'summon-workspace 8'
+    alt-9 = 'summon-workspace 9'
+    alt-a = 'summon-workspace A' # In your config, you can drop workspace bindings that you don't need
+    alt-b = 'summon-workspace B'
+    alt-c = 'summon-workspace C'
+    alt-d = 'summon-workspace D'
+    alt-e = 'summon-workspace E'
+    alt-f = 'summon-workspace F'
+    alt-g = 'summon-workspace G'
+    alt-i = 'summon-workspace I'
+    alt-m = 'summon-workspace M'
+    alt-n = 'summon-workspace N'
+    alt-o = 'summon-workspace O'
+    alt-p = 'summon-workspace P'
+    alt-q = 'summon-workspace Q'
+    alt-r = 'summon-workspace R'
+    alt-s = 'summon-workspace S'
+    alt-t = 'summon-workspace T'
+    alt-u = 'summon-workspace U'
+    alt-v = 'summon-workspace V'
+    alt-w = 'summon-workspace W'
+    alt-x = 'summon-workspace X'
+    alt-y = 'summon-workspace Y'
+    alt-z = 'summon-workspace Z'
 
     # See: https://nikitabobko.github.io/AeroSpace/commands#move-node-to-workspace
     alt-shift-1 = 'move-node-to-workspace 1'
@@ -197,6 +200,14 @@ gaps.outer.right =      8
 
     # See: https://nikitabobko.github.io/AeroSpace/commands#workspace-back-and-forth
     alt-tab = 'workspace-back-and-forth'
+
+    # 在显示器之间切换焦点 / 把窗口扔到另一块屏
+    alt-period = 'focus-monitor --wrap-around next'
+    alt-shift-period = 'move-node-to-monitor --wrap-around --focus-follows-window next'
+
+    # 只在当前屏的非空工作区之间循环切换
+    alt-rightSquareBracket = 'exec-and-forget aerospace list-workspaces --monitor focused --empty no | aerospace workspace --wrap-around next --stdin'
+    alt-leftSquareBracket  = 'exec-and-forget aerospace list-workspaces --monitor focused --empty no | aerospace workspace --wrap-around prev --stdin'
     # See: https://nikitabobko.github.io/AeroSpace/commands#move-workspace-to-monitor
     alt-shift-tab = 'move-workspace-to-monitor --wrap-around next'
 

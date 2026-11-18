@@ -1,0 +1,25 @@
+#!/usr/bin/env sh
+# yabai：macOS 上的平铺窗口管理（代替 OmniWM），布局是 dwindle / Fibonacci
+# 改完执行：yabai --restart-service
+# 快捷键在 ~/.config/skhd/skhdrc（Caps 层，和 Linux 的 niri 对齐）
+
+# ── 布局：每开一个新窗口，把当前格子对半切 ──
+yabai -m config layout bsp
+# 宽格子竖着切、高格子横着切
+yabai -m config split_type auto
+# 新窗口放在右边 / 下边
+yabai -m config window_placement second_child
+# 不平均分配，保持越切越小
+yabai -m config auto_balance off
+
+# ── 间隙：同 niri 的 gaps 10 ──
+yabai -m config window_gap 10
+yabai -m config top_padding 10
+yabai -m config bottom_padding 10
+yabai -m config left_padding 10
+yabai -m config right_padding 10
+
+# ── 默认浮动：同 niri 的窗口规则（设置、计算器）──
+yabai -m rule --add app="^(System Settings|系统设置)$" manage=off
+yabai -m rule --add app="^(Calculator|计算器)$" manage=off
+yabai -m rule --add app="^Karabiner-(Elements|EventViewer)$" manage=off
