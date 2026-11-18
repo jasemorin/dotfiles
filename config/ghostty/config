@@ -53,7 +53,8 @@ background-opacity = 0.70
 background-blur = 64
 macos-titlebar-style = tabs
 confirm-close-surface = false
-quit-after-last-window-closed = true
+# 关掉最后一个窗口也不退出，下拉终端的全局快捷键才一直可用（cmd+q 才真正退出）
+quit-after-last-window-closed = false
 # 新标签页 / 分屏沿用当前目录（对应 kitty 的 --cwd=current）
 window-inherit-working-directory = true
 
@@ -103,5 +104,5 @@ quick-terminal-position = top
 quick-terminal-size = 45%
 quick-terminal-animation-duration = 0.15
 # 全局快捷键需要在 系统设置 → 隐私与安全性 → 辅助功能 里允许 Ghostty
-# 想用的话去掉下一行的 #（ctrl+` 呼出/收起）
-# keybind = global:ctrl+grave_accent=toggle_quick_terminal
+# cmd+` 呼出/收起（会盖掉 macOS 的 cmd+` 同一应用内切换窗口）
+keybind = global:cmd+grave_accent=toggle_quick_terminal
