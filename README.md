@@ -78,3 +78,10 @@ Option 不给窗口管理用，留给终端（kitty 里 Option 当 Alt）。
 - AeroSpace 改完跑 `aerospace reload-config`（或按 Hyper-0）。
 - AeroSpace 优先读 `~/.aerospace.toml`，**其次**才是 `~/.config/aerospace/aerospace.toml`。
   如果前者存在，本仓库的配置不会生效 —— 删掉或改名它。
+
+## 新 Mac
+
+```sh
+git clone https://github.com/jasemorin/dotfiles.git ~/dotfiles
+cd ~/dotfiles && git checkout lazyvim && ./bootstrap-mac.sh
+```
