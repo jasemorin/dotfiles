@@ -1,0 +1,7 @@
+# starship 提示符配置（install.sh 会把 ~/.config/starship 链接到这里，
+# zshrc 里用 STARSHIP_CONFIG 指向本文件）
+"$schema" = 'https://starship.rs/config-schema.json'
+
+[character]
+success_symbol = '[➜](bold green)'  # 上一条命令成功：绿色
+error_symbol = '[➜](bold red)'      # 上一条命令失败：红色

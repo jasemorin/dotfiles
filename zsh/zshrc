@@ -100,4 +100,5 @@ if command -v brew >/dev/null; then
 fi
 
 # ── starship 提示符（放最后）───────────────────────────────────────────
+export STARSHIP_CONFIG=~/.config/starship/starship.toml
 command -v starship >/dev/null && eval "$(starship init zsh)"
