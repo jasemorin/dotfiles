@@ -1,0 +1,107 @@
+# ──────────────────────────────────────────────
+#  Ghostty 配置（从 config/kitty 移植，外观和键位尽量保持一致）
+#  install.sh 会把 ~/.config/ghostty 链接到这里
+#  检查配置：ghostty +validate-config   重新加载：cmd+shift+,
+#  kitty 有、Ghostty 没有的：hints（cmd+e/o）、show_last_command_output、
+#  把分屏拖到别的标签页（detach_window）、底部标签栏
+# ──────────────────────────────────────────────
+
+# ── 字体 ──────────────────────────────────────
+font-family = JetBrains Mono
+font-size = 16
+# 对应 kitty 的 macos_thicken_font
+font-thicken = true
+
+# ── 主题：Catppuccin Mocha（与 kitty 的 current-theme.conf 同色）──
+background = #1e1e2e
+foreground = #cdd6f4
+cursor-color = #f5e0dc
+cursor-text = #1e1e2e
+selection-background = #f5e0dc
+selection-foreground = #1e1e2e
+palette = 0=#45475a
+palette = 1=#f38ba8
+palette = 2=#a6e3a1
+palette = 3=#f9e2af
+palette = 4=#89b4fa
+palette = 5=#f5c2e7
+palette = 6=#94e2d5
+palette = 7=#bac2de
+palette = 8=#585b70
+palette = 9=#f38ba8
+palette = 10=#a6e3a1
+palette = 11=#f9e2af
+palette = 12=#89b4fa
+palette = 13=#f5c2e7
+palette = 14=#94e2d5
+palette = 15=#a6adc8
+# 非焦点分屏稍微变暗，方便看出焦点在哪
+unfocused-split-opacity = 0.75
+split-divider-color = #6c7086
+
+# ── 光标 ──────────────────────────────────────
+cursor-style = bar
+cursor-style-blink = true
+
+# ── 窗口 ──────────────────────────────────────
+window-width = 120
+window-height = 35
+window-padding-x = 8
+window-padding-y = 8
+window-padding-balance = true
+background-opacity = 0.70
+background-blur = 64
+macos-titlebar-style = tabs
+confirm-close-surface = false
+quit-after-last-window-closed = true
+# 新标签页 / 分屏沿用当前目录（对应 kitty 的 --cwd=current）
+window-inherit-working-directory = true
+
+# ── 鼠标与剪贴板 ──────────────────────────────
+copy-on-select = clipboard
+mouse-hide-while-typing = true
+
+# ── macOS ─────────────────────────────────────
+macos-option-as-alt = true
+
+# ── 铃声 ──────────────────────────────────────
+# Ghostty 默认不响铃，这里不用设
+
+# ── 键位（与 kitty 对齐）──────────────────────
+# 标签页：cmd+t/w、cmd+1-9、cmd+shift+[ ] 是 Ghostty 默认，不用写
+keybind = cmd+w=close_tab
+keybind = cmd+ctrl+shift+right_bracket=move_tab:1
+keybind = cmd+ctrl+shift+left_bracket=move_tab:-1
+
+# 滚动：顶部/底部、按提示符跳（提示符跳转依赖 shell integration，默认开启）
+keybind = cmd+shift+up=scroll_to_top
+keybind = cmd+shift+down=scroll_to_bottom
+keybind = cmd+up=jump_to_prompt:-1
+keybind = cmd+down=jump_to_prompt:1
+keybind = cmd+f=start_search
+
+# 分屏：cmd+d 左右、cmd+shift+d 上下、cmd+shift+enter 放大当前分屏（均为默认）
+# 在分屏间移动（vim hjkl）——覆盖了 cmd+h（隐藏应用）和 cmd+k（清屏）
+keybind = cmd+h=goto_split:left
+keybind = cmd+j=goto_split:bottom
+keybind = cmd+k=goto_split:top
+keybind = cmd+l=goto_split:right
+# 调整分屏大小
+keybind = cmd+shift+h=resize_split:left,20
+keybind = cmd+shift+j=resize_split:down,20
+keybind = cmd+shift+k=resize_split:up,20
+keybind = cmd+shift+l=resize_split:right,20
+keybind = cmd+ctrl+equal=equalize_splits
+# 清屏挪到 cmd+alt+k（同 kitty）
+keybind = cmd+alt+k=clear_screen
+# 关闭：shift 关分屏，alt 关整个窗口（同 kitty）
+keybind = cmd+shift+w=close_surface
+keybind = cmd+alt+w=close_window
+
+# ── 下拉终端（对应 kitty 的 quick-access-terminal）──
+quick-terminal-position = top
+quick-terminal-size = 45%
+quick-terminal-animation-duration = 0.15
+# 全局快捷键需要在 系统设置 → 隐私与安全性 → 辅助功能 里允许 Ghostty
+# 想用的话去掉下一行的 #（ctrl+` 呼出/收起）
+# keybind = global:ctrl+grave_accent=toggle_quick_terminal
