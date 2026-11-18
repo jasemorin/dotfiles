@@ -85,3 +85,5 @@ Option 不给窗口管理用，留给终端（kitty 里 Option 当 Alt）。
 git clone https://github.com/jasemorin/dotfiles.git ~/dotfiles
 cd ~/dotfiles && git checkout lazyvim && ./bootstrap-mac.sh
 ```
+
+`./install.sh` 也会把 `~/.zshrc` 链接到 `zsh/zshrc`（原文件自动备份）。密钥和本机专属设置放 `~/.zshrc.local`，不进仓库。

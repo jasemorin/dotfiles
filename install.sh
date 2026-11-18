@@ -39,5 +39,22 @@ for name in "$DOTFILES"/config/*/; do
   link "$(basename "$name")"
 done
 
+# 主目录里的单个文件（zsh 只认 ~/.zshrc）
+link_home() {
+  local src="$DOTFILES/$1" dst="$HOME/$2"
+  [[ -e "$src" ]] || return 0
+  if [[ -L "$dst" && "$(readlink "$dst")" == "$src" ]]; then
+    echo "已就位 ~/$2"; return
+  fi
+  if [[ -e "$dst" || -L "$dst" ]]; then
+    local backup="$dst.backup.$(date +%Y%m%d%H%M%S)"
+    echo "备份 $dst -> $backup"
+    $DRY_RUN || mv "$dst" "$backup"
+  fi
+  echo "链接 $dst -> $src"
+  $DRY_RUN || ln -s "$src" "$dst"
+}
+link_home zsh/zshrc .zshrc
+
 echo
 echo "完成。kitty 需要完全退出后重开；nvim 下次启动时 lazy.nvim 会自动装插件。"
