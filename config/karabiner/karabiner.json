@@ -6823,8 +6823,17 @@
                         ]
                     },
                     {
-                        "description": "Fn + hjkl = 方向键（vim 风格：h← j↓ k↑ l→）；Fn 设为 lazy，避免组合键时误触发 🌐 切换输入法",
+                        "description": "Fn + hjkl = 方向键，Fn + ` = F20（Ghostty 下拉终端）（vim 风格：h← j↓ k↑ l→）；Fn 设为 lazy，避免组合键时误触发 🌐 切换输入法",
                         "manipulators": [
+                            {
+                                "description": "Fn + ` = Fn+F20（Ghostty 全局快捷键 global:f20 呼出下拉终端；保留 fn，避免松开 fn 时被当成单按 🌐 切换输入法）",
+                                "from": {
+                                    "key_code": "grave_accent_and_tilde",
+                                    "modifiers": { "mandatory": ["fn"] }
+                                },
+                                "to": [{ "key_code": "f20", "modifiers": ["fn"] }],
+                                "type": "basic"
+                            },
                             {
                                 "from": {
                                     "key_code": "fn",
@@ -11155,8 +11164,17 @@
                         ]
                     },
                     {
-                        "description": "Fn + hjkl = 方向键（vim 风格：h← j↓ k↑ l→）；Fn 设为 lazy，避免组合键时误触发 🌐 切换输入法",
+                        "description": "Fn + hjkl = 方向键，Fn + ` = F20（Ghostty 下拉终端）（vim 风格：h← j↓ k↑ l→）；Fn 设为 lazy，避免组合键时误触发 🌐 切换输入法",
                         "manipulators": [
+                            {
+                                "description": "Fn + ` = Fn+F20（Ghostty 全局快捷键 global:f20 呼出下拉终端；保留 fn，避免松开 fn 时被当成单按 🌐 切换输入法）",
+                                "from": {
+                                    "key_code": "grave_accent_and_tilde",
+                                    "modifiers": { "mandatory": ["fn"] }
+                                },
+                                "to": [{ "key_code": "f20", "modifiers": ["fn"] }],
+                                "type": "basic"
+                            },
                             {
                                 "from": {
                                     "key_code": "fn",
@@ -18101,8 +18119,17 @@
                         ]
                     },
                     {
-                        "description": "Fn + hjkl = 方向键（vim 风格：h← j↓ k↑ l→）；Fn 设为 lazy，避免组合键时误触发 🌐 切换输入法",
+                        "description": "Fn + hjkl = 方向键，Fn + ` = F20（Ghostty 下拉终端）（vim 风格：h← j↓ k↑ l→）；Fn 设为 lazy，避免组合键时误触发 🌐 切换输入法",
                         "manipulators": [
+                            {
+                                "description": "Fn + ` = Fn+F20（Ghostty 全局快捷键 global:f20 呼出下拉终端；保留 fn，避免松开 fn 时被当成单按 🌐 切换输入法）",
+                                "from": {
+                                    "key_code": "grave_accent_and_tilde",
+                                    "modifiers": { "mandatory": ["fn"] }
+                                },
+                                "to": [{ "key_code": "f20", "modifiers": ["fn"] }],
+                                "type": "basic"
+                            },
                             {
                                 "from": {
                                     "key_code": "fn",

@@ -104,5 +104,5 @@ quick-terminal-position = top
 quick-terminal-size = 45%
 quick-terminal-animation-duration = 0.15
 # 全局快捷键需要在 系统设置 → 隐私与安全性 → 辅助功能 里允许 Ghostty
-# cmd+` 呼出/收起（会盖掉 macOS 的 cmd+` 同一应用内切换窗口）
-keybind = global:cmd+grave_accent=toggle_quick_terminal
+# fn+` 呼出/收起：Ghostty 不支持 fn 修饰键，所以由 Karabiner 把 fn+` 转成 F20（见 karabiner.json 的 Fn 规则）
+keybind = global:f20=toggle_quick_terminal
